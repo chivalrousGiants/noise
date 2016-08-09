@@ -12,6 +12,10 @@
 		4133BD181D5A884C001EA380 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD161D5A884C001EA380 /* Main.storyboard */; };
 		4133BD1A1D5A884C001EA380 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD191D5A884C001EA380 /* Assets.xcassets */; };
 		4133BD1D1D5A884C001EA380 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD1B1D5A884C001EA380 /* LaunchScreen.storyboard */; };
+		4133BD251D5A8A48001EA380 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD241D5A8A48001EA380 /* LoginViewController.swift */; };
+		4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD271D5A9539001EA380 /* SignUpViewController.swift */; };
+		4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */; };
+		4133BD2E1D5A9ABA001EA380 /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +26,10 @@
 		4133BD191D5A884C001EA380 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4133BD1C1D5A884C001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4133BD1E1D5A884C001EA380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4133BD241D5A8A48001EA380 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = login/LoginViewController.swift; sourceTree = "<group>"; };
+		4133BD271D5A9539001EA380 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = signup/SignUpViewController.swift; sourceTree = "<group>"; };
+		4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendsListViewController.swift; path = friendsList/FriendsListViewController.swift; sourceTree = "<group>"; };
+		4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendViewController.swift; path = friendsList/AddFriendViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,9 @@
 		4133BD111D5A884C001EA380 /* noise */ = {
 			isa = PBXGroup;
 			children = (
+				4133BD2C1D5A9768001EA380 /* friendsList */,
+				4133BD291D5A954C001EA380 /* signup */,
+				4133BD261D5A8A55001EA380 /* login */,
 				4133BD121D5A884C001EA380 /* AppDelegate.swift */,
 				4133BD141D5A884C001EA380 /* ViewController.swift */,
 				4133BD161D5A884C001EA380 /* Main.storyboard */,
@@ -62,6 +73,31 @@
 				4133BD1E1D5A884C001EA380 /* Info.plist */,
 			);
 			path = noise;
+			sourceTree = "<group>";
+		};
+		4133BD261D5A8A55001EA380 /* login */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD241D5A8A48001EA380 /* LoginViewController.swift */,
+			);
+			name = login;
+			sourceTree = "<group>";
+		};
+		4133BD291D5A954C001EA380 /* signup */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD271D5A9539001EA380 /* SignUpViewController.swift */,
+			);
+			name = signup;
+			sourceTree = "<group>";
+		};
+		4133BD2C1D5A9768001EA380 /* friendsList */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
+				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
+			);
+			name = friendsList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,7 +172,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4133BD2E1D5A9ABA001EA380 /* AddFriendViewController.swift in Sources */,
+				4133BD251D5A8A48001EA380 /* LoginViewController.swift in Sources */,
 				4133BD151D5A884C001EA380 /* ViewController.swift in Sources */,
+				4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */,
+				4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */,
 				4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
