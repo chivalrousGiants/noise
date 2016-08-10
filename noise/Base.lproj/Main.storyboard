@@ -17,13 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojH-Ny-Fy0">
-                                <rect key="frame" x="48" y="535" width="34" height="30"/>
-                                <state key="normal" title="login"/>
-                                <connections>
-                                    <action selector="loginButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X1u-3F-VdZ"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jZ3-yJ-ApH">
                                 <rect key="frame" x="230" y="348" width="76" height="30"/>
                                 <state key="normal" title="FriendsList"/>
@@ -31,191 +24,41 @@
                                     <action selector="friendsListButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ImZ-o6-Yei"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojH-Ny-Fy0">
+                                <rect key="frame" x="128" y="348" width="34" height="30"/>
+                                <state key="normal" title="login"/>
+                                <connections>
+                                    <action selector="loginButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X1u-3F-VdZ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
-                        <segue destination="PRV-zr-cce" kind="show" identifier="authSegue" id="9X0-RS-enh"/>
-                        <segue destination="9jR-N3-GYq" kind="show" identifier="friendsListSegue" id="wVv-rk-cQP"/>
+                        <segue destination="gfS-W4-Bwi" kind="show" identifier="authSegue" id="9X0-RS-enh"/>
+                        <segue destination="ZuZ-dJ-v8D" kind="show" identifier="friendsListSegue" id="wVv-rk-cQP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="265" y="501"/>
         </scene>
-        <!--Friends List View Controller-->
-        <scene sceneID="WjQ-cL-NgY">
+        <!--Auth-->
+        <scene sceneID="g7d-iD-s6G">
             <objects>
-                <viewController id="SiE-d7-1yg" customClass="FriendsListViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="0P0-1l-1vh">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </tableView>
-                    <toolbarItems>
-                        <barButtonItem title="chats" id="a55-Xm-yeq">
-                            <connections>
-                                <action selector="chatsButtonClicked:" destination="SiE-d7-1yg" id="92d-4c-pcN"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem title="settings" id="3eX-4z-8k5">
-                            <connections>
-                                <action selector="settingsButtonClicked:" destination="SiE-d7-1yg" id="AQT-zu-fbM"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" id="hag-Cp-ynH">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="1AY-N6-Mf6">
-                            <connections>
-                                <action selector="addFriendButtonClicked:" destination="SiE-d7-1yg" id="dgh-Xs-Sea"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <segue destination="iOG-VH-PPI" kind="show" identifier="addFriendSegue" id="Epv-f0-TCU"/>
-                        <segue destination="1mj-6Z-Gel" kind="show" identifier="chatsSegue" id="L94-bX-VcD"/>
-                        <segue destination="W3V-MQ-jCk" kind="show" identifier="settingsSegue" id="wMD-jU-Jn5"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewControllerPlaceholder storyboardName="Auth" id="gfS-W4-Bwi" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gKK-bs-dpz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1710" y="916"/>
+            <point key="canvasLocation" x="850.5" y="139"/>
         </scene>
-        <!--Add Friend View Controller-->
-        <scene sceneID="n1k-Nr-jet">
+        <!--Friends-->
+        <scene sceneID="mHZ-zN-Nno">
             <objects>
-                <viewController id="iOG-VH-PPI" customClass="AddFriendViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="a7C-1m-VUK"/>
-                        <viewControllerLayoutGuide type="bottom" id="y9y-UG-C0o"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="GFd-Kw-f6s">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="moi-5C-GTN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewControllerPlaceholder storyboardName="Friends" id="ZuZ-dJ-v8D" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kAv-cZ-vLN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2303" y="916"/>
-        </scene>
-        <!--Login View Controller-->
-        <scene sceneID="ncX-9e-YCy">
-            <objects>
-                <viewController id="Vf3-GY-8Lb" customClass="LoginViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Jla-sz-ECg"/>
-                        <viewControllerLayoutGuide type="bottom" id="upx-Nt-bgD"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="b9r-oC-Mjm">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cRF-ME-HIU">
-                                <rect key="frame" x="277" y="479" width="46" height="30"/>
-                                <state key="normal" title="signup"/>
-                                <connections>
-                                    <action selector="signUpButtonClicked:" destination="Vf3-GY-8Lb" eventType="touchUpInside" id="KlC-CT-bed"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="eXV-JM-J9f"/>
-                    <connections>
-                        <segue destination="NXh-Sw-xkg" kind="show" identifier="signUpSegue" id="QQi-bP-3QK"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nYm-y9-0Ye" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1796" y="-165"/>
-        </scene>
-        <!--Sign Up View Controller-->
-        <scene sceneID="Ce0-MD-PR2">
-            <objects>
-                <viewController id="NXh-Sw-xkg" customClass="SignUpViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="9Na-sV-UAU"/>
-                        <viewControllerLayoutGuide type="bottom" id="Hdc-6l-2Yv"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="fFm-Pd-45D">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="g9l-sZ-dey" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2519" y="-165"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="RX4-CQ-uQq">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PRV-zr-cce" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qct-3r-wrk">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Vf3-GY-8Lb" kind="relationship" relationship="rootViewController" id="u9v-Ro-xXg"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Xeh-Sq-F8Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="984" y="-165"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="IuY-ma-kI0">
-            <objects>
-                <navigationController toolbarHidden="NO" id="9jR-N3-GYq" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="XpF-EF-bhi">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" id="Rw2-Te-Rcp">
-                        <rect key="frame" x="0.0" y="692" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </toolbar>
-                    <connections>
-                        <segue destination="SiE-d7-1yg" kind="relationship" relationship="rootViewController" id="QQ1-3f-2Uw"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Xf5-12-JJI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="984" y="908"/>
-        </scene>
-        <!--Chats View Controller-->
-        <scene sceneID="7rw-TV-FcJ">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0KX-1p-qZN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="1mj-6Z-Gel" customClass="ChatsViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController"/>
-            </objects>
-            <point key="canvasLocation" x="1408" y="1911"/>
-        </scene>
-        <!--Settings View Controller-->
-        <scene sceneID="T4z-C2-Fpo">
-            <objects>
-                <viewController id="W3V-MQ-jCk" customClass="SettingsViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="BJa-gS-XFs"/>
-                        <viewControllerLayoutGuide type="bottom" id="yPA-o4-cFd"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="AnP-ZH-jjW">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="l2K-bv-d7N" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2083" y="1923"/>
+            <point key="canvasLocation" x="842" y="816"/>
         </scene>
     </scenes>
 </document>
