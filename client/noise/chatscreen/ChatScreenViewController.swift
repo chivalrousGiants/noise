@@ -8,8 +8,14 @@
 
 import UIKit
 
-class ChatScreenViewController: UIViewController {
+
+//configure chatScreenVC: in addition to its default class, (DS)the table code herein will provide info needed to construct table view.
+//ALSO, (VD) declares the obj (ref) that will determine how to manage selections, configure section headings and footers, help to delete and reorder cells
+
+class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    //outlets defined
     
+    @IBOutlet weak var chatScreenTable: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,15 +25,20 @@ class ChatScreenViewController: UIViewController {
         //define dummy data
         var messageCollection : [[String: AnyObject]] = []
         let dummyDatum2 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 2, "mssg": "yolo"]
-        let dummyDatum3 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 3, "mssg": "bro"]
+        let dummyDatum3 : [String: AnyObject] = ["userName": "HB", "createdAt": 3, "mssg": "bro"]
         let dummyDatum4 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 4, "mssg": "ohnono"]
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
         print(messageCollection);
         
-        //display dummy data onscreen
+        //setup to display dummy data in table
         
+            //define obj that acts as the data source for the tableView
+            chatScreenTable.dataSource = self
+        
+           //define the obj that will act as the delegate for the tableView
+           chatScreenTable.delegate = self
     }
 
     override func didReceiveMemoryWarning() {

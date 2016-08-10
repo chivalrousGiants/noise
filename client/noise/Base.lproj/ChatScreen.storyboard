@@ -34,6 +34,9 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                    <connections>
+                        <outlet property="chatScreenTable" destination="scu-3T-7BY" id="U4m-x9-xuM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WHV-Pl-dZo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
