@@ -33,7 +33,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
         
-        //sort messageCollection by createdAt
+//TODO: sort messageCollection by createdAt (tbd by db choice)
         
         
         //setup to display dummy data in table
@@ -43,6 +43,28 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         
            //define the obj that will act as the delegate for the tableView
            chatScreenTable.delegate = self
+        
+        //declare subview and add it to view
+          //determine and set position relative to screenSize
+            let screenSize: CGRect = UIScreen.mainScreen().bounds
+            let screenWidth = screenSize.width
+            let screenHeight = screenSize.height
+            let userSubmissionFrameHeight = screenHeight - 50
+            let userSubmissionFrame = CGRect(x:0, y:userSubmissionFrameHeight, width:screenWidth, height: 50)
+        
+            //set subview
+            let userSubmissionSubView = UIView(frame: userSubmissionFrame)
+            userSubmissionSubView.backgroundColor = UIColor.grayColor()
+            view.addSubview(userSubmissionSubView)
+        
+//TODO: add textField to subview
+        
+//TODO: add button to subview
+        
+//TODO: toggle keyboard based on textfield entry
+//TODO: adjust pos of subview accordingly
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
