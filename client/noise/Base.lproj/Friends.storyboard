@@ -39,7 +39,7 @@
                         <segue destination="iOG-VH-PPI" kind="show" identifier="addFriendSegue" id="Epv-f0-TCU"/>
                         <segue destination="veF-Nh-4uO" kind="show" identifier="chatsSegue" id="L94-bX-VcD"/>
                         <segue destination="W3V-MQ-jCk" kind="show" identifier="settingsSegue" id="wMD-jU-Jn5"/>
-                        <segue destination="oie-k4-3DW" kind="show" id="EFM-if-UFR"/>
+                        <segue destination="oie-k4-3DW" kind="show" identifier="chatScreenSegue" id="EFM-if-UFR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>

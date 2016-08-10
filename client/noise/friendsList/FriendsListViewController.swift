@@ -43,6 +43,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBAction func settingsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
