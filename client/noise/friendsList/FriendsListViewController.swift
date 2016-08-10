@@ -8,12 +8,28 @@
 
 import UIKit
 
-class FriendsListViewController: UIViewController {
+class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet var friendsTableView: UITableView!
+    
+    var friends = ["Ryan", "Hannah", "Jae", "Henry"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        friendsTableView.dataSource = self
+        friendsTableView.delegate = self
+        
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return friends.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = friends[indexPath.row]
+        return cell
     }
 
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
@@ -26,6 +42,10 @@ class FriendsListViewController: UIViewController {
 
     @IBAction func settingsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("settingsSegue", sender: self)
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
 
     override func didReceiveMemoryWarning() {
