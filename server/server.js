@@ -8,9 +8,12 @@ app.get('/', function(request, response) {
 
 http.listen(4000, function() {
   console.log('listening')
-})
+});
 
-io.on('connection', function(socket) {
+io.on('connection', function(clientSocket) {
   console.log('a user connected')
+  clientSocket.on('disconnect', function() {
+    console.log('user disconnected')
+  })
 
 })
