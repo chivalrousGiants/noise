@@ -11,7 +11,6 @@
 		4133BD151D5A884C001EA380 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD141D5A884C001EA380 /* ViewController.swift */; };
 		4133BD181D5A884C001EA380 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD161D5A884C001EA380 /* Main.storyboard */; };
 		4133BD1A1D5A884C001EA380 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD191D5A884C001EA380 /* Assets.xcassets */; };
-		4133BD1D1D5A884C001EA380 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD1B1D5A884C001EA380 /* LaunchScreen.storyboard */; };
 		4133BD251D5A8A48001EA380 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD241D5A8A48001EA380 /* LoginViewController.swift */; };
 		4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD271D5A9539001EA380 /* SignUpViewController.swift */; };
 		4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */; };
@@ -19,6 +18,10 @@
 		4133BD301D5AAB0C001EA380 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */; };
 		4133BD321D5AC635001EA380 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD311D5AC635001EA380 /* SettingsViewController.swift */; };
 		4133BD3F1D5ACDF6001EA380 /* ChatScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */; };
+		4133BD431D5ACEB1001EA380 /* Auth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD411D5ACEB1001EA380 /* Auth.storyboard */; };
+		4133BD461D5ACEE8001EA380 /* Friends.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD441D5ACEE8001EA380 /* Friends.storyboard */; };
+		4133BD491D5ACF45001EA380 /* ChatScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */; };
+		4133BD4C1D5ACF82001EA380 /* ChatsView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +30,6 @@
 		4133BD141D5A884C001EA380 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4133BD171D5A884C001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4133BD191D5A884C001EA380 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4133BD1C1D5A884C001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4133BD1E1D5A884C001EA380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4133BD241D5A8A48001EA380 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = login/LoginViewController.swift; sourceTree = "<group>"; };
 		4133BD271D5A9539001EA380 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = signup/SignUpViewController.swift; sourceTree = "<group>"; };
@@ -36,6 +38,10 @@
 		4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatsViewController.swift; path = friendsList/ChatsViewController.swift; sourceTree = "<group>"; };
 		4133BD311D5AC635001EA380 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = settings/SettingsViewController.swift; sourceTree = "<group>"; };
 		4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScreenViewController.swift; path = chatscreen/ChatScreenViewController.swift; sourceTree = "<group>"; };
+		4133BD421D5ACEB1001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Auth.storyboard; sourceTree = "<group>"; };
+		4133BD451D5ACEE8001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Friends.storyboard; sourceTree = "<group>"; };
+		4133BD481D5ACF45001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ChatScreen.storyboard; sourceTree = "<group>"; };
+		4133BD4B1D5ACF82001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ChatsView.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,14 +76,12 @@
 			children = (
 				4133BD401D5ACDFF001EA380 /* chatscreen */,
 				4133BD341D5AC660001EA380 /* settings */,
-				4133BD2C1D5A9768001EA380 /* friendsList */,
-				4133BD291D5A954C001EA380 /* signup */,
-				4133BD261D5A8A55001EA380 /* login */,
+				4133BD2C1D5A9768001EA380 /* friends */,
+				4133BD4E1D5AD03C001EA380 /* auth */,
 				4133BD121D5A884C001EA380 /* AppDelegate.swift */,
 				4133BD141D5A884C001EA380 /* ViewController.swift */,
 				4133BD161D5A884C001EA380 /* Main.storyboard */,
 				4133BD191D5A884C001EA380 /* Assets.xcassets */,
-				4133BD1B1D5A884C001EA380 /* LaunchScreen.storyboard */,
 				4133BD1E1D5A884C001EA380 /* Info.plist */,
 			);
 			path = noise;
@@ -99,14 +103,15 @@
 			name = signup;
 			sourceTree = "<group>";
 		};
-		4133BD2C1D5A9768001EA380 /* friendsList */ = {
+		4133BD2C1D5A9768001EA380 /* friends */ = {
 			isa = PBXGroup;
 			children = (
+				4133BD441D5ACEE8001EA380 /* Friends.storyboard */,
 				4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */,
 				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
 				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
 			);
-			name = friendsList;
+			name = friends;
 			sourceTree = "<group>";
 		};
 		4133BD341D5AC660001EA380 /* settings */ = {
@@ -120,9 +125,21 @@
 		4133BD401D5ACDFF001EA380 /* chatscreen */ = {
 			isa = PBXGroup;
 			children = (
+				4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */,
+				4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */,
 				4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */,
 			);
 			name = chatscreen;
+			sourceTree = "<group>";
+		};
+		4133BD4E1D5AD03C001EA380 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD411D5ACEB1001EA380 /* Auth.storyboard */,
+				4133BD291D5A954C001EA380 /* signup */,
+				4133BD261D5A8A55001EA380 /* login */,
+			);
+			name = auth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +201,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4133BD1D1D5A884C001EA380 /* LaunchScreen.storyboard in Resources */,
+				4133BD491D5ACF45001EA380 /* ChatScreen.storyboard in Resources */,
+				4133BD431D5ACEB1001EA380 /* Auth.storyboard in Resources */,
+				4133BD4C1D5ACF82001EA380 /* ChatsView.storyboard in Resources */,
+				4133BD461D5ACEE8001EA380 /* Friends.storyboard in Resources */,
 				4133BD1A1D5A884C001EA380 /* Assets.xcassets in Resources */,
 				4133BD181D5A884C001EA380 /* Main.storyboard in Resources */,
 			);
@@ -220,12 +240,36 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		4133BD1B1D5A884C001EA380 /* LaunchScreen.storyboard */ = {
+		4133BD411D5ACEB1001EA380 /* Auth.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4133BD1C1D5A884C001EA380 /* Base */,
+				4133BD421D5ACEB1001EA380 /* Base */,
 			);
-			name = LaunchScreen.storyboard;
+			name = Auth.storyboard;
+			sourceTree = "<group>";
+		};
+		4133BD441D5ACEE8001EA380 /* Friends.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4133BD451D5ACEE8001EA380 /* Base */,
+			);
+			name = Friends.storyboard;
+			sourceTree = "<group>";
+		};
+		4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4133BD481D5ACF45001EA380 /* Base */,
+			);
+			name = ChatScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4133BD4B1D5ACF82001EA380 /* Base */,
+			);
+			name = ChatsView.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
