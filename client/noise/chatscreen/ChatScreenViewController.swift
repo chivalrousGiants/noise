@@ -16,6 +16,8 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     //outlets defined
     
     @IBOutlet weak var chatScreenTable: UITableView!
+    var messageCollection : [[String: String]] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +25,10 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         // Do any additional setup after loading the view.
         
         //define dummy data
-        var messageCollection : [[String: AnyObject]] = []
-        let dummyDatum2 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 2, "mssg": "yolo"]
-        let dummyDatum3 : [String: AnyObject] = ["userName": "HB", "createdAt": 3, "mssg": "bro"]
-        let dummyDatum4 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 4, "mssg": "ohnono"]
+
+        let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
+        let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
+        let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
@@ -46,6 +48,14 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         // Dispose of any resources that can be recreated.
     }
     
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messageCollection.count
+    }
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = messageCollection[indexPath.row]["mssg"]
+        return cell
+    }
 
     /*
     // MARK: - Navigation
