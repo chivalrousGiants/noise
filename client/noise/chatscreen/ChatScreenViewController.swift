@@ -9,16 +9,25 @@
 import UIKit
 
 class ChatScreenViewController: UIViewController {
-    //define dummy data
-    var messageCollection : [[String: AnyObject]] = []
-    var dummyDatum2 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 2, "mssg": "yolo"]
-    var dummyDatum3 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 3, "mssg": "bro"]
-    var dummyDatum4 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 4, "mssg": "ohnono"]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        //define dummy data
+        var messageCollection : [[String: AnyObject]] = []
+        let dummyDatum2 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 2, "mssg": "yolo"]
+        let dummyDatum3 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 3, "mssg": "bro"]
+        let dummyDatum4 : [String: AnyObject] = ["userName": "MDLC", "createdAt": 4, "mssg": "ohnono"]
+        messageCollection.append(dummyDatum2)
+        messageCollection.append(dummyDatum3)
+        messageCollection.append(dummyDatum4)
+        print(messageCollection);
+        
+        //display dummy data onscreen
+        
     }
 
     override func didReceiveMemoryWarning() {
