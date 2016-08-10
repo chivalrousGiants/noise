@@ -54,6 +54,18 @@
                     <view key="view" contentMode="scaleToFill" id="mAn-rp-bul">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2NI-x7-WxA">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem title="Chats" id="k5E-40-FkA">
+                                        <connections>
+                                            <action selector="chatsButtonClicked:" destination="SiE-d7-1yg" id="fRw-eC-zAG"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="6fg-fT-HQ9">
@@ -65,11 +77,12 @@
                     </navigationItem>
                     <connections>
                         <segue destination="iOG-VH-PPI" kind="show" identifier="addFriendSegue" id="Epv-f0-TCU"/>
+                        <segue destination="1mj-6Z-Gel" kind="show" identifier="chatsSegue" id="L94-bX-VcD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1758" y="730"/>
+            <point key="canvasLocation" x="1722" y="908"/>
         </scene>
         <!--Add Friend View Controller-->
         <scene sceneID="n1k-Nr-jet">
@@ -87,7 +100,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="moi-5C-GTN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2501" y="736"/>
+            <point key="canvasLocation" x="2583" y="908"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="ncX-9e-YCy">
@@ -172,7 +185,25 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xf5-12-JJI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="984" y="730"/>
+            <point key="canvasLocation" x="984" y="908"/>
+        </scene>
+        <!--Chats View Controller-->
+        <scene sceneID="7rw-TV-FcJ">
+            <objects>
+                <viewController id="1mj-6Z-Gel" customClass="ChatsViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ObY-yx-36K"/>
+                        <viewControllerLayoutGuide type="bottom" id="Sr8-me-msz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Oop-Rw-45T">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0KX-1p-qZN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1284" y="1698"/>
         </scene>
     </scenes>
 </document>

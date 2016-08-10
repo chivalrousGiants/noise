@@ -1,5 +1,5 @@
 //
-//  FriendsListViewController.swift
+//  ChatsViewController.swift
 //  noise
 //
 //  Created by Michael DLC on 8/9/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FriendsListViewController: UIViewController {
+class ChatsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,13 +16,6 @@ class FriendsListViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-    @IBAction func addFriendButtonClicked(sender: AnyObject) {
-        self.performSegueWithIdentifier("addFriendSegue", sender: self)
-    }
-    
-    @IBAction func chatsButtonClicked(sender: AnyObject) {
-        self.performSegueWithIdentifier("chatsSegue", sender: self)
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
