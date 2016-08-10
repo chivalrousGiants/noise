@@ -16,6 +16,8 @@
 		4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD271D5A9539001EA380 /* SignUpViewController.swift */; };
 		4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */; };
 		4133BD2E1D5A9ABA001EA380 /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */; };
+		4133BD301D5AAB0C001EA380 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */; };
+		4133BD321D5AC635001EA380 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD311D5AC635001EA380 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		4133BD271D5A9539001EA380 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = signup/SignUpViewController.swift; sourceTree = "<group>"; };
 		4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendsListViewController.swift; path = friendsList/FriendsListViewController.swift; sourceTree = "<group>"; };
 		4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendViewController.swift; path = friendsList/AddFriendViewController.swift; sourceTree = "<group>"; };
+		4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatsViewController.swift; path = friendsList/ChatsViewController.swift; sourceTree = "<group>"; };
+		4133BD311D5AC635001EA380 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = settings/SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,7 @@
 		4133BD111D5A884C001EA380 /* noise */ = {
 			isa = PBXGroup;
 			children = (
+				4133BD341D5AC660001EA380 /* settings */,
 				4133BD2C1D5A9768001EA380 /* friendsList */,
 				4133BD291D5A954C001EA380 /* signup */,
 				4133BD261D5A8A55001EA380 /* login */,
@@ -94,10 +99,19 @@
 		4133BD2C1D5A9768001EA380 /* friendsList */ = {
 			isa = PBXGroup;
 			children = (
+				4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */,
 				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
 				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
 			);
 			name = friendsList;
+			sourceTree = "<group>";
+		};
+		4133BD341D5AC660001EA380 /* settings */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD311D5AC635001EA380 /* SettingsViewController.swift */,
+			);
+			name = settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,8 +190,10 @@
 				4133BD251D5A8A48001EA380 /* LoginViewController.swift in Sources */,
 				4133BD151D5A884C001EA380 /* ViewController.swift in Sources */,
 				4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */,
+				4133BD301D5AAB0C001EA380 /* ChatsViewController.swift in Sources */,
 				4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */,
 				4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */,
+				4133BD321D5AC635001EA380 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,20 +20,18 @@ class FriendsListViewController: UIViewController {
         self.performSegueWithIdentifier("addFriendSegue", sender: self)
     }
     
+    @IBAction func chatsButtonClicked(sender: AnyObject) {
+        self.performSegueWithIdentifier("chatsSegue", sender: self)
+    }
+
+    @IBAction func settingsButtonClicked(sender: AnyObject) {
+        self.performSegueWithIdentifier("settingsSegue", sender: self)
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
