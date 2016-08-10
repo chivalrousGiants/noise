@@ -32,7 +32,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
-        print(messageCollection);
+        
+        //sort messageCollection by createdAt
+        
         
         //setup to display dummy data in table
         
@@ -57,6 +59,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         return cell
     }
 
+    
+    
+    
     /*
     // MARK: - Navigation
 
