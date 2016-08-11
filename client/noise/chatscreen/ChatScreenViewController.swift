@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 //configure chatScreenVC: in addition to its default class, (DS)the table code herein will provide info needed to construct table view.
 //ALSO, (Delegates) declares a relationship with (an)other obj(s) w/ which this classInstance can send and receive events e.g. --manage selections, configure section headings and footers, help to delete and reorder cells
 
@@ -22,6 +21,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     
     //other internal vars defined
+    
     var messageCollection : [[String: String]] = []
     let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
     let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
@@ -43,6 +43,8 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         
         // Do any additional setup after loading the view.
 //TODO: query server-DB for mssgData
+
+        
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
@@ -53,10 +55,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         //config to display dummy data in table (codedTable will serve as source for tableView && ChatScreen-Table delegate relationship declared)
         chatScreenTable.dataSource = self
         chatScreenTable.delegate = self
-        
-        
-        //Could declare delegate rel. w controller in code (but did so in GUI)
-        //userTextInput.delegate = self
+        //userTextInput.delegate = self (already done in GUI)
         
     }
 
@@ -78,7 +77,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = messageCollection[indexPath.row]["mssg"]
+        cell.textLabel?.text = "\(messageCollection[indexPath.row]["userName"]!): \(messageCollection[indexPath.row]["mssg"]!)"
         return cell
     }
     
@@ -93,7 +92,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     func textFieldDidBeginEditing(textField: UITextField) {
         print(userTextInput.text)
     }
-    
+    //TODO: fixxxx!!!
     func handleKeyboardDidShowNotification(notification: NSNotification){
         print("keyboardDidShow")
         //userInfo handles info passed on by other receiver objects in the notification chain
@@ -129,15 +128,29 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     ////////////////////////////////////
     
     
-    //TODO: (STRETCH) hookUp && change to Img
     @IBAction func onMediaClick(sender: AnyObject) {
+//TODO: (STRETCH) hookUp && change to Img
     }
-    //TODO: fix
+    
+//TODO: fix
     @IBAction func onSendClick(sender: AnyObject) {
-        //add text field entry to data
+//TODO: encrypt mssg
+        
+        //add encrypted mssg to dataCollection
         messageCollection.append(["userName": "HB","mssg": userTextInput.text!, "createdAt":"5"])
-        //emit socket mssg
-        print(messageCollection)
+        
+        //emit socket encrypted_mssg to ChatServer
+        SocketIOManager.sharedInstance.sendChat(userTextInput.text!)
+        
+//TODO:[when receive] (stored) encyrpted_mssg decrypt && append to DOM
+        let lastIdx = NSIndexPath(forRow: messageCollection.count-1, inSection: 0)
+        chatScreenTable.beginUpdates()
+        chatScreenTable.insertRowsAtIndexPaths([lastIdx], withRowAnimation: .Automatic)
+        chatScreenTable.endUpdates()
+        
+//TODO: noisify mssg and emit socket noisified_mssg to AnalyticsServer
+        
+        //quit keyboard
         userTextInput.resignFirstResponder()
     }
     

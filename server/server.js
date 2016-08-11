@@ -16,4 +16,8 @@ io.on('connection', function(clientSocket) {
     console.log('user disconnected')
   })
 
+  clientSocket.on('chatSent', function(chatMessage){
+  	
+  })
+
 })
