@@ -84,7 +84,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     
 ////////////////////////////////////
-////////USER INPUT FUCNTIONS
+////////USER INPUT View
 ////////////////////////////////////
     
     
@@ -105,15 +105,6 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     //TODO: fix
-    @IBAction func onSendClick(sender: AnyObject) {
-        //add text field entry to data
-        messageCollection.append(["userName": "HB","mssg": userTextInput.text!, "createdAt":"5"])
-        //emit socket mssg
-        print(messageCollection)
-        userTextInput.resignFirstResponder()
-    }
-    
-    //TODO: fix
     //resign keyboard when submit text
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -130,6 +121,24 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
             userInputView.frame.origin.y += keyboardSize.height
         }
+    }
+    
+    
+    ////////////////////////////////////
+    ////////USER INPUT BUTTONS
+    ////////////////////////////////////
+    
+    
+    //TODO: (STRETCH) hookUp && change to Img
+    @IBAction func onMediaClick(sender: AnyObject) {
+    }
+    //TODO: fix
+    @IBAction func onSendClick(sender: AnyObject) {
+        //add text field entry to data
+        messageCollection.append(["userName": "HB","mssg": userTextInput.text!, "createdAt":"5"])
+        //emit socket mssg
+        print(messageCollection)
+        userTextInput.resignFirstResponder()
     }
     
     //STRETCH: scroll to bottom

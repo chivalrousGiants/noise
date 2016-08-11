@@ -21,16 +21,12 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vO9-mQ-x99">
                                 <rect key="frame" x="20" y="649" width="374" height="44"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9We-Od-746">
-                                        <rect key="frame" x="330" y="5" width="36" height="30"/>
-                                        <state key="normal" title="Send"/>
-                                        <connections>
-                                            <action selector="onSendClick:" destination="bfZ-Us-KD6" eventType="touchUpInside" id="D9L-fF-8QN"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-Ry-WiY">
                                         <rect key="frame" x="2" y="5" width="42" height="30"/>
                                         <state key="normal" title="Media"/>
+                                        <connections>
+                                            <action selector="onMediaClick:" destination="bfZ-Us-KD6" eventType="touchUpInside" id="VGi-fe-PAN"/>
+                                        </connections>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AQE-mU-jb8">
                                         <rect key="frame" x="56" y="7" width="263" height="30"/>
@@ -40,6 +36,13 @@
                                             <outlet property="delegate" destination="zLX-D4-F7i" id="4SN-9j-DE3"/>
                                         </connections>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9We-Od-746">
+                                        <rect key="frame" x="327" y="5" width="39" height="30"/>
+                                        <state key="normal" title="Send"/>
+                                        <connections>
+                                            <action selector="onSendClick:" destination="bfZ-Us-KD6" eventType="touchUpInside" id="D9L-fF-8QN"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
