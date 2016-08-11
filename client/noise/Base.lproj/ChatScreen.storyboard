@@ -37,7 +37,6 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="send"/>
                                         <connections>
-                                            <action selector="onTextSubmit:" destination="bfZ-Us-KD6" eventType="editingDidEnd" id="Ee7-mh-UrP"/>
                                             <outlet property="delegate" destination="zLX-D4-F7i" id="4SN-9j-DE3"/>
                                         </connections>
                                     </textField>

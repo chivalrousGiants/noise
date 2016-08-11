@@ -31,9 +31,11 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //I could declare delegate rel. w controller in code (but did graphically)
-        //userTextInput.delegate = self
-
+        
+        //Set up notifications (broadcasts info w/in program) (NSNotifyCtR ~ notification dispatch table)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidShowNotification:", name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidHideNotification:", name: UIKeyboardDidHideNotification, object: nil)
+        
         // Do any additional setup after loading the view.
         
         //define dummy data
@@ -51,6 +53,10 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         //config to display dummy data in table (codedTable will serve as source for tableView && ChatScreen-Table delegate relationship declared)
         chatScreenTable.dataSource = self
         chatScreenTable.delegate = self
+        
+        
+        //Could declare delegate rel. w controller in code (but did so in GUI)
+        //userTextInput.delegate = self
         
     }
 
@@ -83,14 +89,25 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     
     //TODO: move textField when enter textField to accomodate keybaord
+    
     func textFieldDidBeginEditing(textField: UITextField) {
-        //
+        print(userTextInput.text)
     }
+    
+    func handleKeyboardDidShowNotification(notification: NSNotification){
+        print("keyboardDidShow")
+        //userInfo handles info passed on by other receiver objects in the notification chain
+        //UIKeyboardFrame identifies the start frame of the keyboard in coordinates
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+           print("\(keyboardSize)")
+            userInputView.frame.origin.y -= keyboardSize.height
+        }
+    }
+    
     //TODO: fix
     @IBAction func onSendClick(sender: AnyObject) {
         //add text field entry to data
-        
-        messageCollection.append(["userName": "HB","mssg": "\(userTextInput.text)", "createdAt":"5"])
+        messageCollection.append(["userName": "HB","mssg": userTextInput.text!, "createdAt":"5"])
         //emit socket mssg
         print(messageCollection)
         userTextInput.resignFirstResponder()
@@ -106,9 +123,13 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     //TODO: move keyboard back
-    func textFieldDidEndEditing(textField: UITextField) {
-        //
-        print(userTextInput.text)
+    
+    //textFieldDidEndEditing
+
+    func handleKeyboardDidHideNotification(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            userInputView.frame.origin.y += keyboardSize.height
+        }
     }
     
     //STRETCH: scroll to bottom
