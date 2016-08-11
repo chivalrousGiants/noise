@@ -49,8 +49,8 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
             let screenSize: CGRect = UIScreen.mainScreen().bounds
             let screenWidth = screenSize.width
             let screenHeight = screenSize.height
-            let userSubmissionFrameHeight = screenHeight - 50
-            let userSubmissionFrame = CGRect(x:0, y:userSubmissionFrameHeight, width:screenWidth, height: 50)
+            let userSubmissionFrameHeight = screenHeight - 100
+            let userSubmissionFrame = CGRect(x:0, y:userSubmissionFrameHeight, width:screenWidth, height: 100)
         
             //set subview
             let userSubmissionSubView = UIView(frame: userSubmissionFrame)
