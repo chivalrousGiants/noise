@@ -10,17 +10,29 @@ import UIKit
 
 
 //configure chatScreenVC: in addition to its default class, (DS)the table code herein will provide info needed to construct table view.
-//ALSO, (VD) declares the obj (ref) that will determine how to manage selections, configure section headings and footers, help to delete and reorder cells
+//ALSO, (Delegates) declares a relationship with (an)other obj(s) w/ which this classInstance can send and receive events e.g. --manage selections, configure section headings and footers, help to delete and reorder cells
 
-class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    //outlets defined
+class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
     
+    
+    //outlets defined
     @IBOutlet weak var chatScreenTable: UITableView!
+    @IBOutlet weak var userInputView: UIView!
+    @IBOutlet weak var userTextInput: UITextField!
+    //other internal vars defined
     var messageCollection : [[String: String]] = []
+    
+    
+    
+////////////////////////////////////
+////////FUNCTIONS ON LOAD
+////////////////////////////////////
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //I could declare delegate rel. w controller in code (but did graphically)
+        //userTextInput.delegate = self
 
         // Do any additional setup after loading the view.
         
@@ -36,34 +48,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
 //TODO: sort messageCollection by createdAt (tbd by db choice)
         
         
-        //setup to display dummy data in table
-        
-            //define obj that acts as the data source for the tableView
-            chatScreenTable.dataSource = self
-        
-           //define the obj that will act as the delegate for the tableView
-           chatScreenTable.delegate = self
-        
-        //declare subview and add it to view
-          //determine and set position relative to screenSize
-            let screenSize: CGRect = UIScreen.mainScreen().bounds
-            let screenWidth = screenSize.width
-            let screenHeight = screenSize.height
-            let userSubmissionFrameHeight = screenHeight - 100
-            let userSubmissionFrame = CGRect(x:0, y:userSubmissionFrameHeight, width:screenWidth, height: 100)
-        
-            //set subview
-            let userSubmissionSubView = UIView(frame: userSubmissionFrame)
-            userSubmissionSubView.backgroundColor = UIColor.grayColor()
-            view.addSubview(userSubmissionSubView)
-        
-//TODO: add textField to subview
-        
-//TODO: add button to subview
-        
-//TODO: toggle keyboard based on textfield entry
-//TODO: adjust pos of subview accordingly
-        
+        //config to display dummy data in table (codedTable will serve as source for tableView && ChatScreen-Table delegate relationship declared)
+        chatScreenTable.dataSource = self
+        chatScreenTable.delegate = self
         
     }
 
@@ -72,18 +59,59 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         // Dispose of any resources that can be recreated.
     }
     
+    
+    
+////////////////////////////////////
+////////TABLE FUNCTIONS
+////////////////////////////////////
+    
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messageCollection.count
     }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.textLabel?.text = messageCollection[indexPath.row]["mssg"]
         return cell
     }
-
     
     
+////////////////////////////////////
+////////USER INPUT FUCNTIONS
+////////////////////////////////////
     
+    
+    //TODO: move textField when enter textField to accomodate keybaord
+    func textFieldDidBeginEditing(textField: UITextField) {
+        //
+    }
+    //TODO: fix
+    @IBAction func onSendClick(sender: AnyObject) {
+        //add text field entry to data
+        
+        messageCollection.append(["userName": "HB","mssg": "\(userTextInput.text)", "createdAt":"5"])
+        //emit socket mssg
+        print(messageCollection)
+        userTextInput.resignFirstResponder()
+    }
+    
+    //TODO: fix
+    //resign keyboard when submit text
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        //self.userTextInput.resignFirstResponder()
+        //for now, arbitrarily conform to func signature (return some Bool)
+        return true;
+    }
+    
+    //TODO: move keyboard back
+    func textFieldDidEndEditing(textField: UITextField) {
+        //
+        print(userTextInput.text)
+    }
+    
+    //STRETCH: scroll to bottom
     /*
     // MARK: - Navigation
 
