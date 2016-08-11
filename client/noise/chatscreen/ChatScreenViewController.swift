@@ -12,16 +12,21 @@ import UIKit
 //configure chatScreenVC: in addition to its default class, (DS)the table code herein will provide info needed to construct table view.
 //ALSO, (Delegates) declares a relationship with (an)other obj(s) w/ which this classInstance can send and receive events e.g. --manage selections, configure section headings and footers, help to delete and reorder cells
 
-class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
+class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     
     //outlets defined
     @IBOutlet weak var chatScreenTable: UITableView!
     @IBOutlet weak var userInputView: UIView!
-    @IBOutlet weak var userTextInput: UITextField!
+    @IBOutlet weak var userTextInput: UITextField!  // change to tvMssgEditor?
+    
+    
     //other internal vars defined
     var messageCollection : [[String: String]] = []
-    
+    let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
+    let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
+    let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
+    //timers?
     
     
 ////////////////////////////////////
@@ -37,12 +42,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidHideNotification:", name: UIKeyboardDidHideNotification, object: nil)
         
         // Do any additional setup after loading the view.
-        
-        //define dummy data
-
-        let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
-        let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
-        let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
+//TODO: query server-DB for mssgData
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
