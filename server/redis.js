@@ -1,4 +1,9 @@
 const redis = require('redis');
+const bluebird = require('bluebird');
+
+// Promisify redis -> append 'Async' to all functions
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
 
 /*
   Creates new Redis Client
@@ -11,9 +16,30 @@ const redis = require('redis');
  */
 const client = redis.createClient();
 
+/*
+  Connect to Redis Client
+  Need to make sure your local Redis server is up and running
+ */
 client.on('connect', function() {
-  console.log('connected');
-})
+  console.log('Successfully connected to redis client!');
+});
 
+/*
+  CREATE
+  key: 'framework'
+  value: 'AngularJS'
+ */
+client.setAsync('framework', 'AngularJS')
+  .then(reply => console.log(reply))
+  .catch(err => console.log(err));
+
+/*
+  READ
+  key: 'framework'
+  value: 'AngularJS'
+ */
+client.getAsync('framework')
+  .then(key => console.log(key))
+  .catch(err => console.log(err));
 
 
