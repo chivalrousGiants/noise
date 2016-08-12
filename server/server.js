@@ -21,8 +21,8 @@ io.on('connection', function(clientSocket) {
   })
 
   clientSocket.on('chatSent', function(chatMessage) {
-  	console.log('Outside of MVP, return encrypted chatMessage from the DB')
-  	clientSocket.emit('', chatMessage);
+  	console.log('TODO: pass encrypted chatMessage to redis DB')
+  	//clientSocket.emit('c', chatMessage);
   })
 
   clientSocket.on('getfriends', function() {
