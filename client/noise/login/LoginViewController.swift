@@ -26,12 +26,8 @@ class LoginViewController: UIViewController {
         let userName = usernameTextField.text
         //let userPassword = userpasswordTextField.text
         
-        SocketIOManager.sharedInstance.signInOrSignUp(userName!, completionHandler: { (userData) -> Void in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                print(userData)
-                })
-        })
-        
+        SocketIOManager.sharedInstance.signInOrSignUp(userName!)
+    
     }
 
 }

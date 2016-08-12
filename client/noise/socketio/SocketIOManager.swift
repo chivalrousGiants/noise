@@ -18,7 +18,7 @@ class SocketIOManager: NSObject {
     
     func sendChat(message: String){
         print("From socket func, sendChat: \(message)")
-//TODO:
+        //TODO:
        // socket.emit()
        // socket.on()
     }
@@ -27,7 +27,7 @@ class SocketIOManager: NSObject {
         socket.disconnect()
     }
     //for development purposes
-    func signInOrSignUp(username: String, completionHandler:(username: String!) -> Void) {
+    func signInOrSignUp(username: String) {
         socket.emit("signinOrSignup", username)
     }
 
