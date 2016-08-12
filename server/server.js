@@ -10,15 +10,20 @@ http.listen(4000, function() {
   console.log('listening')
 });
 
+var allUsers = [];
+
 io.on('connection', function(clientSocket) {
   console.log('a user connected')
   clientSocket.on('disconnect', function() {
-    console.log('user disconnected')
+  console.log('user disconnected')
   })
+  clientSocket.on('chatSent', function(chatMessage) {
 
   clientSocket.on('chatSent', function(chatMessage){
   	socket.emit()
   	socket.broadcast.emit
   })
-
+  clientSocket.on('signinOrSignup', function(username) {
+    console.log(username, 'connected')
+  })
 })

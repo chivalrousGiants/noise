@@ -1,15 +1,10 @@
-//
-//  SignUpViewController.swift
-//  noise
-//
-//  Created by Michael DLC on 8/9/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
 
 import UIKit
 
 class SignUpViewController: UIViewController {
 
+    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var userpasswordTextField: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,15 +16,24 @@ class SignUpViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func registerButtonTapped(sender: AnyObject) {
+        let userName = usernameTextField.text
+        let userPassword = userpasswordTextField.text
+        
+        if(userName!.isEmpty || userPassword!.isEmpty){
+            displayAlertMessage("All fields are required!")
+            return
+        }
     }
-    */
+
+    func displayAlertMessage(userMessage: String)
+    {
+        let myAlert = UIAlertController(title:"Alert", message: userMessage, preferredStyle: UIAlertControllerStyle.Alert)
+        let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil)
+        
+        myAlert.addAction(okAction)
+        self.presentViewController(myAlert, animated: true, completion: nil)
+        
+    }
 
 }
