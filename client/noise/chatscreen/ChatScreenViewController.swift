@@ -87,7 +87,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     func textFieldDidBeginEditing(textField: UITextField) {
         print(userTextInput.text)
     }
-    //TODO: fixxxx!!!
+//TODO: fixxxx!!!
     func handleKeyboardDidShowNotification(notification: NSNotification){
         print("keyboardDidShow")
         //userInfo handles info passed on by other receiver objects in the notification chain
@@ -96,7 +96,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
             print(userInfo)
             if let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
                 print(keyboardFrame)
-                userInputBarConstraint.constant = keyboardFrame.size.height
+                userInputBarConstraint.constant = keyboardFrame.size.height + 44
                 print(userInputBarConstraint)
                 print(userInputBarConstraint.constant)
                 view.layoutIfNeeded()
@@ -121,9 +121,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    ////////////////////////////////////
-    ////////USER INPUT BUTTONS
-    ////////////////////////////////////
+////////////////////////////////////
+////////USER INPUT BUTTONS
+////////////////////////////////////
     
     
     @IBAction func onMediaClick(sender: AnyObject) {
@@ -149,9 +149,16 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         
 //TODO: noisify mssg and emit socket noisified_mssg to AnalyticsServer
         
-        //quit keyboard
+        //drop keyboard
         userTextInput.resignFirstResponder()
     }
+    
+    
+////////////////////////////////////
+////////USER-FACING
+////////////////////////////////////
+    
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         view.endEditing(true)
     }
@@ -167,14 +174,14 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    
+////////////////////////////////////
+////////SEGUE
+////////////////////////////////////
+    
+//TODO: if userInfoButtonClicked, segue to userInfoViewController (also :TODO)
+   // override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-    }
-    */
-
+   // }
 }
