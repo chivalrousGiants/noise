@@ -10,7 +10,8 @@ http.listen(4000, function() {
   console.log('listening')
 });
 
-var allUsers = [];
+//forDummyData
+var users = [];
 
 io.on('connection', function(clientSocket) {
   console.log('a user connected')
@@ -23,7 +24,14 @@ io.on('connection', function(clientSocket) {
   	console.log('get get get it')
   })
 
+  clientSocket.on('getfriends', function() {
+    var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
+    io.emit(dummyFriends);
+
+  })
+
   clientSocket.on('signinOrSignup', function(username) {
-    console.log(username, 'connected')
+    users.push(username)
+    console.log(username, 'connected and userscount is', users.length, username )
   })
 })
