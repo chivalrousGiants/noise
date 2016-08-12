@@ -17,7 +17,8 @@ io.on('connection', function(clientSocket) {
   })
 
   clientSocket.on('chatSent', function(chatMessage){
-  	
+  	socket.emit()
+  	socket.broadcast.emit
   })
 
 })
