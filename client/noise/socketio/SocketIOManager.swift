@@ -16,6 +16,12 @@ class SocketIOManager: NSObject {
         socket.connect()
     }
     
+    func sendChat(message: String){
+        print("From socket func, sendChat: \(message)")
+//TODO:
+       // socket.emit()
+       // socket.on()
+    }
     
     func closeConnection() {
         socket.disconnect()
