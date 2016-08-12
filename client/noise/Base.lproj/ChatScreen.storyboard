@@ -18,17 +18,57 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vO9-mQ-x99">
+                                <rect key="frame" x="20" y="649" width="374" height="44"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-Ry-WiY">
+                                        <rect key="frame" x="2" y="5" width="42" height="30"/>
+                                        <state key="normal" title="Media"/>
+                                        <connections>
+                                            <action selector="onMediaClick:" destination="bfZ-Us-KD6" eventType="touchUpInside" id="VGi-fe-PAN"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AQE-mU-jb8">
+                                        <rect key="frame" x="56" y="7" width="263" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="send"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="zLX-D4-F7i" id="4SN-9j-DE3"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9We-Od-746">
+                                        <rect key="frame" x="327" y="5" width="39" height="30"/>
+                                        <state key="normal" title="Send"/>
+                                        <connections>
+                                            <action selector="onSendClick:" destination="bfZ-Us-KD6" eventType="touchUpInside" id="D9L-fF-8QN"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="g1a-q8-lJ1">
+                                <rect key="frame" x="20" y="72" width="374" height="34"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Trending topics: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pud-2J-BdO">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="scu-3T-7BY">
-                                <rect key="frame" x="20" y="64" width="374" height="628"/>
+                                <rect key="frame" x="20" y="108" width="374" height="540"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="scu-3T-7BY" firstAttribute="leading" secondItem="zLX-D4-F7i" secondAttribute="leadingMargin" id="IEt-6Q-Md4"/>
-                            <constraint firstItem="yzp-Mg-RTd" firstAttribute="top" secondItem="scu-3T-7BY" secondAttribute="bottom" id="Xwf-sF-vsJ"/>
+                            <constraint firstItem="yzp-Mg-RTd" firstAttribute="top" secondItem="scu-3T-7BY" secondAttribute="bottom" constant="44" id="Xwf-sF-vsJ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="scu-3T-7BY" secondAttribute="trailing" id="h2X-ui-S2q"/>
-                            <constraint firstItem="scu-3T-7BY" firstAttribute="top" secondItem="PVc-Hb-o5A" secondAttribute="bottom" id="h8P-iY-aEm"/>
+                            <constraint firstItem="scu-3T-7BY" firstAttribute="top" secondItem="PVc-Hb-o5A" secondAttribute="bottom" constant="44" id="h8P-iY-aEm"/>
                         </constraints>
                     </view>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
@@ -36,11 +76,13 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="chatScreenTable" destination="scu-3T-7BY" id="U4m-x9-xuM"/>
+                        <outlet property="userInputView" destination="vO9-mQ-x99" id="FGQ-68-dn8"/>
+                        <outlet property="userTextInput" destination="AQE-mU-jb8" id="XM2-Vl-oi3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WHV-Pl-dZo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1710" y="1959"/>
+            <point key="canvasLocation" x="1813" y="1923"/>
         </scene>
     </scenes>
 </document>
