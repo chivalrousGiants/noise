@@ -10,10 +10,16 @@ http.listen(4000, function() {
   console.log('listening')
 });
 
+var allUsers = [];
+
+
 io.on('connection', function(clientSocket) {
   console.log('a user connected')
   clientSocket.on('disconnect', function() {
-    console.log('user disconnected')
+  console.log('user disconnected')
   })
 
+  clientSocket.on('signinOrSignup', function(username) {
+    console.log(username, 'connected')
+  })
 })
