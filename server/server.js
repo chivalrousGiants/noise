@@ -21,7 +21,8 @@ io.on('connection', function(clientSocket) {
   })
 
   clientSocket.on('chatSent', function(chatMessage) {
-  	console.log('get get get it')
+  	console.log('Outside of MVP, return encrypted chatMessage from the DB')
+  	clientSocket.emit('', chatMessage);
   })
 
   clientSocket.on('getfriends', function() {

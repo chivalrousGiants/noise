@@ -18,9 +18,7 @@ class SocketIOManager: NSObject {
     
     func sendChat(message: String){
         print("From socket func, sendChat: \(message)")
-        //TODO:
-       // socket.emit()
-       // socket.on()
+        socket.emit("chatSent", message)
     }
     
     func closeConnection() {
