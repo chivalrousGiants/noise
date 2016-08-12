@@ -5,6 +5,11 @@ class LoginViewController: UIViewController {
     @IBAction func signUpButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("signUpSegue", sender: self)
     }
+    
+    @IBOutlet weak var usernameTextField: UITextField!
+    
+    @IBOutlet weak var userpasswordTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -17,14 +22,16 @@ class LoginViewController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func signinButtonClicked(sender: AnyObject) {
+        let userName = usernameTextField.text
+        //let userPassword = userpasswordTextField.text
+        
+        SocketIOManager.sharedInstance.signInOrSignUp(userName!, completionHandler: { (userData) -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                print(userData)
+                })
+        })
+        
     }
-    */
 
 }
