@@ -14,12 +14,15 @@ var allUsers = [];
 
 io.on('connection', function(clientSocket) {
   console.log('a user connected')
+
   clientSocket.on('disconnect', function() {
   console.log('user disconnected')
   })
-  clientSocket.on('chatSent', function(chatMessage) {
 
+  clientSocket.on('chatSent', function(chatMessage) {
+  	console.log('get get get it')
   })
+
   clientSocket.on('signinOrSignup', function(username) {
     console.log(username, 'connected')
   })

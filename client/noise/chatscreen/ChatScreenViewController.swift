@@ -8,9 +8,7 @@
 
 import UIKit
 
-//configure chatScreenVC: in addition to its default class, (DS)the table code herein will provide info needed to construct table view.
-//ALSO, (Delegates) declares a relationship with (an)other obj(s) w/ which this classInstance can send and receive events e.g. --manage selections, configure section headings and footers, help to delete and reorder cells
-
+//configure the roles that the ViewController will fulfill
 class ChatScreenViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     
@@ -19,10 +17,10 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     @IBOutlet weak var userInputView: UIView!
     @IBOutlet weak var userTextInput: UITextField!  // change to tvMssgEditor?
     
+    @IBOutlet weak var userInputBarConstraint: NSLayoutConstraint!
     
     //other internal vars defined
-    
-    var messageCollection : [[String: String]] = []
+    var messageCollection : [[String: String]] = [] //eventually abstract this to DB
     let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
     let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
     let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
@@ -37,19 +35,15 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Set up notifications (broadcasts info w/in program) (NSNotifyCtR ~ notification dispatch table)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidShowNotification:", name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidHideNotification:", name: UIKeyboardDidHideNotification, object: nil)
+        //Set up notifications: ( ~ listeners that broadcast mssg & metaData upon invocation)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardDidShowNotification), name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleKeyboardDidHideNotification), name: UIKeyboardDidHideNotification, object: nil)
         
-        // Do any additional setup after loading the view.
-//TODO: query server-DB for mssgData
-
-        
+        // Do any additional load-view setup.
         messageCollection.append(dummyDatum2)
         messageCollection.append(dummyDatum3)
         messageCollection.append(dummyDatum4)
-        
-//TODO: sort messageCollection by createdAt (tbd by db choice)
+//TODO: e.g., query server-DB for mssgData, sorted by createdAt (tbd by db choice)
         
         
         //config to display dummy data in table (codedTable will serve as source for tableView && ChatScreen-Table delegate relationship declared)
@@ -59,6 +53,7 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         
     }
 
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -92,14 +87,20 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     func textFieldDidBeginEditing(textField: UITextField) {
         print(userTextInput.text)
     }
-    //TODO: fixxxx!!!
+//TODO: fixxxx!!!
     func handleKeyboardDidShowNotification(notification: NSNotification){
         print("keyboardDidShow")
         //userInfo handles info passed on by other receiver objects in the notification chain
         //UIKeyboardFrame identifies the start frame of the keyboard in coordinates
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-           print("\(keyboardSize)")
-            userInputView.frame.origin.y -= keyboardSize.height
+        if let userInfo = notification.userInfo {
+            print(userInfo)
+            if let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+                print(keyboardFrame)
+                userInputBarConstraint.constant = keyboardFrame.size.height + 44
+                print(userInputBarConstraint)
+                print(userInputBarConstraint.constant)
+                view.layoutIfNeeded()
+            }
         }
     }
     
@@ -108,24 +109,21 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         //self.userTextInput.resignFirstResponder()
-        //for now, arbitrarily conform to func signature (return some Bool)
         return true;
     }
     
-    //TODO: move keyboard back
-    
+    //move keyboard back
     //textFieldDidEndEditing
-
+    
     func handleKeyboardDidHideNotification(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            userInputView.frame.origin.y += keyboardSize.height
-        }
+        userInputBarConstraint.constant = 44
+        view.layoutIfNeeded()
     }
     
     
-    ////////////////////////////////////
-    ////////USER INPUT BUTTONS
-    ////////////////////////////////////
+////////////////////////////////////
+////////USER INPUT BUTTONS
+////////////////////////////////////
     
     
     @IBAction func onMediaClick(sender: AnyObject) {
@@ -147,22 +145,43 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         chatScreenTable.beginUpdates()
         chatScreenTable.insertRowsAtIndexPaths([lastIdx], withRowAnimation: .Automatic)
         chatScreenTable.endUpdates()
+        //alt: tbl.reloadData()
         
 //TODO: noisify mssg and emit socket noisified_mssg to AnalyticsServer
         
-        //quit keyboard
+        //drop keyboard
         userTextInput.resignFirstResponder()
     }
     
+    
+////////////////////////////////////
+////////USER-FACING
+////////////////////////////////////
+    
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
     //STRETCH: scroll to bottom
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    func scrollToBottom() {
+        let delay = 0.1 * Double(NSEC_PER_SEC)
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay)), dispatch_get_main_queue()) { () -> Void in
+            if self.messageCollection.count > 0 {
+                let lastRowIndexPath = NSIndexPath(forRow: self.messageCollection.count - 1, inSection: 0)
+                self.chatScreenTable.scrollToRowAtIndexPath(lastRowIndexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+            }
+        }
+    }
+    
+////////////////////////////////////
+////////SEGUE
+////////////////////////////////////
+    
+//TODO: if userInfoButtonClicked, segue to userInfoViewController (also :TODO)
+   // override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-    }
-    */
-
+   // }
 }

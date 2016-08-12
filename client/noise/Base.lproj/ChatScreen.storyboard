@@ -76,6 +76,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="chatScreenTable" destination="scu-3T-7BY" id="U4m-x9-xuM"/>
+                        <outlet property="userInputBarConstraint" destination="Xwf-sF-vsJ" id="Fa8-RS-Jn1"/>
                         <outlet property="userInputView" destination="vO9-mQ-x99" id="FGQ-68-dn8"/>
                         <outlet property="userTextInput" destination="AQE-mU-jb8" id="XM2-Vl-oi3"/>
                     </connections>
