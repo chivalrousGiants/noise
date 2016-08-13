@@ -20,22 +20,28 @@ io.on('connection', function(clientSocket) {
   console.log('user disconnected')
   });
 
-  clientSocket.on('userSignedUp', function() {
+  clientSocket.on('newUserAdded', function() {
   console.log('user signed up')
   });
 
-  clientSocket.on('userLoggedIn', function() {
+  clientSocket.on('userSigningIn', function() {
   console.log('user logged in')
   });
 
-  clientSocket.on('chatSent', function(chatMessage) {
+  clientSocket.on('encryptedChatSent', function(chatMessage) {
   	console.log('STRETCH: pass chatMessage: encrypted to redis DB')
-  	//insert into redis
+  	//insert msg id -time stamp to ordered list
+    //insert msg hash to msgs
   });
 
   clientSocket.on('noisifiedChatSent', function(chatMessage) {
 	console.log('TODO: pass nosified chatMessage to redis DB')
 	//clientSocket.emit('c', chatMessage);
+  });
+
+  clientSocket.on('friendAdded', function(chatMessage) {
+  console.log('TODO: pass friend')
+  //clientSocket.emit('c', chatMessage);
   });
 
   clientSocket.on('getfriends', function() {

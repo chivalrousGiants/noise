@@ -18,7 +18,7 @@ class SocketIOManager: NSObject {
     /*change this to 1) encrypted message 2) noisified message --both dictionaries*/
     func sendChat(message: String){
         print("From socket func, sendChat: \(message)")
-        socket.emit("chatSent", message)
+        socket.emit("encryptedChatSent", message)
     }
     
     func addFriend(newFriend: String){
@@ -35,7 +35,7 @@ class SocketIOManager: NSObject {
     
     func signUp(username: Dictionary<String, String>) {
         print("Test: socket func, addUser: \(username)")
-        socket.emit("signinOrSignup", username)
+        socket.emit("userSigningIn", username)
             //Query db for existing user.
             //if NO existing user
                //insert into db
