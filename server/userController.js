@@ -1,18 +1,19 @@
+const redis = require('./redis.js');
+
 ////////////////////////////////////
 ////////REDIS-USER FUNCTIONS
 ////////////////////////////////////
 
 // user = {username: , password: }
 
-function signIn (user) {
-  let success = true;
+function signIn (user, clientSocketId) {
 
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
       if (!userId) {
         // username does not exist
-        success = false;
         
+
       }
     }).catch(err => {
       console.log('Error in utils signIn', err);
@@ -31,7 +32,6 @@ function signIn (user) {
   //   }
   // });
 
-  return success;
 
 }
 

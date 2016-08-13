@@ -24,10 +24,10 @@ client = redis.createClient();
 client.on('connect', function() {
   console.log('Successfully connected to redis client!');
 
-  client.hmsetAsync('user:0001', ['realname', 'Hannah Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-  client.hmsetAsync('user:0002', ['realname', 'Michael De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-  client.hmsetAsync('user:0003', ['realname', 'Ryan Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-  client.hmsetAsync('user:0004', ['realname', 'Jae Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+  client.hmsetAsync('user:0001', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+  client.hmsetAsync('user:0002', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+  client.hmsetAsync('user:0003', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+  client.hmsetAsync('user:0004', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
 
   client.hsetAsync('users', ['hannah', '0001']);
   client.hsetAsync('users', ['mikey', '0002']);
@@ -77,16 +77,16 @@ client.on('connect', function() {
  *
  * Users
  *   UserID
- *   0001      (username: hannah, pw: hannah, realname: Hannah Brannan) 
- *   0002      (username: mikey, pw: mikey, realname: Michael De La Cruz)
- *   0003      (username: ryan, pw: ryan, realname: Ryan Hanzawa)
- *   0004      (username: jae, pw: jae, realname: Jae Shin)
+ *   0001      (username: hannah, pw: hannah, firstname: Hannah, lastname: Brannan) 
+ *   0002      (username: mikey, pw: mikey, firstname: Michael, lastname: De La Cruz)
+ *   0003      (username: ryan, pw: ryan, firstname: Ryan, lastname: Hanzawa)
+ *   0004      (username: jae, pw: jae, firstname: Jae, lastname: Shin)
 
 Users
   Query: fetch certain user fields with user_id or username
 
   Hash user:user_id
-    (realname, 'Jae Shin') (username, 'jaebear') (password, 'xoxo')
+    (firstname, 'Jae') (lastname, 'Shin') (username, 'jaebear') (password, 'xoxo')
     (auth, authSecret)
   Hash users
     (username, user_id)

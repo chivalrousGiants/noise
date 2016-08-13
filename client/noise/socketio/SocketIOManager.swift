@@ -48,5 +48,4 @@ class SocketIOManager: NSObject {
         socket.disconnect()
     }
 
-
 }
