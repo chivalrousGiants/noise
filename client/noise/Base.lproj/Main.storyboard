@@ -16,28 +16,12 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jZ3-yJ-ApH">
-                                <rect key="frame" x="230" y="348" width="76" height="30"/>
-                                <state key="normal" title="FriendsList"/>
-                                <connections>
-                                    <action selector="friendsListButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ImZ-o6-Yei"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojH-Ny-Fy0">
-                                <rect key="frame" x="128" y="348" width="34" height="30"/>
-                                <state key="normal" title="login"/>
-                                <connections>
-                                    <action selector="loginButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X1u-3F-VdZ"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
-                        <segue destination="gfS-W4-Bwi" kind="show" identifier="authSegue" id="9X0-RS-enh"/>
-                        <segue destination="ZuZ-dJ-v8D" kind="show" identifier="friendsListSegue" id="wVv-rk-cQP"/>
+                        <segue destination="gfS-W4-Bwi" kind="show" identifier="authSegue" animates="NO" id="9X0-RS-enh"/>
+                        <segue destination="ZuZ-dJ-v8D" kind="show" identifier="friendsListSegue" animates="NO" id="wVv-rk-cQP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
