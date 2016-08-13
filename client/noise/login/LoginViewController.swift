@@ -26,7 +26,7 @@ class LoginViewController: UIViewController {
         let userName = usernameTextField.text
         let userPassword = userpasswordTextField.text
         let user : [String:String] = ["username": userName!, "password": userPassword!]
-         SocketIOManager.sharedInstance.signIn(user)
+        SocketIOManager.sharedInstance.signIn(user)
     }
 
 }

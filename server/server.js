@@ -1,7 +1,11 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var utils = require('./utils.js');
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const utils = require('./utils.js');
+
+// Redis Database
+const redis = require('./redis.js');
+const userController = require('./userController.js');
 
 app.get('/', function(request, response) {
   response.send('hello world');
@@ -12,7 +16,7 @@ http.listen(4000, function() {
 });
 
 //forDummyData
-var users = [];
+let users = [];
 
 io.on('connection', function(clientSocket) {
   console.log('a user connected')
@@ -21,8 +25,18 @@ io.on('connection', function(clientSocket) {
   console.log('user disconnected')
   });
 
-  clientSocket.on('newUserAdded', function(newUser) {
-  console.log('user signed up', newUser)
+  clientSocket.on('signIn', function(user) {
+
+    console.log('hit signIn on server socket:', user);
+    console.log('typeof user:', typeof user);
+
+     
+    // console.log('should be false', utils.signIn(user));
+
+    // check utils.signIn(user)
+    // communicate false or true back to front-end
+    // 
+    userController.signIn(user);
   });
 
   clientSocket.on('userSigningIn', function() {

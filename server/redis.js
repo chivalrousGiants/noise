@@ -1,5 +1,6 @@
 const redis = require('redis');
 const bluebird = require('bluebird');
+const utils = require('./utils.js');
 
 // Promisify redis -> append 'Async' to all functions
 bluebird.promisifyAll(redis.RedisClient.prototype);
@@ -14,7 +15,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
     port: 127.0.0.1
     host: 6379
  */
-const client = redis.createClient();
+client = redis.createClient();
 
 /*
   Connect to Redis Client
@@ -22,6 +23,32 @@ const client = redis.createClient();
  */
 client.on('connect', function() {
   console.log('Successfully connected to redis client!');
+
+  client.hmsetAsync('user:0001', ['realname', 'Hannah Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+  client.hmsetAsync('user:0002', ['realname', 'Michael De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+  client.hmsetAsync('user:0003', ['realname', 'Ryan Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+  client.hmsetAsync('user:0004', ['realname', 'Jae Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+
+  client.hsetAsync('users', ['hannah', '0001']);
+  client.hsetAsync('users', ['mikey', '0002']);
+  client.hsetAsync('users', ['ryan', '0003']);
+  client.hsetAsync('users', ['jae', '0004']);
+
+  // client.hgetall('user:0001', function(err, obj) {
+  //   console.log(obj);
+  // });
+
+  // client.hgetall('user:0002', function(err, obj) {
+  //   console.log(obj);
+  // });
+
+  // client.hgetall('user:0003', function(err, obj) {
+  //   console.log(obj);
+  // });
+
+  // client.hgetall('user:0004', function(err, obj) {
+  //   console.log(obj);
+  // });
 });
 
 /*
@@ -29,29 +56,38 @@ client.on('connect', function() {
   key: 'framework'
   value: 'AngularJS'
  */
-client.setAsync('framework', 'AngularJS')
-  .then(reply => console.log(reply))
-  .catch(err => console.log(err));
+// client.setAsync('framework', 'AngularJS')
+//   .then(reply => console.log(reply))
+//   .catch(err => console.log(err));
 
 /*
   READ Example
   key: 'framework'
   value: 'AngularJS'
  */
-client.getAsync('framework')
-  .then(key => console.log(key))
-  .catch(err => console.log(err));
+ 
+// client.getAsync('framework')
+//   .then(key => console.log(key))
+//   .catch(err => console.log(err));
 
 
 
 /*
  ***** REDIS DATA STRUCTURE *****
+ *
+ * Users
+ *   UserID
+ *   0001      (username: hannah, pw: hannah, realname: Hannah Brannan) 
+ *   0002      (username: mikey, pw: mikey, realname: Michael De La Cruz)
+ *   0003      (username: ryan, pw: ryan, realname: Ryan Hanzawa)
+ *   0004      (username: jae, pw: jae, realname: Jae Shin)
 
 Users
   Query: fetch certain user fields with user_id or username
 
   Hash user:user_id
     (realname, 'Jae Shin') (username, 'jaebear') (password, 'xoxo')
+    (auth, authSecret)
   Hash users
     (username, user_id)
 
@@ -72,8 +108,12 @@ PendingKeyExchange
 DP noisified data, PRR, IRR
 
 DP statistics
-
  */
+
+
+module.exports = {
+  client
+};
 
 
 

@@ -32,8 +32,8 @@ class SocketIOManager: NSObject {
     }
 
     func signIn(user: Dictionary<String, String>){
-        print("Test: socket func, addUser: \(user)")
-        socket.emit("newUserAdded", user)
+        print("Test: hit signIn func for user: \(user)")
+        socket.emit("signIn", user)
             //Query db for userMatch
     }
     
