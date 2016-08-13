@@ -18,12 +18,12 @@ class SignUpViewController: UIViewController {
     
     @IBAction func registerButtonTapped(sender: AnyObject) {
         let userName = usernameTextField.text
-        //let userPassword = userpasswordTextField.text
-        
+        let userPassword = userpasswordTextField.text
+        let user : [String:String] = ["username": userName!, "password": userPassword!]
         if(userName!.isEmpty){
             displayAlertMessage("All fields are required!")
         } else {
-            SocketIOManager.sharedInstance.signInOrSignUp(userName!)
+            SocketIOManager.sharedInstance.signUp(user)
         }
     }
 
