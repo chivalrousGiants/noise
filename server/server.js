@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var utils = require('./utils.js');
 
 app.get('/', function(request, response) {
   response.send('hello world');
@@ -20,8 +21,8 @@ io.on('connection', function(clientSocket) {
   console.log('user disconnected')
   });
 
-  clientSocket.on('newUserAdded', function() {
-  console.log('user signed up')
+  clientSocket.on('newUserAdded', function(newUser) {
+  console.log('user signed up', newUser)
   });
 
   clientSocket.on('userSigningIn', function() {
@@ -29,7 +30,7 @@ io.on('connection', function(clientSocket) {
   });
 
   clientSocket.on('encryptedChatSent', function(chatMessage) {
-  	console.log('STRETCH: pass chatMessage: encrypted to redis DB')
+  	console.log('TEST: chatMessage from client on server', chatMessage)
   	//insert msg id -time stamp to ordered list
     //insert msg hash to msgs
   });

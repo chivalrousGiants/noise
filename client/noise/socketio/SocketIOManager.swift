@@ -6,7 +6,6 @@ class SocketIOManager: NSObject {
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
     
-    
     override init() {
         super.init()
     }
@@ -16,9 +15,14 @@ class SocketIOManager: NSObject {
         socket.connect()
     }
     /*change this to 1) encrypted message 2) noisified message --both dictionaries*/
-    func sendChat(message: String){
+    func sendEncryptedChat(message: String){
         print("From socket func, sendChat: \(message)")
         socket.emit("encryptedChatSent", message)
+    }
+    
+    func sendNoisifiedChat(messageDP: Dictionary<String, String>){
+        print("TEST: socketMGMT sendingDPChat: \(messageDP)")
+        socket.emit("noisifiedChatSent", messageDP)
     }
     
     func addFriend(newFriend: String){

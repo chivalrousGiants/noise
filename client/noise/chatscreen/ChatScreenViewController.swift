@@ -135,10 +135,10 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
 //TODO: encrypt mssg
         //generate a createdAt timeStamp
         //add encrypted mssg to dataCollection
-        messageCollection.append(["userName": "dynamic","mssg": userTextInput.text!, "createdAt":"5"])
+        messageCollection.append(["userName": "dynamic","mssg": userTextInput.text!, "createdAt":"5", "hasBeenDeleted":"0"])
         
         //emit socket encrypted_mssg to ChatServer
-        SocketIOManager.sharedInstance.sendChat(userTextInput.text!)
+        SocketIOManager.sharedInstance.sendEncryptedChat(userTextInput.text!)
         
 //TODO:[when receive] (stored) encyrpted_mssg decrypt && append to DOM
         let lastIdx = NSIndexPath(forRow: messageCollection.count-1, inSection: 0)

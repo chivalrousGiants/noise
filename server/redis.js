@@ -60,7 +60,7 @@ Messages
 
   Hash msgs:msg_id
     (source_user_id, id), (target_user_id, id)
-    (text_encrypted, 'hey'), (has_been_deleted, 0/1)
+    (text_encrypted, 'hey'), (has_been_deleted, 0/1) -- 0: false, 1: true
     (time, 1453425)
   Ordered Set chat:user_id_small:user_id_big
     (time, msg_id)  
