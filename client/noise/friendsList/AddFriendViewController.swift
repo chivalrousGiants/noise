@@ -21,6 +21,10 @@ class AddFriendViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func confirmAddFriendClicked(sender: AnyObject) {
+        let newFriend = "whateverFriendYouSelected"
+        SocketIOManager.sharedInstance.addFriend(newFriend)
+    }
 
     /*
     // MARK: - Navigation

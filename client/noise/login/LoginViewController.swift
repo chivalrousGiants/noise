@@ -24,10 +24,9 @@ class LoginViewController: UIViewController {
 
     @IBAction func signinButtonClicked(sender: AnyObject) {
         let userName = usernameTextField.text
-        //let userPassword = userpasswordTextField.text
-        
-        SocketIOManager.sharedInstance.signInOrSignUp(userName!)
-    
+        let userPassword = userpasswordTextField.text
+        let user : [String:String] = ["username": userName!, "password": userPassword!]
+         SocketIOManager.sharedInstance.signIn(user)
     }
 
 }
