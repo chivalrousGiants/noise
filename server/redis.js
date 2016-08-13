@@ -25,7 +25,7 @@ client.on('connect', function() {
 });
 
 /*
-  CREATE
+  CREATE Example
   key: 'framework'
   value: 'AngularJS'
  */
@@ -34,12 +34,75 @@ client.setAsync('framework', 'AngularJS')
   .catch(err => console.log(err));
 
 /*
-  READ
+  READ Example
   key: 'framework'
   value: 'AngularJS'
  */
 client.getAsync('framework')
   .then(key => console.log(key))
   .catch(err => console.log(err));
+
+
+
+/*
+ ***** REDIS DATA STRUCTURE *****
+
+Users
+  Query: fetch certain user fields with user_id or username
+
+  Hash user:user_id
+    (realname, 'Jae Shin') (username, 'jaebear') (password, 'xoxo')
+  Hash users
+    (username, user_id)
+
+Messages
+  Query: fetch chat history for each friend that is not already in localDB
+
+  Hash msgs:msg_id
+    (source_user_id, id), (target_user_id, id)
+    (text_encrypted, 'hey'), (has_been_deleted, 0/1)
+    (time, 1453425)
+  Ordered Set chat:user_id_small:user_id_big
+    (time, msg_id)  
+
+PendingKeyExchange
+  (TO BE DETERMINED)
+  source_user_id, target_user_id
+
+DP noisified data, PRR, IRR
+
+DP statistics
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
