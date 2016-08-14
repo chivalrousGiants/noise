@@ -56,8 +56,8 @@ function signIn (user, clientSocket) {
 
 function signUp (user, clientSocket) {
   //check if user exists
-  redis.client.hgetAsync('users', user.username)
   console.log('hit signUp on redis: ', user);
+  redis.client.hgetAsync('users', user.username)
   .then((user) =>{
 //NO USER OF THAT NAME>>>>>> 
     if (!user){

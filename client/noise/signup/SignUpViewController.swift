@@ -32,22 +32,21 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             passwordTextField.becomeFirstResponder()
         } else if textField == passwordTextField {
             textField.resignFirstResponder()
-            //TODO: add to socket call
-        }
-         return true
-    }
-            
             // Sign Up
-<<<<<<< 9d73fd1aa95d6d3246d6af4c2df624fd7eb186d5
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
             let user: [String: String] = ["username": userName!, "password": userPassword!]
             if userName!.isEmpty {
                 displayAlertMessage("All fields are required!")
             } else {
-              SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
+                SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
             }
-=======
+            //TODO: add to socket call
+        }
+         return true
+    }
+    
+
     @IBAction func registerButtonTapped(sender: AnyObject) {
         let userName = usernameTextField.text
         let userPassword = passwordTextField.text
@@ -56,7 +55,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             displayAlertMessage("All fields are required!")
         } else {
             SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
->>>>>>> Extend socket functionality to Sign in
         }
     }
 
