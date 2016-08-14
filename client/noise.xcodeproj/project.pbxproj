@@ -45,6 +45,7 @@
 		4150B4961D5BCE81006B7D57 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4801D5BCE81006B7D57 /* SocketTypes.swift */; };
 		4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */; };
 		4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4821D5BCE81006B7D57 /* WebSocket.swift */; };
+		B0456895CEB2DDD8335A4782 /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FDA104973E296DEB35A14C1 /* Pods_noise.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +89,9 @@
 		4150B4801D5BCE81006B7D57 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		4150B4821D5BCE81006B7D57 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		8FDA104973E296DEB35A14C1 /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		94B3C0750FDBC93CE991E912 /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
+		D4798CF060D8CA1D712C120E /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0456895CEB2DDD8335A4782 /* Pods_noise.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +111,8 @@
 			children = (
 				4150B46B1D5BCE81006B7D57 /* source */,
 				BBC07F581D5AD6C800FCE5A1 /* client */,
+				E2C14A4D1621B1B463736065 /* Pods */,
+				C16F801526BF8F1AC0CA344B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -243,6 +250,23 @@
 			name = client;
 			sourceTree = "<group>";
 		};
+		C16F801526BF8F1AC0CA344B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8FDA104973E296DEB35A14C1 /* Pods_noise.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E2C14A4D1621B1B463736065 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D4798CF060D8CA1D712C120E /* Pods-noise.debug.xcconfig */,
+				94B3C0750FDBC93CE991E912 /* Pods-noise.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -250,9 +274,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4133BD211D5A884C001EA380 /* Build configuration list for PBXNativeTarget "noise" */;
 			buildPhases = (
+				D93C79ECE7BE2F600151451F /* [CP] Check Pods Manifest.lock */,
 				4133BD0B1D5A884C001EA380 /* Sources */,
 				4133BD0C1D5A884C001EA380 /* Frameworks */,
 				4133BD0D1D5A884C001EA380 /* Resources */,
+				6719B73B19E7057DC2741495 /* [CP] Embed Pods Frameworks */,
+				7E4C7122F7DC7E35A1600B6C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -312,6 +339,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6719B73B19E7057DC2741495 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-noise/Pods-noise-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7E4C7122F7DC7E35A1600B6C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-noise/Pods-noise-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D93C79ECE7BE2F600151451F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4133BD0B1D5A884C001EA380 /* Sources */ = {
@@ -484,6 +559,7 @@
 		};
 		4133BD221D5A884C001EA380 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D4798CF060D8CA1D712C120E /* Pods-noise.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = noise/Info.plist;
@@ -497,6 +573,7 @@
 		};
 		4133BD231D5A884C001EA380 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94B3C0750FDBC93CE991E912 /* Pods-noise.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = noise/Info.plist;
