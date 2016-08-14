@@ -39,7 +39,7 @@ io.on('connection', function(clientSocket) {
     userController.signIn(user, clientSocket);
   });
 
-  clientSocket.on('userSigningUp', function() {
+  clientSocket.on('userSigningUp', function(user) {
       console.log('hit signUp on server socket: ', user);
       userController.signUp(user, clientSocket);
   });
