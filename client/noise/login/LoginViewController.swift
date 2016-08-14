@@ -28,10 +28,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if (textField == usernameTextField) {
-            passwordTextField.becomeFirstResponder();
-        } else if (textField == passwordTextField) {
-            textField.resignFirstResponder();
+        if textField == usernameTextField {
+            passwordTextField.becomeFirstResponder()
+        } else if textField == passwordTextField {
+            textField.resignFirstResponder()
             
             // Log in
             let userName = usernameTextField.text

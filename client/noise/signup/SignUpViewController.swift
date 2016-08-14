@@ -28,23 +28,23 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if (textField == usernameTextField) {
-            passwordTextField.becomeFirstResponder();
-        } else if (textField == passwordTextField) {
-            textField.resignFirstResponder();
+        if textField == usernameTextField {
+            passwordTextField.becomeFirstResponder()
+        } else if textField == passwordTextField {
+            textField.resignFirstResponder()
             
             // Sign Up
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
-            let user : [String:String] = ["username": userName!, "password": userPassword!]
-            if(userName!.isEmpty){
+            let user: [String: String] = ["username": userName!, "password": userPassword!]
+            if userName!.isEmpty {
                 displayAlertMessage("All fields are required!")
             } else {
                 SocketIOManager.sharedInstance.signUp(user)
             }
         }
         
-        return true;
+        return true
     }
 
     func displayAlertMessage(userMessage: String) {
