@@ -54,8 +54,26 @@ function signIn (user, clientSocket) {
 
 }
 
-function addUser (user) {
-
+function signUp (user, clientSocket) {
+  console.log('hit signUp on redis: ', user);
+  //check if user exists
+  redis.client.hgetAsync('users', user.username)
+//   .then((user) =>{
+// //NO USER OF THAT NAME>>>>>> 
+//     if (!user){
+//     //parse the user obj
+//     //assign an incrementing userID     
+//     //add to db
+//       redis.client.hmsetAsync()
+//       clientSocket.emit('username available', {user: user});
+//     } else {
+//       clientSocket.emit('username taken', {user:user});
+//     }
+//   })
+  .catch(err => {
+    console.log('Error in retreiving user: ', err)
+  });
+    //YES>>>>> throw error
 }
 
 function passwordMatches () {
@@ -67,5 +85,6 @@ function userAlreadyExists (user){
 }
 
 module.exports = {
-  signIn
+  signIn, 
+  signUp
 };

@@ -39,8 +39,9 @@ io.on('connection', function(clientSocket) {
     userController.signIn(user, clientSocket);
   });
 
-  clientSocket.on('userSigningIn', function() {
-  console.log('user logged in')
+  clientSocket.on('userSigningUp', function(user) {
+      console.log('hit signUp on server socket: ', user);
+      userController.signUp(user, clientSocket);
   });
 
   clientSocket.on('encryptedChatSent', function(chatMessage) {
