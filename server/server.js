@@ -16,11 +16,11 @@ http.listen(4000, function() {
 });
 
 // forDummyData
-let users = [];
+//let users = [];
 
 io.on('connection', function(clientSocket) {
   console.log('A user connected with socket id', clientSocket.id);
-  
+
 
   clientSocket.on('disconnect', function() {
     console.log('A user disconnected with socket id', clientSocket.id);
@@ -30,12 +30,12 @@ io.on('connection', function(clientSocket) {
 
     console.log('hit signIn on server socket:', user);
     console.log('typeof user:', typeof user);
-     
+
     // console.log('should be false', utils.signIn(user));
 
     // check utils.signIn(user)
     // communicate false or true back to front-end
-    // 
+    //
     userController.signIn(user, clientSocket);
   });
 

@@ -59,13 +59,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gfv-OW-cxw">
-                                <rect key="frame" x="113" y="218" width="188" height="30"/>
+                                <rect key="frame" x="113" y="203" width="188" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myv-tb-moh">
-                                <rect key="frame" x="172" y="271" width="71" height="30"/>
-                                <state key="normal" title="add friend"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="igs-h8-yj7">
+                                <rect key="frame" x="140" y="251" width="134" height="30"/>
+                                <state key="normal" title="Confirm Add Friend"/>
                                 <connections>
                                     <action selector="addFriendTapped:" destination="iOG-VH-PPI" eventType="touchUpInside" id="k4j-dO-fdq"/>
                                 </connections>
@@ -74,7 +74,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="addFriendTextField" destination="gfv-OW-cxw" id="4eb-wO-xtD"/>
+                        <outlet property="addFriendTextField" destination="gfv-OW-cxw" id="P2j-mJ-KnX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="moi-5C-GTN" userLabel="First Responder" sceneMemberID="firstResponder"/>
