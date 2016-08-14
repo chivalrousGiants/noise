@@ -8,7 +8,7 @@
         <!--Friends List View Controller-->
         <scene sceneID="WjQ-cL-NgY">
             <objects>
-                <viewController id="SiE-d7-1yg" customClass="FriendsListViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="friendsList" id="SiE-d7-1yg" customClass="FriendsListViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="0P0-1l-1vh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -44,7 +44,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1580" y="908"/>
+            <point key="canvasLocation" x="1592" y="908"/>
         </scene>
         <!--Add Friend View Controller-->
         <scene sceneID="n1k-Nr-jet">

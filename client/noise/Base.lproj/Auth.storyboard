@@ -1,10 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="16A286a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Vf3-GY-8Lb">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="PRV-zr-cce">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
+        <!--friendsList-->
+        <scene sceneID="ues-pO-phZ">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Friends" referencedIdentifier="friendsList" id="a1Y-0L-9xJ" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="k3K-Vj-oYp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1970" y="-678"/>
+        </scene>
         <!--Login View Controller-->
         <scene sceneID="ncX-9e-YCy">
             <objects>
@@ -81,11 +89,12 @@
                         <outlet property="passwordTextField" destination="tDP-gE-RNp" id="MgA-fI-Tqw"/>
                         <outlet property="usernameTextField" destination="oRT-pc-nOI" id="fd1-8k-it1"/>
                         <segue destination="NXh-Sw-xkg" kind="show" identifier="signUpSegue" id="QQi-bP-3QK"/>
+                        <segue destination="a1Y-0L-9xJ" kind="show" identifier="loginToFriendsListSegue" id="QN6-eK-YD8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nYm-y9-0Ye" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1796" y="-165"/>
+            <point key="canvasLocation" x="1553" y="-289"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="Ce0-MD-PR2">

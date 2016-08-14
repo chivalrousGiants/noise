@@ -12,14 +12,15 @@ app.get('/', function(request, response) {
 });
 
 http.listen(4000, function() {
-  console.log('listening')
+  console.log('Server listening at port 4000');
 });
 
-//forDummyData
+// forDummyData
 let users = [];
 
 io.on('connection', function(clientSocket) {
   console.log('A user connected with socket id', clientSocket.id);
+  
 
   clientSocket.on('disconnect', function() {
     console.log('A user disconnected with socket id', clientSocket.id);
@@ -35,7 +36,7 @@ io.on('connection', function(clientSocket) {
     // check utils.signIn(user)
     // communicate false or true back to front-end
     // 
-    userController.signIn(user, clientSocket.id);
+    userController.signIn(user, clientSocket);
   });
 
   clientSocket.on('userSigningIn', function() {
