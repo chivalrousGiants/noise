@@ -35,7 +35,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             // Log in
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
-            let user : [String:String] = ["username": userName!, "password": userPassword!]
+            let user: [String: String] = ["username": userName!, "password": userPassword!]
             SocketIOManager.sharedInstance.signIn(user, handleSignIn: handleSignIn)
         }
         
