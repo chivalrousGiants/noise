@@ -55,6 +55,7 @@ function signIn (user, clientSocket) {
 }
 
 function signUp (user, clientSocket) {
+  console.log('hit signUp on redis: ', user);
   //check if user exists
   redis.client.hgetAsync('users', user.username)
   console.log('hit signUp on redis: ', user);
@@ -72,7 +73,7 @@ function signUp (user, clientSocket) {
   })
   .catch(err => {
     console.log('Error in retreiving user: ', err)
-  })
+  });
     //YES>>>>> throw error
 }
 
