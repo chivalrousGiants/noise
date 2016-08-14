@@ -18,6 +18,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         self.view.endEditing(true);
         
+        // Hide keyboard if user taps outside of the input field
         super.touchesBegan(touches, withEvent:event)
     }
 
