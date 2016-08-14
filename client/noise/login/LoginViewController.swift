@@ -31,8 +31,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             passwordTextField.becomeFirstResponder();
         } else if (textField == passwordTextField) {
             textField.resignFirstResponder();
+            
             // Log In
-            //            login();
+            let userName = usernameTextField.text
+            let userPassword = passwordTextField.text
+            let user : [String:String] = ["username": userName!, "password": userPassword!]
+            SocketIOManager.sharedInstance.signIn(user)
         }
         
         return true;
@@ -40,13 +44,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBAction func signUpButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("signUpSegue", sender: self)
-    }
-
-    @IBAction func signinButtonClicked(sender: AnyObject) {
-        let userName = usernameTextField.text
-        let userPassword = passwordTextField.text
-        let user : [String:String] = ["username": userName!, "password": userPassword!]
-        SocketIOManager.sharedInstance.signIn(user)
     }
 
 }
