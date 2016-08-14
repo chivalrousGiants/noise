@@ -23,7 +23,7 @@ class SignUpViewController: UIViewController {
         if(userName!.isEmpty){
             displayAlertMessage("All fields are required!")
         } else {
-            SocketIOManager.sharedInstance.signUp(user)
+            SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
         }
     }
 
@@ -35,6 +35,21 @@ class SignUpViewController: UIViewController {
         myAlert.addAction(okAction)
         self.presentViewController(myAlert, animated: true, completion: nil)
         
+    }
+    
+    func handleSignUp(success: Bool) {
+        if success {
+            performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+        } else {
+            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "Yoosername is already taken!", preferredStyle: UIAlertControllerStyle.Alert)
+            let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+                print("okee selected")
+            }
+            alert.addAction(action)
+            self.presentViewController(alert, animated:true) { () -> Void in
+                print("alert presented")
+            }
+        }
     }
 
 }
