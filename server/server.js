@@ -26,16 +26,9 @@ io.on('connection', function(clientSocket) {
     console.log('A user disconnected with socket id', clientSocket.id);
   });
 
+
   clientSocket.on('signIn', function(user) {
-
     console.log('hit signIn on server socket:', user);
-    console.log('typeof user:', typeof user);
-     
-    // console.log('should be false', utils.signIn(user));
-
-    // check utils.signIn(user)
-    // communicate false or true back to front-end
-    // 
     userController.signIn(user, clientSocket);
   });
 
