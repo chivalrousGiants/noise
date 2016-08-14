@@ -31,10 +31,19 @@ class SocketIOManager: NSObject {
           //Query db for existing friend
     }
 
-    func signIn(user: Dictionary<String, String>){
+    func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
         print("Test: hit signIn func for user: \(user)")
         socket.emit("signIn", user)
-            //Query db for userMatch
+        
+        socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
+            print("Unsuccessful userArray", userArray)
+            handleSignIn(success: false)
+        }
+        
+        socket.on("signIn successful") { (userArray, socketAck) -> Void in
+            print("Successful userArray", userArray)
+            handleSignIn(success: true)
+        }
     }
     
     func signUp(username: Dictionary<String, String>) {

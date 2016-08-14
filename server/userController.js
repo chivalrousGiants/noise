@@ -6,14 +6,24 @@ const redis = require('./redis.js');
 
 // user = {username: , password: }
 
-function signIn (user, clientSocketId) {
+function signIn (user, clientSocket) {
 
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
       if (!userId) {
         // username does not exist
-        
-
+        clientSocket.emit('signIn unsuccessful', user);
+      } else {
+        return redis.client.hgetAsync(`user:${userId}`, 'password');
+      }
+    }).then(pw => {
+      // TODO: abstract out comparePassword in utils.js
+      if (pw === user.password) {
+        // successful login
+        clientSocket.emit('signIn successful', user);
+      } else {
+        // password is incorrect
+        clientSocket.emit('signIn unsuccessful', user);
       }
     }).catch(err => {
       console.log('Error in utils signIn', err);
