@@ -26,13 +26,12 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == usernameTextField {
             passwordTextField.becomeFirstResponder()
         } else if textField == passwordTextField {
             textField.resignFirstResponder()
-            
             // Sign Up
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
@@ -40,11 +39,23 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             if userName!.isEmpty {
                 displayAlertMessage("All fields are required!")
             } else {
-              SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
+                SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
             }
+            //TODO: add to socket call
         }
-        
-        return true
+         return true
+    }
+    
+
+    @IBAction func registerButtonTapped(sender: AnyObject) {
+        let userName = usernameTextField.text
+        let userPassword = passwordTextField.text
+        let user : [String:String] = ["username": userName!, "password": userPassword!]
+        if(userName!.isEmpty){
+            displayAlertMessage("All fields are required!")
+        } else {
+            SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
+        }
     }
 
     func displayAlertMessage(userMessage: String) {

@@ -55,21 +55,21 @@ function signIn (user, clientSocket) {
 }
 
 function signUp (user, clientSocket) {
-  console.log('hit signUp on redis: ', user);
   //check if user exists
+  console.log('hit signUp on redis: ', user);
   redis.client.hgetAsync('users', user.username)
-//   .then((user) =>{
-// //NO USER OF THAT NAME>>>>>> 
-//     if (!user){
-//     //parse the user obj
-//     //assign an incrementing userID     
-//     //add to db
-//       redis.client.hmsetAsync()
-//       clientSocket.emit('username available', {user: user});
-//     } else {
-//       clientSocket.emit('username taken', {user:user});
-//     }
-//   })
+  .then((user) =>{
+//NO USER OF THAT NAME>>>>>> 
+    if (!user){
+    //parse the user ::: AS OBJ
+    //assign an incrementing userID :::     
+    //add to db
+      redis.client.hmsetAsync(`user:${userId} username ${user.username} password ${user.password}`)
+      clientSocket.emit('username available', {user: user});
+    } else {
+      clientSocket.emit('username taken', {user:user});
+    }
+  })
   .catch(err => {
     console.log('Error in retreiving user: ', err)
   });
