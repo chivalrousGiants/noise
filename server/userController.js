@@ -12,21 +12,30 @@ function signIn (user, clientSocket) {
     .then(userId => {
       if (!userId) {
         // username does not exist
-        clientSocket.emit('signIn unsuccessful', user);
+        clientSocket.emit('signIn unsuccessful', {
+          user: user,
+          clientSocketId: clientSocket.id
+        });
       } else {
-        return redis.client.hgetAsync(`user:${userId}`, 'password');
-      }
-    }).then(pw => {
-      // TODO: abstract out comparePassword in utils.js
-      if (pw === user.password) {
-        // successful login
-        clientSocket.emit('signIn successful', user);
-      } else {
-        // password is incorrect
-        clientSocket.emit('signIn unsuccessful', user);
+        redis.client.hgetAsync(`user:${userId}`, 'password')
+          .then(pw => {
+            // TODO: abstract out comparePassword in utils.js
+            if (pw === user.password) {
+              // successful login
+              clientSocket.emit('signIn successful', {
+                user: user,
+                clientSocketId: clientSocket.id
+              });
+            } else {
+              // password is incorrect
+              clientSocket.emit('signIn unsuccessful', user);
+            }
+          }).catch(err => {
+            console.log('Error in password compare', err);
+          });
       }
     }).catch(err => {
-      console.log('Error in utils signIn', err);
+      console.log('Error in username compare', err);
     });
 
   // redis.client.hget('users', user.username, function(err, userId) {
