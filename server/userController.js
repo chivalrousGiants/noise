@@ -55,17 +55,16 @@ function signIn (user, clientSocket) {
 }
 
 function signUp (user, clientSocket) {
-  console.log('hit signUp on redis: ', user);
   //check if user exists
   redis.client.hgetAsync('users', user.username)
   console.log('hit signUp on redis: ', user);
   .then((user) =>{
 //NO USER OF THAT NAME>>>>>> 
     if (!user){
-    //parse the user obj
-    //assign an incrementing userID     
+    //parse the user ::: AS OBJ
+    //assign an incrementing userID :::     
     //add to db
-      redis.client.hmsetAsync()
+      redis.client.hmsetAsync(`user:${userId} username ${user.username} password ${user.password}`)
       clientSocket.emit('username available', {user: user});
     } else {
       clientSocket.emit('username taken', {user:user});
