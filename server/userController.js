@@ -85,5 +85,6 @@ function userAlreadyExists (user){
 }
 
 module.exports = {
-  signIn
+  signIn, 
+  signUp
 };
