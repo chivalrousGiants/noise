@@ -305,7 +305,7 @@
 				TargetAttributes = {
 					4133BD0E1D5A884C001EA380 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = FGVK7Z3329;
+						DevelopmentTeam = 9A3559HECW;
 					};
 				};
 			};
@@ -566,6 +566,7 @@
 			baseConfigurationReference = EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = noise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -580,6 +581,7 @@
 			baseConfigurationReference = CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = noise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
