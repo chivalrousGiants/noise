@@ -1,39 +1,36 @@
-//
-//  AddFriendViewController.swift
-//  noise
-//
-//  Created by Michael DLC on 8/9/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
-
 import UIKit
+import RealmSwift
+
 
 class AddFriendViewController: UIViewController {
-
+    
+    @IBOutlet weak var addFriendTextField: UITextField!
+    let realm = try! Realm()
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
+    @IBAction func addFriendTapped(sender: AnyObject) {
+        
+        let friendToAdd = addFriendTextField.text
+        
+        //send friendToAdd to server via socket
+            //if friendToAdd is found in redisdb
+                let newFriend = User()
+                newFriend.username = friendToAdd!
+                newFriend.lastname = "dummy"
+                newFriend.firstname = "dummy"
+        
+                try! realm.write {
+                    realm.add(newFriend)
+                }
+                //display alert: "friends has been added!"
+                performSegueWithIdentifier("backToFriendsListSegue", sender: self)
+            //else display alert "username not found"
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+        let friends = realm.objects(User)
+        print(friends)
+        
+        
     
-    @IBAction func confirmAddFriendClicked(sender: AnyObject) {
-        let newFriend = "whateverFriendYouSelected"
-        SocketIOManager.sharedInstance.addFriend(newFriend)
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+   }
 }
