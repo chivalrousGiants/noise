@@ -26,8 +26,8 @@ io.on('connection', function(clientSocket) {
     console.log('A user disconnected with socket id', clientSocket.id);
   });
 
-  clientSocket.on('signIn', function(user) {
 
+  clientSocket.on('signIn', function(user) {
     console.log('hit signIn on server socket:', user);
     console.log('typeof user:', typeof user);
 
@@ -40,8 +40,8 @@ io.on('connection', function(clientSocket) {
   });
 
   clientSocket.on('userSigningUp', function(user) {
-      console.log('hit signUp on server socket: ', user);
-      userController.signUp(user, clientSocket);
+    console.log('hit signUp on server socket: ', user);
+    userController.signUp(user, clientSocket);
   });
 
   clientSocket.on('encryptedChatSent', function(chatMessage) {

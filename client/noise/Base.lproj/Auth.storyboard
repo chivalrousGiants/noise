@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nYm-y9-0Ye" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1553" y="-289"/>
+            <point key="canvasLocation" x="1381" y="-305"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="Ce0-MD-PR2">
@@ -171,6 +171,7 @@
                         <outlet property="passwordTextField" destination="Fq8-IS-A2m" id="xQo-a2-NIE"/>
                         <outlet property="usernameTextField" destination="d3p-9i-N0S" id="mW6-6S-5YP"/>
                         <segue destination="Vf3-GY-8Lb" kind="presentation" identifier="logInSegue" id="bgw-kR-JAe"/>
+                        <segue destination="a1Y-0L-9xJ" kind="show" identifier="signUpToFriendsListSegue" id="bUD-Q9-nUf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9l-sZ-dey" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -178,4 +179,7 @@
             <point key="canvasLocation" x="2634" y="-245"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="bUD-Q9-nUf"/>
+    </inferredMetricsTieBreakers>
 </document>

@@ -29,11 +29,8 @@ client.on('connect', function() {
   // client.incr('global_userID')
   console.log('boo', client.get('global_userID', redis.print));
   //set global messageID var
-  var nextCount = client.get('global_messageID');
-  nextCount ++;
-  console.log(nextCount);
-  client.set('global_messageID', nextCount, redis.print);
-
+  client.incr('global_userID', redis.print);
+  client.incr('global_userID', redis.print);
 
 
   client.hmsetAsync('user:0001', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
