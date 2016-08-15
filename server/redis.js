@@ -22,26 +22,35 @@ client = redis.createClient();
   Connect to Redis Client
   Need to make sure your local Redis server is up and running
  */
+
+////////////////////////////////////
+////////DUMMY DATA :: TESTING ONLY!
+////////////////////////////////////
 client.on('connect', function() {
   console.log('Successfully connected to redis client!');
   //set global userID var
-  client.set('global_userID', 0, redis.print);
-  // client.incr('global_userID')
-  console.log('boo', client.get('global_userID', redis.print));
-  //set global messageID var
-  client.incr('global_userID', redis.print);
-  client.incr('global_userID', redis.print);
+  client.set('global_userId', 0, redis.print)
 
+  client.incr('global_userId', redis.print);
+  var userID = client.get('global_userId')
+  client.hmsetAsync(`user:${userID}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+    
+  client.incr(`global_userId`, redis.print);
+  userID = client.get('global_userId')
+  client.hmsetAsync('user:${userID}', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+    
+    client.incr('global_userId', redis.print);
+   userID = client.get('global_userId')
+  client.hmsetAsync('user:${userID}', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+    
+    client.incr('global_userId', redis.print);
+   userID = client.get('global_userId')
+  client.hmsetAsync('user:${userID}', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
 
-  client.hmsetAsync('user:0001', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-  client.hmsetAsync('user:0002', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-  client.hmsetAsync('user:0003', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-  client.hmsetAsync('user:0004', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
-
-  client.hsetAsync('users', ['hannah', '0001']);  
-  client.hsetAsync('users', ['mikey', '0002']);
-  client.hsetAsync('users', ['ryan', '0003']);
-  client.hsetAsync('users', ['jae', '0004']);
+  client.hsetAsync('users', ['hannah', '1']);  
+  client.hsetAsync('users', ['mikey', '2']);
+  client.hsetAsync('users', ['ryan', '3']);
+  client.hsetAsync('users', ['jae', '4']);
 
   // client.hgetall('user:0001', function(err, obj) {
   //   console.log(obj);

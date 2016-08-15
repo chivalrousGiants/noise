@@ -21,9 +21,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     //other internal vars defined
     var messageCollection : [[String: String]] = [] //eventually abstract this to DB
-    let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
-    let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
-    let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
+    let dummyDatum2 : [String: String] = ["userName": "Mikey", "createdAt": "2", "mssg": "yolo"]
+    let dummyDatum3 : [String: String] = ["userName": "Hannah", "createdAt": "3", "mssg": "bro"]
+    let dummyDatum4 : [String: String] = ["userName": "Mikey", "createdAt": "4", "mssg": "ohnono"]
     //timers?
     
     
@@ -139,6 +139,8 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
         
         //emit socket encrypted_mssg to ChatServer
         SocketIOManager.sharedInstance.sendEncryptedChat(userTextInput.text!)
+        //emit socket encrypted_mssg to ChatServer
+        SocketIOManager.sharedInstance.sendNoisifiedChat(userTextInput.text!)
         
 //TODO:[when receive] (stored) encyrpted_mssg decrypt && append to DOM
         let lastIdx = NSIndexPath(forRow: messageCollection.count-1, inSection: 0)
@@ -164,16 +166,16 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     //STRETCH: scroll to bottom
-    func scrollToBottom() {
-        let delay = 0.1 * Double(NSEC_PER_SEC)
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay)), dispatch_get_main_queue()) { () -> Void in
-            if self.messageCollection.count > 0 {
-                let lastRowIndexPath = NSIndexPath(forRow: self.messageCollection.count - 1, inSection: 0)
-                self.chatScreenTable.scrollToRowAtIndexPath(lastRowIndexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-            }
-        }
-    }
+//    func scrollToBottom() {
+//        let delay = 0.1 * Double(NSEC_PER_SEC)
+//        
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay)), dispatch_get_main_queue()) { () -> Void in
+//            if self.messageCollection.count > 0 {
+//                let lastRowIndexPath = NSIndexPath(forRow: self.messageCollection.count - 1, inSection: 0)
+//                self.chatScreenTable.scrollToRowAtIndexPath(lastRowIndexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+//            }
+//        }
+//    }
     
 ////////////////////////////////////
 ////////SEGUE
