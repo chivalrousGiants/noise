@@ -21,7 +21,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         updateFriendsTable()
     }
     
-    
     func updateFriendsTable() {
         self.friends = realm.objects(User)
         self.friendsTableView.reloadData()
@@ -53,7 +52,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
-    
     @IBAction func chatsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("chatsSegue", sender: self)
     }
@@ -65,11 +63,5 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
 
 }
