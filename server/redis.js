@@ -1,104 +1,13 @@
-const redis = require('redis');
-const bluebird = require('bluebird');
-const utils = require('./utils.js');
-
-// Promisify redis -> append 'Async' to all functions
-bluebird.promisifyAll(redis.RedisClient.prototype);
-bluebird.promisifyAll(redis.Multi.prototype);
-
-
-/*
-  Creates new Redis Client
-  redis.createClient(port, host)
-  by default
-    port: 127.0.0.1
-    host: 6379
- */
-
+/************************************************************
+ ******************* REDIS DATA STRUCTURE *******************
+ ************************************************************
  
-client = redis.createClient();
-
-/*
-  Connect to Redis Client
-  Need to make sure your local Redis server is up and running
- */
-
-////////////////////////////////////
-////////DUMMY DATA :: TESTING ONLY!
-////////////////////////////////////
-client.on('connect', function() {
-  console.log('Successfully connected to redis client!');
-  //set global userID var
-  client.set('global_userId', 0, redis.print)
-
-  client.incr('global_userId', redis.print);
-  var userID = client.get('global_userId')
-  client.hmsetAsync(`user:${userID}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-    
-  client.incr(`global_userId`, redis.print);
-  userID = client.get('global_userId')
-  client.hmsetAsync('user:${userID}', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-    
-    client.incr('global_userId', redis.print);
-   userID = client.get('global_userId')
-  client.hmsetAsync('user:${userID}', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-    
-    client.incr('global_userId', redis.print);
-   userID = client.get('global_userId')
-  client.hmsetAsync('user:${userID}', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
-
-  client.hsetAsync('users', ['hannah', '1']);  
-  client.hsetAsync('users', ['mikey', '2']);
-  client.hsetAsync('users', ['ryan', '3']);
-  client.hsetAsync('users', ['jae', '4']);
-
-  // client.hgetall('user:0001', function(err, obj) {
-  //   console.log(obj);
-  // });
-
-  // client.hgetall('user:0002', function(err, obj) {
-  //   console.log(obj);
-  // });
-
-  // client.hgetall('user:0003', function(err, obj) {
-  //   console.log(obj);
-  // });
-
-  // client.hgetall('user:0004', function(err, obj) {
-  //   console.log(obj);
-  // });
-});
-
-/*
-  CREATE Example
-  key: 'framework'
-  value: 'AngularJS'
- */
-// client.setAsync('framework', 'AngularJS')
-//   .then(reply => console.log(reply))
-//   .catch(err => console.log(err));
-
-/*
-  READ Example
-  key: 'framework'
-  value: 'AngularJS'
- */
- 
-// client.getAsync('framework')
-//   .then(key => console.log(key))
-//   .catch(err => console.log(err));
-
-
-
-/*
- ***** REDIS DATA STRUCTURE *****
- *
- * Users
- *   UserID
- *   0001      (username: hannah, pw: hannah, firstname: Hannah, lastname: Brannan) 
- *   0002      (username: mikey, pw: mikey, firstname: Michael, lastname: De La Cruz)
- *   0003      (username: ryan, pw: ryan, firstname: Ryan, lastname: Hanzawa)
- *   0004      (username: jae, pw: jae, firstname: Jae, lastname: Shin)
+ Users Dummy Data
+ *   userId
+ *   1      (username: hannah, pw: hannah, firstname: Hannah, lastname: Brannan) 
+ *   2      (username: mikey, pw: mikey, firstname: Michael, lastname: De La Cruz)
+ *   3      (username: ryan, pw: ryan, firstname: Ryan, lastname: Hanzawa)
+ *   4      (username: jae, pw: jae, firstname: Jae, lastname: Shin)
 
 Users
   Query: fetch certain user fields with user_id or username
@@ -126,9 +35,81 @@ PendingKeyExchange
 DP noisified data, PRR, IRR
 
 DP statistics
+ ************************************************************/
+
+
+// Requires
+const redis = require('redis');
+const bluebird = require('bluebird');
+const utils = require('./utils.js');
+
+/*
+  Promisify redis with bluebird
+
+  : In order to use the promisified version of a redis function just append 'Async' 
+  to original function name
  */
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
 
 
+/*
+  Creates new Redis Client
+  redis.createClient(port, host)
+  by default
+    port: 127.0.0.1
+    host: 6379
+ */
+client = redis.createClient();
+
+
+//////////////////////////////////////////////////////////////
+//////// Initialization of Users dummy data :: TESTING ONLY!
+//////////////////////////////////////////////////////////////
+
+/*
+  Connect to Redis Client
+  Need to make sure your local Redis server is up and running
+ */
+client.on('connect', function() {
+  console.log('Successfully connected to redis client!');
+  
+  // set global_userID var
+  client.set('global_userId', 0, redis.print);
+
+  // increment global_userID var by 1
+  client.incr('global_userId', redis.print);
+
+  client.getAsync('global_userId')
+    .then(userId => {
+      client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+      client.hset('users', ['hannah', `${userId}`]); 
+      client.incr('global_userId', redis.print);
+      return client.getAsync('global_userId');
+    })
+    .then(userId => {
+      client.hmset(`user:${userId}`, ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+      client.hset('users', ['mikey', `${userId}`]); 
+      client.incr('global_userId', redis.print);
+      return client.getAsync('global_userId'); 
+    })
+    .then(userId => {
+      client.hmset(`user:${userId}`, ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+      client.hset('users', ['ryan', `${userId}`]);  
+      client.incr('global_userId', redis.print);
+      return client.getAsync('global_userId'); 
+    })
+    .then(userId => {
+      client.hmset(`user:${userId}`, ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+      client.hset('users', ['jae', `${userId}`]);
+    })
+    .catch(err => {
+      console.log('Error in initialization of user:userId hash', err);
+    });
+});
+
+
+// Exports
 module.exports = {
   client
 };
