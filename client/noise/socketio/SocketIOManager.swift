@@ -14,19 +14,17 @@ class SocketIOManager: NSObject {
     }
     
     func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
-        //TEST:ping socket, display in console
+        // TEST: ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
         
-        //SEND: userData to db
+        // SEND userData to db
         socket.emit("signIn", user)
         
-        //FAIL: receive user_sign_in_data back from db
         socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
             print("Unsuccessful userMatch", userArray)
             handleSignIn(success: false)
         }
         
-        //SUCCESS: receive user_sign_in_data back from db
         socket.on("signIn successful") { (userArray, socketAck) -> Void in
             print("Successful userMatch", userArray)
             handleSignIn(success: true)
