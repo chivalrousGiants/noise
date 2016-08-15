@@ -7,12 +7,8 @@ const redis = require('./redis.js');
 function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
-      if (!userId) {
+      if (userId === undefined) {
         // Username does not exist
-        clientSocket.emit('signIn unsuccessful', {
-          user: user,
-          clientSocketId: clientSocket.id
-        });
         return '';
       } else {
         return redis.client.hgetAsync(`user:${userId}`, 'password');
@@ -26,9 +22,12 @@ function signIn(user, clientSocket) {
           user: user,
           clientSocketId: clientSocket.id
         });
-      } else if (password === '') {
-        // Password is incorrect
-        clientSocket.emit('signIn unsuccessful', user);
+      } else {
+        // Username does not exist or password is incorrect
+        clientSocket.emit('signIn unsuccessful', {
+          user: user,
+          clientSocketId: clientSocket.id
+        });
       }
     }).catch(console.error.bind(console));
 }
