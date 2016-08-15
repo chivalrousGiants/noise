@@ -24,7 +24,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PVk-DS-iBb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="957" y="900"/>
+            <point key="canvasLocation" x="976" y="618"/>
         </scene>
         <!--Friends List View Controller-->
         <scene sceneID="WjQ-cL-NgY">
@@ -82,7 +82,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1466" y="900"/>
+            <point key="canvasLocation" x="1526" y="618"/>
         </scene>
         <!--Add Friend View Controller-->
         <scene sceneID="n1k-Nr-jet">
@@ -129,11 +129,13 @@
                     </view>
                     <connections>
                         <outlet property="addFriendTextField" destination="gfv-OW-cxw" id="P2j-mJ-KnX"/>
+                        <outlet property="view" destination="Y61-dJ-4YM" id="PgM-vC-5ca"/>
+                        <segue destination="ZR2-1Z-FgH" kind="show" identifier="backToFriendsListSegue" id="Fcj-EW-t9q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="moi-5C-GTN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1997" y="906"/>
+            <point key="canvasLocation" x="2027" y="626"/>
         </scene>
         <!--Settings View Controller-->
         <scene sceneID="T4z-C2-Fpo">
@@ -151,7 +153,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l2K-bv-d7N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2183" y="1867"/>
+            <point key="canvasLocation" x="1869" y="1647"/>
         </scene>
         <!--ChatScreen-->
         <scene sceneID="s0L-mj-oiB">
@@ -159,7 +161,7 @@
                 <viewControllerPlaceholder storyboardName="ChatScreen" id="oie-k4-3DW" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eZK-2C-7Sy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1710.5" y="1529"/>
+            <point key="canvasLocation" x="1526.5" y="1261"/>
         </scene>
         <!--ChatsView-->
         <scene sceneID="17Z-G4-5dN">
@@ -167,7 +169,7 @@
                 <viewControllerPlaceholder storyboardName="ChatsView" id="veF-Nh-4uO" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RNN-8P-n88" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1421.5" y="1529"/>
+            <point key="canvasLocation" x="1241.5" y="1261"/>
         </scene>
     </scenes>
 </document>

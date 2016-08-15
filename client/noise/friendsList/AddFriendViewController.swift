@@ -5,29 +5,20 @@ import RealmSwift
 class AddFriendViewController: UIViewController {
     
     @IBOutlet weak var addFriendTextField: UITextField!
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let newFriend = User()
-        newFriend.username = "ryanH"
-        newFriend.lastname = "hansawa"
-        newFriend.firstname = "ryan"
-        
-        let realm = try! Realm()
-        try! realm.write{
-            realm.add(newFriend)
-        }
-        let friends = realm.objects(User)
-        print(friends)
+
     }
 
     @IBAction func addFriendTapped(sender: AnyObject) {
+        
+        let friendToAdd = addFriendTextField.text
+        
         let newFriend = User()
-        newFriend.username = "MDLC"
-        newFriend.lastname = "DeLaCruz"
-        newFriend.firstname = "MDLC"
+        newFriend.username = friendToAdd!
+        newFriend.lastname = "dummy"
+        newFriend.firstname = "dummy"
         
         let realm = try! Realm()
         try! realm.write{
@@ -35,6 +26,8 @@ class AddFriendViewController: UIViewController {
         }
         let friends = realm.objects(User)
         print(friends)
+        
+        performSegueWithIdentifier("backToFriendsListSegue", sender: self)
     
    }
 
