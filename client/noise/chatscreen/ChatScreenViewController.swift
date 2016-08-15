@@ -21,9 +21,9 @@ class ChatScreenViewController: UIViewController, UITableViewDataSource, UITable
     
     //other internal vars defined
     var messageCollection : [[String: String]] = [] //eventually abstract this to DB
-    let dummyDatum2 : [String: String] = ["userName": "MDLC", "createdAt": "2", "mssg": "yolo"]
-    let dummyDatum3 : [String: String] = ["userName": "HB", "createdAt": "3", "mssg": "bro"]
-    let dummyDatum4 : [String: String] = ["userName": "MDLC", "createdAt": "4", "mssg": "ohnono"]
+    let dummyDatum2 : [String: String] = ["userName": "Mikey", "createdAt": "2", "mssg": "yolo"]
+    let dummyDatum3 : [String: String] = ["userName": "Hannah", "createdAt": "3", "mssg": "bro"]
+    let dummyDatum4 : [String: String] = ["userName": "Mikey", "createdAt": "4", "mssg": "ohnono"]
     //timers?
     
     

@@ -61,10 +61,15 @@ function signUp (user, clientSocket) {
     //create new user
     if (!returnedUser){
         //increment global_userId stored in db
-        let newUserId = redis.client.incr('global_userId', redis.print)
-        console.log('newUserId ', newUserId);
+        redis.client.incr('global_userId')
+
+        ///TESTING >>STRING 
+        let newUserId = redis.client.get('userID');
+        // let userName = JSON.stringify(user.username);
+
+
         //add a single new username-userId pair to hash: users
-        redis.client.hsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`, redis.print)
+        redis.client.hmsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`)
         .then(()=>{
           //create a unique userId hash, storing all affiliated user data here.
           redis.client.hmsetAsync(`user:${newUserId}`, [
