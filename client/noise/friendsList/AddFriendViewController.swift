@@ -5,7 +5,7 @@ import RealmSwift
 class AddFriendViewController: UIViewController {
     
     @IBOutlet weak var addFriendTextField: UITextField!
-
+    let realm = try! Realm()
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -13,19 +13,24 @@ class AddFriendViewController: UIViewController {
         
         let friendToAdd = addFriendTextField.text
         
-        let newFriend = User()
-        newFriend.username = friendToAdd!
-        newFriend.lastname = "dummy"
-        newFriend.firstname = "dummy"
+        //send friendToAdd to server via socket
+            //if friendToAdd is found in redisdb
+                let newFriend = User()
+                newFriend.username = friendToAdd!
+                newFriend.lastname = "dummy"
+                newFriend.firstname = "dummy"
         
-        let realm = try! Realm()
-        try! realm.write{
-            realm.add(newFriend)
-        }
+                try! realm.write {
+                    realm.add(newFriend)
+                }
+                //display alert: "friends has been added!"
+                performSegueWithIdentifier("backToFriendsListSegue", sender: self)
+            //else display alert "username not found"
+
         let friends = realm.objects(User)
         print(friends)
         
-        performSegueWithIdentifier("backToFriendsListSegue", sender: self)
+        
     
    }
 }
