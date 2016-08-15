@@ -1,36 +1,31 @@
-//
-//  FriendsListViewController.swift
-//  noise
-//
-//  Created by Michael DLC on 8/9/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
-
 import UIKit
+import RealmSwift
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var friendsTableView: UITableView!
     
-    
-    
-    var friends = ["Ryan", "Hannah", "Jae", "Henry"]
+    var friends : Results<User>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        let realm = try! Realm()
+        self.friends = realm.objects(User)
         
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
-        
+    
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friends.count
+        return self.friends!.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = friends[indexPath.row]
+        let friend = self.friends![indexPath.row]
+        cell.textLabel?.text = friend.username
         return cell
     }
 
