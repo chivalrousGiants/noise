@@ -68,7 +68,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     
     func handleSignUp(success: Bool) {
         if success {
-            performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+            performSegueWithIdentifier("signUpToFriendsListSegue", sender: self)
         } else {
             let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "Yoosername is already taken!", preferredStyle: UIAlertControllerStyle.Alert)
             let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
