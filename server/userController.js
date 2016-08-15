@@ -56,20 +56,25 @@ function signIn (user, clientSocket) {
 
 function signUp (user, clientSocket) {
   //check if user exists
-  console.log('hit signUp on redis: ', user);
-  redis.client.hgetAsync('users', user.username)
-  .then((user) =>{
+  console.log('TEST signUp on redis: ', user, typeof user, user.username);
+  return redis.client.hgetAsync('users', user.username)
+  .then((returnedUser) =>{
     //if user doesn't exist
-    if (!user){
+    if (!returnedUser){
         //parse pieces of user Obj. Increment userId, assemble to add to db
-        let userId = redis.client.incr('global_userId', redis.print)
-        redis.client.hmsetAsync(userId, {
+        let newUserId = redis.client.incr('global_userId', redis.print)
+        redis.client.hmsetAsync(newUserId, {
           'username': user.username,
           'password': user.password
         })
-        .then(user => {
-          clientSocket.emit('sign up success', {user: user});
-          console.log('got into success function: signUp, server')  
+        .then(()=>{
+          redis.client.hmsetAsync(`user:${newUserId}`, {
+            'username': user.username,
+            'password': user.password
+          })
+        })
+        .then(() => { 
+          clientSocket.emit('sign up success');
         })
         .catch(err => {
           console.log('error in inserting new user' , err)
