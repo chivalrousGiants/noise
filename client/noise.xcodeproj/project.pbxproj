@@ -46,28 +46,27 @@
 		4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */; };
 		4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4821D5BCE81006B7D57 /* WebSocket.swift */; };
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
-		7F4E8E185D8DD250161576AA /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9981FC16F4BAB37E6E8653C /* Pods_noise.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4133BD0F1D5A884C001EA380 /* noise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = noise.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4133BD121D5A884C001EA380 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4133BD141D5A884C001EA380 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4133BD121D5A884C001EA380 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = noise/AppDelegate.swift; sourceTree = "<group>"; };
+		4133BD141D5A884C001EA380 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = noise/ViewController.swift; sourceTree = "<group>"; };
 		4133BD171D5A884C001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		4133BD191D5A884C001EA380 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4133BD1E1D5A884C001EA380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4133BD241D5A8A48001EA380 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = login/LoginViewController.swift; sourceTree = "<group>"; };
-		4133BD271D5A9539001EA380 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = signup/SignUpViewController.swift; sourceTree = "<group>"; };
-		4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendsListViewController.swift; path = friendsList/FriendsListViewController.swift; sourceTree = "<group>"; };
-		4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendViewController.swift; path = friendsList/AddFriendViewController.swift; sourceTree = "<group>"; };
-		4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatsViewController.swift; path = friendsList/ChatsViewController.swift; sourceTree = "<group>"; };
-		4133BD311D5AC635001EA380 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = settings/SettingsViewController.swift; sourceTree = "<group>"; };
-		4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScreenViewController.swift; path = chatscreen/ChatScreenViewController.swift; sourceTree = "<group>"; };
+		4133BD191D5A884C001EA380 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = noise/Assets.xcassets; sourceTree = "<group>"; };
+		4133BD1E1D5A884C001EA380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = noise/Info.plist; sourceTree = "<group>"; };
+		4133BD241D5A8A48001EA380 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = noise/login/LoginViewController.swift; sourceTree = "<group>"; };
+		4133BD271D5A9539001EA380 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = noise/signup/SignUpViewController.swift; sourceTree = "<group>"; };
+		4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendsListViewController.swift; path = noise/friendsList/FriendsListViewController.swift; sourceTree = "<group>"; };
+		4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendViewController.swift; path = noise/friendsList/AddFriendViewController.swift; sourceTree = "<group>"; };
+		4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatsViewController.swift; path = noise/friendsList/ChatsViewController.swift; sourceTree = "<group>"; };
+		4133BD311D5AC635001EA380 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = noise/settings/SettingsViewController.swift; sourceTree = "<group>"; };
+		4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatScreenViewController.swift; path = noise/chatscreen/ChatScreenViewController.swift; sourceTree = "<group>"; };
 		4133BD421D5ACEB1001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Auth.storyboard; sourceTree = "<group>"; };
 		4133BD451D5ACEE8001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Friends.storyboard; sourceTree = "<group>"; };
 		4133BD481D5ACF45001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ChatScreen.storyboard; sourceTree = "<group>"; };
 		4133BD4B1D5ACF82001EA380 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ChatsView.storyboard; sourceTree = "<group>"; };
-		4150B4371D5BB382006B7D57 /* SocketIOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketIOManager.swift; path = socketio/SocketIOManager.swift; sourceTree = "<group>"; };
+		4150B4371D5BB382006B7D57 /* SocketIOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketIOManager.swift; path = noise/socketio/SocketIOManager.swift; sourceTree = "<group>"; };
 		4150B46D1D5BCE81006B7D57 /* SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckEmitter.swift; sourceTree = "<group>"; };
 		4150B46E1D5BCE81006B7D57 /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckManager.swift; sourceTree = "<group>"; };
 		4150B46F1D5BCE81006B7D57 /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAnyEvent.swift; sourceTree = "<group>"; };
@@ -90,10 +89,9 @@
 		4150B4801D5BCE81006B7D57 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		4150B4821D5BCE81006B7D57 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = friendsList/FriendModel.swift; sourceTree = "<group>"; };
+		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
 		CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
 		EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
-		F9981FC16F4BAB37E6E8653C /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +99,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F4E8E185D8DD250161576AA /* Pods_noise.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,10 +108,14 @@
 		4133BD061D5A884C001EA380 = {
 			isa = PBXGroup;
 			children = (
+				635F377C1D61B3CD00FC4EC4 /* Noise */,
+				4133BD121D5A884C001EA380 /* AppDelegate.swift */,
+				4133BD141D5A884C001EA380 /* ViewController.swift */,
+				4133BD191D5A884C001EA380 /* Assets.xcassets */,
+				4133BD1E1D5A884C001EA380 /* Info.plist */,
 				4150B46B1D5BCE81006B7D57 /* source */,
-				BBC07F581D5AD6C800FCE5A1 /* client */,
+				4133BD101D5A884C001EA380 /* Products */,
 				BEF83FB3F75738DBA04403DC /* Pods */,
-				FB61D0C57B9BF2929EE53C54 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -124,87 +125,6 @@
 				4133BD0F1D5A884C001EA380 /* noise.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		4133BD111D5A884C001EA380 /* noise */ = {
-			isa = PBXGroup;
-			children = (
-				4150B4391D5BB3A9006B7D57 /* socketio */,
-				4133BD401D5ACDFF001EA380 /* chatscreen */,
-				4133BD341D5AC660001EA380 /* settings */,
-				4133BD2C1D5A9768001EA380 /* friends */,
-				4133BD4E1D5AD03C001EA380 /* auth */,
-				4133BD121D5A884C001EA380 /* AppDelegate.swift */,
-				4133BD141D5A884C001EA380 /* ViewController.swift */,
-				4133BD161D5A884C001EA380 /* Main.storyboard */,
-				4133BD191D5A884C001EA380 /* Assets.xcassets */,
-				4133BD1E1D5A884C001EA380 /* Info.plist */,
-			);
-			path = noise;
-			sourceTree = "<group>";
-		};
-		4133BD261D5A8A55001EA380 /* login */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD241D5A8A48001EA380 /* LoginViewController.swift */,
-			);
-			name = login;
-			sourceTree = "<group>";
-		};
-		4133BD291D5A954C001EA380 /* signup */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD271D5A9539001EA380 /* SignUpViewController.swift */,
-			);
-			name = signup;
-			sourceTree = "<group>";
-		};
-		4133BD2C1D5A9768001EA380 /* friends */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD441D5ACEE8001EA380 /* Friends.storyboard */,
-				4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */,
-				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
-				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
-				41F2A25D1D602D97006FACDF /* FriendModel.swift */,
-			);
-			name = friends;
-			sourceTree = "<group>";
-		};
-		4133BD341D5AC660001EA380 /* settings */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD311D5AC635001EA380 /* SettingsViewController.swift */,
-			);
-			name = settings;
-			sourceTree = "<group>";
-		};
-		4133BD401D5ACDFF001EA380 /* chatscreen */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */,
-				4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */,
-				4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */,
-			);
-			name = chatscreen;
-			sourceTree = "<group>";
-		};
-		4133BD4E1D5AD03C001EA380 /* auth */ = {
-			isa = PBXGroup;
-			children = (
-				4133BD411D5ACEB1001EA380 /* Auth.storyboard */,
-				4133BD291D5A954C001EA380 /* signup */,
-				4133BD261D5A8A55001EA380 /* login */,
-			);
-			name = auth;
-			sourceTree = "<group>";
-		};
-		4150B4391D5BB3A9006B7D57 /* socketio */ = {
-			isa = PBXGroup;
-			children = (
-				4150B4371D5BB382006B7D57 /* SocketIOManager.swift */,
-			);
-			name = socketio;
 			sourceTree = "<group>";
 		};
 		4150B46B1D5BCE81006B7D57 /* source */ = {
@@ -244,13 +164,57 @@
 			path = sockets;
 			sourceTree = "<group>";
 		};
-		BBC07F581D5AD6C800FCE5A1 /* client */ = {
+		635F377C1D61B3CD00FC4EC4 /* Noise */ = {
 			isa = PBXGroup;
 			children = (
-				4133BD111D5A884C001EA380 /* noise */,
-				4133BD101D5A884C001EA380 /* Products */,
+				635F377D1D61B42A00FC4EC4 /* Storyboards */,
+				635F377F1D61B43600FC4EC4 /* Controllers */,
+				635F37801D61B43B00FC4EC4 /* Models */,
+				635F37811D61B44300FC4EC4 /* Views */,
 			);
-			name = client;
+			name = Noise;
+			sourceTree = "<group>";
+		};
+		635F377D1D61B42A00FC4EC4 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				4133BD411D5ACEB1001EA380 /* Auth.storyboard */,
+				4133BD441D5ACEE8001EA380 /* Friends.storyboard */,
+				4133BD161D5A884C001EA380 /* Main.storyboard */,
+				4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */,
+				4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		635F377F1D61B43600FC4EC4 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4150B4371D5BB382006B7D57 /* SocketIOManager.swift */,
+				4133BD271D5A9539001EA380 /* SignUpViewController.swift */,
+				4133BD241D5A8A48001EA380 /* LoginViewController.swift */,
+				4133BD3E1D5ACDF6001EA380 /* ChatScreenViewController.swift */,
+				4133BD311D5AC635001EA380 /* SettingsViewController.swift */,
+				4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */,
+				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
+				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		635F37801D61B43B00FC4EC4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				41F2A25D1D602D97006FACDF /* FriendModel.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		635F37811D61B44300FC4EC4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		BEF83FB3F75738DBA04403DC /* Pods */ = {
@@ -260,14 +224,6 @@
 				CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		FB61D0C57B9BF2929EE53C54 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F9981FC16F4BAB37E6E8653C /* Pods_noise.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -441,6 +397,7 @@
 				4133BD171D5A884C001EA380 /* Base */,
 			);
 			name = Main.storyboard;
+			path = noise;
 			sourceTree = "<group>";
 		};
 		4133BD411D5ACEB1001EA380 /* Auth.storyboard */ = {
@@ -449,6 +406,7 @@
 				4133BD421D5ACEB1001EA380 /* Base */,
 			);
 			name = Auth.storyboard;
+			path = noise;
 			sourceTree = "<group>";
 		};
 		4133BD441D5ACEE8001EA380 /* Friends.storyboard */ = {
@@ -457,6 +415,7 @@
 				4133BD451D5ACEE8001EA380 /* Base */,
 			);
 			name = Friends.storyboard;
+			path = noise;
 			sourceTree = "<group>";
 		};
 		4133BD471D5ACF45001EA380 /* ChatScreen.storyboard */ = {
@@ -465,6 +424,7 @@
 				4133BD481D5ACF45001EA380 /* Base */,
 			);
 			name = ChatScreen.storyboard;
+			path = noise;
 			sourceTree = "<group>";
 		};
 		4133BD4A1D5ACF82001EA380 /* ChatsView.storyboard */ = {
@@ -473,6 +433,7 @@
 				4133BD4B1D5ACF82001EA380 /* Base */,
 			);
 			name = ChatsView.storyboard;
+			path = noise;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
