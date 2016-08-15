@@ -1,39 +1,55 @@
-//
-//  FriendsListViewController.swift
-//  noise
-//
-//  Created by Michael DLC on 8/9/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
-
 import UIKit
+import RealmSwift
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var friendsTableView: UITableView!
     
-    var friends = ["Ryan", "Hannah", "Jae", "Henry"]
+    var friends : Results<User>?
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        updateFriendsTable()
+        
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
-        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        updateFriendsTable()
+    }
+    
+    func updateFriendsTable() {
+        self.friends = realm.objects(User)
+        self.friendsTableView.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friends.count
+        return self.friends!.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = friends[indexPath.row]
+        let friend = self.friends![indexPath.row]
+        cell.textLabel?.text = friend.username
         return cell
     }
 
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("addFriendSegue", sender: self)
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            
+            let friendToDelete = self.friends![indexPath.row]
+            try! realm.write {
+                realm.delete(friendToDelete)
+            }
+            updateFriendsTable()
+        }
     }
     
     @IBAction func chatsButtonClicked(sender: AnyObject) {
@@ -47,11 +63,5 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
 
 }
