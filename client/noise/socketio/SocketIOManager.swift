@@ -63,7 +63,7 @@ class SocketIOManager: NSObject {
         
         //SUCCESS: receive user_sign_in_data back from db
         socket.on("sign up success") { (user) -> Void in
-            print("signUP success!!!", user)
+            print("signUP success!!!")
             handleSignUp(success: true)
         }
         

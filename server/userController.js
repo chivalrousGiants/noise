@@ -60,18 +60,18 @@ function signUp (user, clientSocket) {
   return redis.client.hgetAsync('users', user.username)
   .then((returnedUser) =>{
     //if user doesn't exist
+
     if (!returnedUser){
         //parse pieces of user Obj. Increment userId, assemble to add to db
         let newUserId = redis.client.incr('global_userId', redis.print)
         redis.client.hmsetAsync(newUserId, {
           'username': user.username,
           'password': user.password
-        })
+        }, redis.print)
         .then(()=>{
-          redis.client.hmsetAsync(`user:${newUserId}`, {
-            'username': user.username,
-            'password': user.password
-          })
+          redis.client.hmsetAsync(`user:${newUserId}`, [
+            user.username, user.password
+          ], redis.print)
         })
         .then(() => { 
           clientSocket.emit('sign up success');
