@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Vf3-GY-8Lb">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="16A286a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Vf3-GY-8Lb">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -8,7 +8,9 @@
         <!--friendsList-->
         <scene sceneID="ues-pO-phZ">
             <objects>
-                <viewControllerPlaceholder storyboardName="Friends" referencedIdentifier="friendsList" id="a1Y-0L-9xJ" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Friends" referencedIdentifier="friendsList" id="a1Y-0L-9xJ" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="tf2-vC-JNW"/>
+                </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k3K-Vj-oYp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2016" y="-688"/>
@@ -33,8 +35,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="CEd-af-szX"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="oRT-pc-nOI">
@@ -54,20 +55,21 @@
                                 <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-Xw-gl3">
-                                <rect key="frame" x="203" y="443" width="195" height="67"/>
+                                <rect key="frame" x="192.5" y="443" width="215" height="67"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have an account?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BGL-vW-0dw">
-                                        <rect key="frame" x="8" y="8" width="179" height="21"/>
+                                        <rect key="frame" x="8" y="8" width="199" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="XRQ-Pw-0Ml"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cRF-ME-HIU">
-                                        <rect key="frame" x="8" y="29" width="179" height="30"/>
-                                        <state key="normal" title="Sign Up"/>
+                                        <rect key="frame" x="8" y="29" width="199" height="30"/>
+                                        <state key="normal" title="Sign Up">
+                                            <color key="titleColor" red="0.50968191964285714" green="0.74426547178969038" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="signUpButtonClicked:" destination="Vf3-GY-8Lb" eventType="touchUpInside" id="KlC-CT-bed"/>
                                         </connections>
