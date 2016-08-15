@@ -1,55 +1,36 @@
 const redis = require('./redis.js');
 
 ////////////////////////////////////
-////////REDIS-USER FUNCTIONS
+//////// REDIS-USER FUNCTIONS
 ////////////////////////////////////
 
-function signIn (user, clientSocket) {
-
+function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
       if (!userId) {
-        // username does not exist
+        // Username does not exist
         clientSocket.emit('signIn unsuccessful', {
           user: user,
           clientSocketId: clientSocket.id
         });
+        return '';
       } else {
-        redis.client.hgetAsync(`user:${userId}`, 'password')
-          .then(pw => {
-            // TODO: abstract out comparePassword in utils.js
-            if (pw === user.password) {
-              // successful login
-              clientSocket.emit('signIn successful', {
-                user: user,
-                clientSocketId: clientSocket.id
-              });
-            } else {
-              // password is incorrect
-              clientSocket.emit('signIn unsuccessful', user);
-            }
-          }).catch(err => {
-            console.log('Error in password compare', err);
-          });
+        return redis.client.hgetAsync(`user:${userId}`, 'password');
       }
-    }).catch(err => {
-      console.log('Error in username compare', err);
-    });
-
-  // redis.client.hget('users', user.username, function(err, userId) {
-  //   if (err) {
-  //     console.log('Error in utils signIn', err);
-  //   } else if (!userId) {
-  //     // username does not exist
-  //     return false;
-  //   } else {
-  //     redis.client.hget(`user:${userId}`, 'password', function(err, pw) {
-  //       if ()
-  //     }
-  //   }
-  // });
-
-
+    })
+    .then((password) => {
+      // TODO: abstract out comparePassword in utils.js
+      if (password === user.password) {
+        // Successful login
+        clientSocket.emit('signIn successful', {
+          user: user,
+          clientSocketId: clientSocket.id
+        });
+      } else if (password === '') {
+        // Password is incorrect
+        clientSocket.emit('signIn unsuccessful', user);
+      }
+    }).catch(console.error.bind(console));
 }
 
 function signUp (user, clientSocket) {
