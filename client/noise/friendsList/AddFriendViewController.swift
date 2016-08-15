@@ -8,9 +8,7 @@ class AddFriendViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
-
     @IBAction func addFriendTapped(sender: AnyObject) {
         
         let friendToAdd = addFriendTextField.text
@@ -30,6 +28,4 @@ class AddFriendViewController: UIViewController {
         performSegueWithIdentifier("backToFriendsListSegue", sender: self)
     
    }
-
-
 }

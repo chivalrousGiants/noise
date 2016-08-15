@@ -6,16 +6,25 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet var friendsTableView: UITableView!
     
     var friends : Results<User>?
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        let realm = try! Realm()
-        self.friends = realm.objects(User)
+        
+        updateFriendsTable()
         
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
+    }
     
+    override func viewWillAppear(animated: Bool) {
+        updateFriendsTable()
+    }
+    
+    
+    func updateFriendsTable() {
+        self.friends = realm.objects(User)
+        self.friendsTableView.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -32,6 +41,18 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("addFriendSegue", sender: self)
     }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            
+            let friendToDelete = self.friends![indexPath.row]
+            try! realm.write {
+                realm.delete(friendToDelete)
+            }
+            updateFriendsTable()
+        }
+    }
+    
     
     @IBAction func chatsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("chatsSegue", sender: self)
