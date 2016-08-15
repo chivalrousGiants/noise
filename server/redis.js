@@ -73,7 +73,7 @@ client = redis.createClient();
  */
 client.on('connect', function() {
   console.log('Successfully connected to redis client!');
-  
+
   // set global_userID var
   client.set('global_userId', 0, redis.print);
 
@@ -83,19 +83,19 @@ client.on('connect', function() {
   client.getAsync('global_userId')
     .then(userId => {
       client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-      client.hset('users', ['hannah', `${userId}`]); 
+      client.hset('users', ['hannah', `${userId}`]);
       client.incr('global_userId', redis.print);
       return client.getAsync('global_userId');
     })
     .then(userId => {
       client.hmset(`user:${userId}`, ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-      client.hset('users', ['mikey', `${userId}`]); 
+      client.hset('users', ['mikey', `${userId}`]);
       client.incr('global_userId', redis.print);
-      return client.getAsync('global_userId'); 
+      return client.getAsync('global_userId');
     })
     .then(userId => {
       client.hmset(`user:${userId}`, ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-      client.hset('users', ['ryan', `${userId}`]);  
+      client.hset('users', ['ryan', `${userId}`]);
       client.incr('global_userId', redis.print);
       return client.getAsync('global_userId'); 
     })
