@@ -4,8 +4,6 @@ const redis = require('./redis.js');
 ////////REDIS-USER FUNCTIONS
 ////////////////////////////////////
 
-// user = {username: , password: }
-
 function signIn (user, clientSocket) {
 
   redis.client.hgetAsync('users', user.username)
@@ -60,17 +58,18 @@ function signUp (user, clientSocket) {
   return redis.client.hgetAsync('users', user.username)
   .then((returnedUser) =>{
     //if user doesn't exist
-
+    //create new user
     if (!returnedUser){
-        //parse pieces of user Obj. Increment userId, assemble to add to db
+        //increment global_userId stored in db
         let newUserId = redis.client.incr('global_userId', redis.print)
-        redis.client.hmsetAsync(newUserId, {
-          'username': user.username,
-          'password': user.password
-        }, redis.print)
+        console.log('newUserId ', newUserId);
+        //add a single new username-userId pair to hash: users
+        redis.client.hsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`, redis.print)
         .then(()=>{
+          //create a unique userId hash, storing all affiliated user data here.
           redis.client.hmsetAsync(`user:${newUserId}`, [
-            user.username, user.password
+            user.username,
+            user.password
           ], redis.print)
         })
         .then(() => { 

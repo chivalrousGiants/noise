@@ -17,12 +17,21 @@ class SocketIOManager: NSObject {
     /*change this to 1) encrypted message 2) noisified message --both dictionaries*/
     func sendEncryptedChat(message: String){
         print("From socket func, sendChat: \(message)")
+        
+        //
         socket.emit("encryptedChatSent", message)
     }
-    
-    func sendNoisifiedChat(messageDP: Dictionary<String, String>){
+    //                                Dictionary<String, String>
+    func sendNoisifiedChat(messageDP: String){
         print("TEST: socketMGMT sendingDPChat: \(messageDP)")
         socket.emit("noisifiedChatSent", messageDP)
+        
+        //listen for successfully added
+        socket.on("DP message sent") { (messageDP) -> Void in
+            
+        }
+        
+        //listen for fail
     }
     
     func addFriend(newFriend: String){
