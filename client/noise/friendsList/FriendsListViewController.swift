@@ -12,6 +12,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @IBOutlet var friendsTableView: UITableView!
     
+    
+    
     var friends = ["Ryan", "Hannah", "Jae", "Henry"]
     
     override func viewDidLoad() {
