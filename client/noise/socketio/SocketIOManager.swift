@@ -81,6 +81,9 @@ class SocketIOManager: NSObject {
             print("Unsuccessful userMatch", user)
             handleSignUp(success: false)
         }
+        socket.on("signUp failure") { (error) -> Void in
+            print("Error in db on signUp", error)
+        }
     }
     func closeConnection() {
         socket.disconnect()

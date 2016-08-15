@@ -61,12 +61,16 @@ function signUp (user, clientSocket) {
     //create new user
     if (!returnedUser){
         //increment global_userId stored in db
+/*
+  var userID = client.get('global_userId')
+  client.hmsetAsync(`user:${userID}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+
+*/
         redis.client.incr('global_userId')
 
         ///TESTING >>STRING 
-        let newUserId = redis.client.get('userID');
+        let newUserId = redis.client.get('global_userId');
         // let userName = JSON.stringify(user.username);
-
 
         //add a single new username-userId pair to hash: users
         redis.client.hmsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`)
@@ -75,13 +79,14 @@ function signUp (user, clientSocket) {
           redis.client.hmsetAsync(`user:${newUserId}`, [
             user.username,
             user.password
-          ], redis.print)
+          ])
         })
         .then(() => { 
           clientSocket.emit('sign up success');
         })
         .catch(err => {
           console.log('error in inserting new user' , err)
+          clientSocket.emit('signUp failure', err);
         })
     } else {
       clientSocket.emit('username taken', {user:user});
