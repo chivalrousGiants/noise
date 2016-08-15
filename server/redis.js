@@ -6,15 +6,16 @@ const utils = require('./utils.js');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
+
 /*
   Creates new Redis Client
-
   redis.createClient(port, host)
-
   by default
     port: 127.0.0.1
     host: 6379
  */
+
+ 
 client = redis.createClient();
 
 /*
@@ -23,13 +24,24 @@ client = redis.createClient();
  */
 client.on('connect', function() {
   console.log('Successfully connected to redis client!');
+  //set global userID var
+  client.set('global_userID', 0, redis.print);
+  // client.incr('global_userID')
+  console.log('boo', client.get('global_userID', redis.print));
+  //set global messageID var
+  var nextCount = client.get('global_messageID');
+  nextCount ++;
+  console.log(nextCount);
+  client.set('global_messageID', nextCount, redis.print);
+
+
 
   client.hmsetAsync('user:0001', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
   client.hmsetAsync('user:0002', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
   client.hmsetAsync('user:0003', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
   client.hmsetAsync('user:0004', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
 
-  client.hsetAsync('users', ['hannah', '0001']);
+  client.hsetAsync('users', ['hannah', '0001']);  
   client.hsetAsync('users', ['mikey', '0002']);
   client.hsetAsync('users', ['ryan', '0003']);
   client.hsetAsync('users', ['jae', '0004']);

@@ -78,7 +78,7 @@ Carthage/Build
 #osx noise
 .DS_Store
 profile
-
+dump.rdb
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
