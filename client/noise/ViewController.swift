@@ -8,7 +8,7 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         // TODO: Change this to query our login state from Realm. If we're not logged in, show the intro/login view controller
-        let loggedIn = false
+        let loggedIn = true
         
         if loggedIn {
             self.performSegueWithIdentifier("friendsListSegue", sender: self)

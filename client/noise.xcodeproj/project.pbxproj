@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411604F81D627C91000D5FC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411604F71D627C91000D5FC0 /* UserModel.swift */; };
 		4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD121D5A884C001EA380 /* AppDelegate.swift */; };
 		4133BD151D5A884C001EA380 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD141D5A884C001EA380 /* ViewController.swift */; };
 		4133BD181D5A884C001EA380 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4133BD161D5A884C001EA380 /* Main.storyboard */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		411604F71D627C91000D5FC0 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserModel.swift; path = noise/Models/UserModel.swift; sourceTree = "<group>"; };
 		4133BD0F1D5A884C001EA380 /* noise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = noise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4133BD121D5A884C001EA380 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = noise/AppDelegate.swift; sourceTree = "<group>"; };
 		4133BD141D5A884C001EA380 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = noise/ViewController.swift; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				41F2A25D1D602D97006FACDF /* FriendModel.swift */,
+				411604F71D627C91000D5FC0 /* UserModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */,
 				4133BD2B1D5A9761001EA380 /* FriendsListViewController.swift in Sources */,
 				4150B4961D5BCE81006B7D57 /* SocketTypes.swift in Sources */,
+				411604F81D627C91000D5FC0 /* UserModel.swift in Sources */,
 				4133BD301D5AAB0C001EA380 /* ChatsViewController.swift in Sources */,
 				4150B48A1D5BCE81006B7D57 /* SocketEnginePollable.swift in Sources */,
 				4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */,

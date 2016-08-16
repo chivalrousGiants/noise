@@ -10,27 +10,26 @@ class AddFriendViewController: UIViewController {
         super.viewDidLoad()
     }
     @IBAction func addFriendTapped(sender: AnyObject) {
-        
         let friendToAdd = addFriendTextField.text
         
         //send friendToAdd to server via socket
             //if friendToAdd is found in redisdb
-                let newFriend = User()
-                newFriend.username = friendToAdd!
-                newFriend.lastname = "dummy"
-                newFriend.firstname = "dummy"
-        
-                try! realm.write {
-                    realm.add(newFriend)
-                }
-                //display alert: "friends has been added!"
-                performSegueWithIdentifier("backToFriendsListSegue", sender: self)
+            let newFriend = Friend(value: [
+                "username" : friendToAdd!,
+                "firstname" : "dummy",
+                "lastname" : "dummy",
+                "photo" : "optional",
+                "friendID": "userID"
+                ])
+            try! realm.write{
+                realm.add(newFriend)
+            }
+            //display alert: "friends has been added!"
+            performSegueWithIdentifier("backToFriendsListSegue", sender: self)
             //else display alert "username not found"
 
-        let friends = realm.objects(User)
-        print(friends)
+        let friends = realm.objects(Friend)
+        print(friends, "added")
         
-        
-    
    }
 }
