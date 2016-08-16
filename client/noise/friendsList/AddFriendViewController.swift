@@ -1,8 +1,6 @@
 import UIKit
 import RealmSwift
 
-
-
 class AddFriendViewController: UIViewController {
     
     @IBOutlet weak var addFriendTextField: UITextField!
@@ -22,17 +20,16 @@ class AddFriendViewController: UIViewController {
             object: nil)
 
         let friendToAdd = addFriendTextField.text
-
+        
         // SEND: friendToAdd to server
         SocketIOManager.sharedInstance.addFriend(friendToAdd!)
-        
     }
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
         
         // friendToAdd is found in redis db
         if let userObj = notification.object {
-            let newFriend = User()
+            let newFriend = Friend()
             newFriend.firstname = userObj["firstname"] as! String
             newFriend.lastname = userObj["lastname"] as! String
             newFriend.username = userObj["username"] as! String
@@ -59,7 +56,7 @@ class AddFriendViewController: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
         // Testing
-        let friends = realm.objects(User)
+        let friends = realm.objects(Friend)
         print("Friends list:", friends)
         
     }
