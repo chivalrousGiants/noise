@@ -8,8 +8,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-        
         // Override username and password events
         usernameTextField.delegate = self;
         passwordTextField.delegate = self;
@@ -33,6 +31,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         } else if textField == passwordTextField {
             textField.resignFirstResponder()
             
+            // Attach listeners
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(handleSignInNotification),
+                name: "signIn successful",
+                object: nil)
+            
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(handleSignInNotification),
+                name: "signIn unsuccessful",
+                object: nil)
+            
             // Log in
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
@@ -46,15 +57,23 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func signUpButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("signUpSegue", sender: self)
     }
-
-    func presentUnsuccessfulLoginAlertMessage() {
-        let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "username or password is incorrect", preferredStyle: UIAlertControllerStyle.Alert)
-        let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-            print("okee button selected")
+    
+    @objc func handleSignInNotification(notification: NSNotification) -> Void {
+        let success = notification.object as! Bool
+        if success {
+            performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+        } else {
+            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "username or password is incorrect", preferredStyle: UIAlertControllerStyle.Alert)
+            let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+                print("okee button selected")
+            }
+            alert.addAction(action)
+            self.presentViewController(alert, animated:true) { () -> Void in
+                print("alert presented for unsuccessful login")
+            }
         }
-        alert.addAction(action)
-        self.presentViewController(alert, animated:true) { () -> Void in
-            print("alert presented for unsuccessful login")
-        }
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 }

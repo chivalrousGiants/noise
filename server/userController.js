@@ -7,6 +7,7 @@ const redis = require('./redis.js');
 function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
+      console.log('signIn userId is', userId);
       // NULL is returned for non-existent key
       if (userId === null) {
         // Username does not exist
@@ -16,6 +17,7 @@ function signIn(user, clientSocket) {
       }
     })
     .then((password) => {
+      console.log('signIn password is', password);
       // TODO: abstract out comparePassword in utils.js
       if (password === user.password) {
         // Successful login

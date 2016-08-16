@@ -1,3 +1,4 @@
+import Foundation
 import UIKit
 import RealmSwift
 
@@ -5,10 +6,6 @@ class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
-    
-    let realm = try! Realm()
-    let addfriendVC = AddFriendViewController()
-    
     
     override init() {
         super.init()
@@ -19,17 +16,17 @@ class SocketIOManager: NSObject {
         
         socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
             print("Unsuccessful userMatch", userArray)
-            self.handleSignIn(false)
+            NSNotificationCenter.defaultCenter().postNotificationName("signIn unsuccessful", object: false)
         }
         
         socket.on("signIn successful") { (userArray, socketAck) -> Void in
             print("Successful userMatch", userArray)
-            self.handleSignIn(true)
+            NSNotificationCenter.defaultCenter().postNotificationName("signIn successful", object: true)
         }
         
         socket.on("reply for checkUser") { (userArray, socketAck) -> Void in
             print("reply for checkUser", userArray)
-            self.handleAddFriend(userArray[0] as? Dictionary<String, String>)
+            NSNotificationCenter.defaultCenter().postNotificationName("reply for checkUser", object: userArray[0] as? Dictionary<String, String>)
         }
     }
     
@@ -41,15 +38,6 @@ class SocketIOManager: NSObject {
         socket.emit("signIn", user)
     }
     
-    func handleSignIn(success: Bool) {
-        let loginVC = LoginViewController()
-        if success {
-            loginVC.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
-        } else {
-            loginVC.presentUnsuccessfulLoginAlertMessage()
-        }
-    }
-
     func signUp(user: Dictionary<String, String>, handleSignUp: (success: Bool) -> Void) {
         //TEST:ping socket, display in console
         print("Test: socket func, addUser: \(user)")
@@ -105,29 +93,6 @@ class SocketIOManager: NSObject {
         // Query redis db
         socket.emit("find new friend", newFriend)
     }
-    
-    func handleAddFriend(user: Dictionary<String, String>?) -> Void {
-        
-        // friendToAdd is found in redis db
-        if let userObj = user {
-            let newFriend = User()
-            newFriend.firstname = userObj["firstname"]!
-            newFriend.lastname = userObj["lastname"]!
-            newFriend.username = userObj["username"]!
-            
-            try! realm.write {
-                realm.add(newFriend)
-            }
-            
-            addfriendVC.performSegueToFriendsList()
-        } else {
-            addfriendVC.presentNotFoundAlertMessage()
-        }
-        
-        let friends = realm.objects(User)
-        print(friends)
-    }
-
     
     func closeConnection() {
         socket.disconnect()
