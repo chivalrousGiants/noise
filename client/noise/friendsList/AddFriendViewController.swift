@@ -5,9 +5,11 @@ import RealmSwift
 class AddFriendViewController: UIViewController {
     @IBOutlet weak var addFriendTextField: UITextField!
     let realm = try! Realm()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
     @IBAction func addFriendTapped(sender: AnyObject) {
         let friendToAdd = addFriendTextField.text
         // for testing, will be replaced with a real socket response
@@ -30,6 +32,7 @@ class AddFriendViewController: UIViewController {
                  displayAlertMessage("username not found!")
         }
    }
+    
     func displayAlertMessage(message: String) {
         let myAlert = UIAlertController(title:"Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
         let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler:  nil)
