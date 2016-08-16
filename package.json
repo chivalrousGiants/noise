@@ -1,7 +1,7 @@
 {
   "name": "noise",
   "version": "1.0.0",
-  "description": "chat application",
+  "description": "a secure mobile chat application",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mofthecross/noise.git"
+    "url": "git+https://github.com/chivalrousGiants/noise.git"
   },
-  "author": "mdlc",
+  "author": "Hannah Brannan, Michael De La Cruz, Ryan Hanzawa, Jae Shin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mofthecross/noise/issues"
+    "url": "https://github.com/chivalrousGiants/noise/issues"
   },
-  "homepage": "https://github.com/mofthecross/noise#readme",
+  "homepage": "https://github.com/chivalrousGiants/noise#readme",
   "dependencies": {
     "bluebird": "^3.4.1",
     "express": "^4.10.2",
