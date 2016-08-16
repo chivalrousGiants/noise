@@ -79,15 +79,35 @@ function signUp (user, clientSocket) {
     //YES>>>>> throw error
 }
 
-function passwordMatches () {
+/*
+  Given a username (of type String)
+  return value:
+    if user does not exist return null
+    else return all fields of user:userId hash (username, lastname, firstname, userId)
+ */
+function checkUser(username, clientSocket) {
+  redis.client.hgetAsync('users', username)
+    .then(userId => {
+      console.log('userId is:', userId);
+      // NULL is returned for non-existent key
+      if (userId === null) {
+        // Username does not exist
+        return null;
+      } else {
+        return redis.client.hgetallAsync(`user:${userId}`);
+      }
+    })
+    .then(user => {
+      // user will be null or an object
+      console.log('user is', user);
 
-}
-
-function userAlreadyExists (user){
-
+      clientSocket.emit('reply for checkUser', user);
+     
+    }).catch(console.error.bind(console));
 }
 
 module.exports = {
   signIn, 
-  signUp
+  signUp,
+  checkUser
 };

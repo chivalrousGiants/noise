@@ -17,12 +17,4 @@ class ViewController: UIViewController {
         }
     }
     
-    //    @IBAction func loginButtonClicked(sender: AnyObject) {
-    //        self.performSegueWithIdentifier("authSegue", sender: self)
-    //    }
-    //
-    //    @IBAction func friendsListButtonClicked(sender: AnyObject) {
-    //        self.performSegueWithIdentifier("friendsListSegue", sender: self)
-    //    }
-    
 }

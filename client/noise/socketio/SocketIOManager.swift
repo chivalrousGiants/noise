@@ -1,9 +1,14 @@
 import UIKit
+import RealmSwift
 
 class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
+    
+    let realm = try! Realm()
+    let addfriendVC = AddFriendViewController()
+    
     
     override init() {
         super.init()
@@ -11,26 +16,40 @@ class SocketIOManager: NSObject {
     
     func establishConnection() {
         socket.connect()
+        
+        socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
+            print("Unsuccessful userMatch", userArray)
+            self.handleSignIn(false)
+        }
+        
+        socket.on("signIn successful") { (userArray, socketAck) -> Void in
+            print("Successful userMatch", userArray)
+            self.handleSignIn(true)
+        }
+        
+        socket.on("reply for checkUser") { (userArray, socketAck) -> Void in
+            print("reply for checkUser", userArray)
+            self.handleAddFriend(userArray[0] as? Dictionary<String, String>)
+        }
     }
     
-    func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
+    func signIn(user: Dictionary<String, String>) {
         // TEST: ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
         
         // SEND userData to db
         socket.emit("signIn", user)
-        
-        socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
-            print("Unsuccessful userMatch", userArray)
-            handleSignIn(success: false)
-        }
-        
-        socket.on("signIn successful") { (userArray, socketAck) -> Void in
-            print("Successful userMatch", userArray)
-            handleSignIn(success: true)
-        }
     }
     
+    func handleSignIn(success: Bool) {
+        let loginVC = LoginViewController()
+        if success {
+            loginVC.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+        } else {
+            loginVC.presentUnsuccessfulLoginAlertMessage()
+        }
+    }
+
     func signUp(user: Dictionary<String, String>, handleSignUp: (success: Bool) -> Void) {
         //TEST:ping socket, display in console
         print("Test: socket func, addUser: \(user)")
@@ -78,11 +97,37 @@ class SocketIOManager: NSObject {
         //listen for fail
     }
     
-    func addFriend(newFriend: String){
-        print("Test: socket func, addFriend: \(newFriend)")
-        socket.emit("friendAdded", newFriend)
-          //Query db for existing friend
+    // newFriend is the username
+    func addFriend(newFriend: String) {
+        
+        print("Test: socket func, addFriend with username: \(newFriend)")
+        
+        // Query redis db
+        socket.emit("find new friend", newFriend)
     }
+    
+    func handleAddFriend(user: Dictionary<String, String>?) -> Void {
+        
+        // friendToAdd is found in redis db
+        if let userObj = user {
+            let newFriend = User()
+            newFriend.firstname = userObj["firstname"]!
+            newFriend.lastname = userObj["lastname"]!
+            newFriend.username = userObj["username"]!
+            
+            try! realm.write {
+                realm.add(newFriend)
+            }
+            
+            addfriendVC.performSegueToFriendsList()
+        } else {
+            addfriendVC.presentNotFoundAlertMessage()
+        }
+        
+        let friends = realm.objects(User)
+        print(friends)
+    }
+
     
     func closeConnection() {
         socket.disconnect()

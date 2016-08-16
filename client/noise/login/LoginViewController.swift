@@ -37,7 +37,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
             let user: [String: String] = ["username": userName!, "password": userPassword!]
-            SocketIOManager.sharedInstance.signIn(user, handleSignIn: handleSignIn)
+            SocketIOManager.sharedInstance.signIn(user)
         }
         
         return true
@@ -47,19 +47,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         self.performSegueWithIdentifier("signUpSegue", sender: self)
     }
 
-    func handleSignIn(success: Bool) {
-        if success {
-            performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
-        } else {
-            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "username or password is incorrect", preferredStyle: UIAlertControllerStyle.Alert)
-            let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-                print("okee selected")
-            }
-            alert.addAction(action)
-            self.presentViewController(alert, animated:true) { () -> Void in
-                print("alert presented")
-            }
+    func presentUnsuccessfulLoginAlertMessage() {
+        let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "username or password is incorrect", preferredStyle: UIAlertControllerStyle.Alert)
+        let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+            print("okee button selected")
+        }
+        alert.addAction(action)
+        self.presentViewController(alert, animated:true) { () -> Void in
+            print("alert presented for unsuccessful login")
         }
     }
-
 }

@@ -5,31 +5,34 @@ import RealmSwift
 class AddFriendViewController: UIViewController {
     
     @IBOutlet weak var addFriendTextField: UITextField!
-    let realm = try! Realm()
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
     @IBAction func addFriendTapped(sender: AnyObject) {
         let friendToAdd = addFriendTextField.text
-        
-        //send friendToAdd to server via socket
-            //if friendToAdd is found in redisdb
-            let newFriend = Friend(value: [
-                "username" : friendToAdd!,
-                "firstname" : "dummy",
-                "lastname" : "dummy",
-                "photo" : "optional",
-                "friendID": "userID"
-                ])
-            try! realm.write{
-                realm.add(newFriend)
-            }
-            //display alert: "friends has been added!"
-            performSegueWithIdentifier("backToFriendsListSegue", sender: self)
-            //else display alert "username not found"
 
-        let friends = realm.objects(Friend)
-        print(friends, "added")
+        // SEND: friendToAdd to server
+        SocketIOManager.sharedInstance.addFriend(friendToAdd!)
+    }
+    
+    func performSegueToFriendsList() {
+        performSegueWithIdentifier("backToFriendsListSegue", sender: self)
+    }
+    
+    func presentNotFoundAlertMessage() {
+        // friendToAdd was NOT found in redis db
+        let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "no friend of that username exists", preferredStyle: UIAlertControllerStyle.Alert)
+        let action:UIAlertAction = UIAlertAction(title: "bummer", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+            print("bummer button selected")
+        }
+        alert.addAction(action)
         
-   }
+        self.presentViewController(alert, animated:true) { () -> Void in
+            print("alert presented for unsuccessful addNewFriend")
+        }
+    }
 }
