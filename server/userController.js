@@ -7,9 +7,10 @@ const redis = require('./redis.js');
 function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
-      if (userId === undefined) {
+      // NULL is returned for non-existent key
+      if (userId === null) {
         // Username does not exist
-        return '';
+        return null;
       } else {
         return redis.client.hgetAsync(`user:${userId}`, 'password');
       }
