@@ -1,17 +1,21 @@
+const redis = require('./redis.js');
 ////////////////////////////////////
 ////////REDIS-MESSAGE FUNCTIONS
 ////////////////////////////////////
 
 function addTimeStamp (message) {
-
+	var score = new Date();
+	message.score = score;
+	return message;
 }
 
-function addNewMessageToSet (timestampedMessage){
-
+function addNewMessageToSet (message){
+	let scoredMessage = addTimeStamp(message);
+	//redis.client.zadd()
 }
 
 function addNewMessageHash (timestampedMessage){
-
+	//redis.client.
 }
 
 function retrieveNewMessages (latestTimeStamp){

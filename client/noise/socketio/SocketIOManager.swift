@@ -1,4 +1,3 @@
-
 import UIKit
 
 class SocketIOManager: NSObject {
@@ -10,27 +9,10 @@ class SocketIOManager: NSObject {
         super.init()
     }
     
-    
     func establishConnection() {
         socket.connect()
     }
-    /*change this to 1) encrypted message 2) noisified message --both dictionaries*/
-    func sendEncryptedChat(message: String){
-        print("From socket func, sendChat: \(message)")
-        socket.emit("encryptedChatSent", message)
-    }
     
-    func sendNoisifiedChat(messageDP: Dictionary<String, String>){
-        print("TEST: socketMGMT sendingDPChat: \(messageDP)")
-        socket.emit("noisifiedChatSent", messageDP)
-    }
-    
-    func addFriend(newFriend: String){
-        print("Test: socket func, addFriend: \(newFriend)")
-        socket.emit("friendAdded", newFriend)
-          //Query db for existing friend
-    }
-
     func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
         //TEST:ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
@@ -73,6 +55,13 @@ class SocketIOManager: NSObject {
             handleSignUp(success: false)
         }
     }
+    
+    func addFriend(newFriend: String){
+        print("Test: socket func, addFriend: \(newFriend)")
+        socket.emit("friendAdded", newFriend)
+          //Query db for existing friend
+    }
+    
     func closeConnection() {
         socket.disconnect()
     }
