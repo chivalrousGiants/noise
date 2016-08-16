@@ -15,10 +15,11 @@ class AddFriendViewController: UIViewController {
         //send friendToAdd to server via socket
             //if friendToAdd is found in redisdb
             let newFriend = Friend(value: [
-                "friendUsername" : friendToAdd!,
-                "friendFirstname" : "dummy",
-                "friendLastname" : "dummy",
-                "friendPhoto" : "pic"
+                "username" : friendToAdd!,
+                "firstname" : "dummy",
+                "lastname" : "dummy",
+                "photo" : "optional",
+                "friendID": "userID"
                 ])
             try! realm.write{
                 realm.add(newFriend)
