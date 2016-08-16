@@ -1,8 +1,11 @@
 import Foundation
 import RealmSwift
 
-class User : Object {
-    dynamic var username = ""
-    dynamic var lastname = ""
-    dynamic var firstname = ""
+class Friend: Object {
+    dynamic var friendUsername = ""
+    dynamic var friendLastname = ""
+    dynamic var friendFirstame = ""
+    dynamic var friendedAt = NSDate()
+    dynamic var friendPhoto = ""
+    dynamic var friendID = ""
 }

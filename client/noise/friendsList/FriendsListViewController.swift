@@ -4,17 +4,17 @@ import RealmSwift
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var friendsTableView: UITableView!
-    
-    var friends : Results<User>?
     let realm = try! Realm()
+    var friends : Results<Friend>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         updateFriendsTable()
         
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
+
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -22,7 +22,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func updateFriendsTable() {
-        self.friends = realm.objects(User)
+        self.friends = realm.objects(Friend)
         self.friendsTableView.reloadData()
     }
     
@@ -33,7 +33,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let friend = self.friends![indexPath.row]
-        cell.textLabel?.text = friend.username
+        cell.textLabel?.text = friend.friendUsername
         return cell
     }
 
@@ -62,6 +62,17 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+    }
+    
+    func addPerson(username: String) {
+        let newPerson = User(value:[
+                                "username": username,
+                                "lastname": "dummy",
+                                "firstname": "dummy"
+                                ])
+        try! realm.write{
+            realm.add(newPerson)
+       }
     }
 
 }
