@@ -33,7 +33,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let friend = self.friends![indexPath.row]
-        cell.textLabel?.text = friend.friendUsername
+        cell.textLabel?.text = friend.username
         return cell
     }
 
