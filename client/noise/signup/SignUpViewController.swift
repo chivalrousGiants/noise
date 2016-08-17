@@ -99,6 +99,9 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        // Testing
+        print("Signed-up User:", realm.objects(User))
     }
 
     @IBAction func logInButtonClicked(sender: AnyObject) {

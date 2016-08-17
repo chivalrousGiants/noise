@@ -72,40 +72,48 @@ client = redis.createClient();
   Need to make sure your local Redis server is up and running
  */
 client.on('connect', function() {
+  
   console.log('Successfully connected to redis client!');
-
-  // set global_userID var
-  client.set('global_userId', 0, redis.print);
-
-  // increment global_userID var by 1
-  client.incr('global_userId', redis.print);
 
   client.getAsync('global_userId')
     .then(userId => {
-      client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-      client.hset('users', ['hannah', `${userId}`]);
-      client.incr('global_userId', redis.print);
-      return client.getAsync('global_userId');
+      // initialize user data
+      if (userId === null) {
+        client.set('global_userId', 0, redis.print);
+        client.incr('global_userId', redis.print);
+        client.getAsync('global_userId')
+          .then(userId => {
+            client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+            client.hset('users', ['hannah', `${userId}`]);
+            client.incr('global_userId', redis.print);
+            return client.getAsync('global_userId');
+          })
+          .then(userId => {
+            client.hmset(`user:${userId}`, ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+            client.hset('users', ['mikey', `${userId}`]);
+            client.incr('global_userId', redis.print);
+            return client.getAsync('global_userId');
+          })
+          .then(userId => {
+            client.hmset(`user:${userId}`, ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+            client.hset('users', ['ryan', `${userId}`]);
+            client.incr('global_userId', redis.print);
+            return client.getAsync('global_userId'); 
+          })
+          .then(userId => {
+            client.hmset(`user:${userId}`, ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+            client.hset('users', ['jae', `${userId}`]);
+          })
+          .catch(err => {
+            console.log('Error in initialization of user data', err);
+          });
+      } else {
+        // user data has been already initialized
+        return null;
+      }
     })
-    .then(userId => {
-      client.hmset(`user:${userId}`, ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-      client.hset('users', ['mikey', `${userId}`]);
-      client.incr('global_userId', redis.print);
-      return client.getAsync('global_userId');
-    })
-    .then(userId => {
-      client.hmset(`user:${userId}`, ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-      client.hset('users', ['ryan', `${userId}`]);
-      client.incr('global_userId', redis.print);
-      return client.getAsync('global_userId'); 
-    })
-    .then(userId => {
-      client.hmset(`user:${userId}`, ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
-      client.hset('users', ['jae', `${userId}`]);
-    })
-    .catch(err => {
-      console.log('Error in initialization of user:userId hash', err);
-    });
+    .catch(console.error.bind(console));
+
 });
 
 
