@@ -36,13 +36,16 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         print("where?")
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
-        cell.receiveChatLabel.layer.cornerRadius = 5
-        cell.receiveChatLabel.layer.masksToBounds = true
+        //cell.receiveChatLabel.layer.cornerRadius = 5
+        //cell.receiveChatLabel.layer.masksToBounds = true
         
-        cell.receiveChatLabel.text = "HEY sdfdsgfdsgsfdgtgfdgdsrtsert the ovdsgsvherewafdcrertfsdcvfgvcxfdgvsdzsgxfdgsvzxvcd"
+        cell.sendChatLabel.layer.cornerRadius = 5
+        cell.sendChatLabel.layer.masksToBounds = true
+        
+        cell.sendChatLabel.text = "HEY sdfdsgfdsgsfdgtgfdgdsrtsert the ovdsgsvherewafdcrertfsdcvfgvcxfdgvsdzsgxfdgsvzxvcd"
         
         return cell
     }
