@@ -82,7 +82,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDi-Ju-vAJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1526" y="618"/>
+            <point key="canvasLocation" x="1516" y="618"/>
         </scene>
         <!--Add Friend View Controller-->
         <scene sceneID="n1k-Nr-jet">
@@ -96,40 +96,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="692"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Afu-hG-daO">
-                                <rect key="frame" x="0.0" y="64" width="414" height="628"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Afu-hG-daO">
+                                <rect key="frame" x="107" y="223" width="201" height="68"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="RlE-v5-O1d">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="628"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y61-dJ-4YM">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="628"/>
-                                                <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="igs-h8-yj7">
-                                                        <rect key="frame" x="124" y="169" width="75" height="30"/>
-                                                        <state key="normal" title="Add Friend"/>
-                                                        <connections>
-                                                            <action selector="addFriendTapped:" destination="iOG-VH-PPI" eventType="touchUpInside" id="k4j-dO-fdq"/>
-                                                        </connections>
-                                                    </button>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" borderStyle="roundedRect" placeholder="enter username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gfv-OW-cxw">
-                                                        <rect key="frame" x="67" y="131" width="188" height="30"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
-                                                    </textField>
-                                                </subviews>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </view>
-                                        </subviews>
-                                    </stackView>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" borderStyle="roundedRect" placeholder="enter username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gfv-OW-cxw">
+                                        <rect key="frame" x="39" y="0.0" width="123" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="igs-h8-yj7">
+                                        <rect key="frame" x="63" y="38" width="75" height="30"/>
+                                        <state key="normal" title="Add Friend"/>
+                                        <connections>
+                                            <action selector="addFriendTapped:" destination="iOG-VH-PPI" eventType="touchUpInside" id="k4j-dO-fdq"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="EJg-fi-FZJ"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Afu-hG-daO" firstAttribute="top" secondItem="a7C-1m-VUK" secondAttribute="bottom" constant="159" id="MyV-yt-RH5"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="addFriendTextField" destination="gfv-OW-cxw" id="P2j-mJ-KnX"/>
-                        <outlet property="view" destination="Y61-dJ-4YM" id="PgM-vC-5ca"/>
                         <segue destination="ZR2-1Z-FgH" kind="show" identifier="backToFriendsListSegue" id="Fcj-EW-t9q"/>
                     </connections>
                 </viewController>

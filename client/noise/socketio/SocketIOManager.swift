@@ -1,4 +1,6 @@
+import Foundation
 import UIKit
+import RealmSwift
 
 class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
@@ -11,50 +13,38 @@ class SocketIOManager: NSObject {
     
     func establishConnection() {
         socket.connect()
+        
+        socket.on("redis response for signin") { (userArray, socketAck) -> Void in
+            print("redis response for signin", userArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
+        }
+        
+        socket.on("redis response for signup") { (userArray, socketAck) -> Void in
+            print("redis response for signup", userArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("signup", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
+        }
+        
+        // Listener for AddFriend endpoint
+        socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
+            print("redis response checkUser", userArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
+        }
     }
     
-    func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
+    func signIn(user: Dictionary<String, String>) {
         // TEST: ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
         
-        // SEND userData to db
+        // SEND: userData to db
         socket.emit("signIn", user)
-        
-        socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
-            print("Unsuccessful userMatch", userArray)
-            handleSignIn(success: false)
-        }
-        
-        socket.on("signIn successful") { (userArray, socketAck) -> Void in
-            print("Successful userMatch", userArray)
-            handleSignIn(success: true)
-        }
     }
     
-    func signUp(user: Dictionary<String, String>, handleSignUp: (success: Bool) -> Void) {
-        //TEST:ping socket, display in console
-        print("Test: socket func, addUser: \(user)")
+    func signUp(user: Dictionary<String, String>) {
+        // TEST: ping socket, display in console
+        print("Test: hit signUp func for user: \(user)")
         
-        //TODO: if pwText1 matches pwText2
-        
-        //SEND: userData to db
-        socket.emit("userSigningUp", user)
-        
-        
-        //SUCCESS: receive user_sign_in_data back from db
-        socket.on("sign up success") { (user) -> Void in
-            print("signUP success!!!")
-            handleSignUp(success: true)
-        }
-        
-        //FAIL: receive user_sign_UP_data back from db
-        socket.on("username taken") { (user) -> Void in
-            print("Unsuccessful userMatch", user)
-            handleSignUp(success: false)
-        }
-        socket.on("signUp failure") { (error) -> Void in
-            print("Error in db on signUp", error)
-        }
+        // SEND: userData to db
+        socket.emit("signUp", user)
     }
     
     // change this to 1) encrypted message 2) noisified message --both dictionaries
@@ -78,10 +68,13 @@ class SocketIOManager: NSObject {
         //listen for fail
     }
     
-    func addFriend(newFriend: String){
-        print("Test: socket func, addFriend: \(newFriend)")
-        socket.emit("friendAdded", newFriend)
-          //Query db for existing friend
+    // newFriend is the username
+    func addFriend(newFriend: String) {
+        
+        print("Test: socket func, addFriend with username: \(newFriend)")
+        
+        // Query redis db
+        socket.emit("find new friend", newFriend)
     }
     
     func closeConnection() {

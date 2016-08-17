@@ -31,29 +31,34 @@ io.on('connection', (clientSocket) => {
     userController.signIn(user, clientSocket);
   });
 
-  clientSocket.on('encryptedChatSent', function(chatMessage) {
-  	console.log('Received ChatMessage from client:', chatMessage)
-  	// Insert msg id -time stamp to ordered list
-    // Insert msg hash to msgs
+  clientSocket.on('signUp', (user) => {
+    console.log('hit signUp on server socket:', user);
+
+    userController.signUp(user, clientSocket);
+  });
+  
+  clientSocket.on('find new friend', (username) => {
+    console.log('hit find-new-friend on server socket with username', username);
+    
+    userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('noisifiedChatSent', function(chatMessage) {
-	  console.log('TODO: pass nosified chatMessage to redis DB')
-	  // clientSocket.emit('c', chatMessage);
-  });
 
-  clientSocket.on('friendAdded', function(chatMessage) {
-    console.log('TODO: pass friend')
-    // clientSocket.emit('c', chatMessage);
-  });
 
-  clientSocket.on('getfriends', function() {
-    var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
-    io.emit(dummyFriends);
-  });
+  // clientSocket.on('encryptedChatSent', function(chatMessage) {
+  //   console.log('Received ChatMessage from client:', chatMessage)
+  //   // Insert msg id -time stamp to ordered list
+  //   // Insert msg hash to msgs
+  // });
 
-  clientSocket.on('signinOrSignup', function(username) {
-    users.push(username)
-    console.log(username, 'connected and userscount is', users.length, username )
-  });
+  // clientSocket.on('noisifiedChatSent', function(chatMessage) {
+  //   console.log('TODO: pass nosified chatMessage to redis DB')
+  //   // clientSocket.emit('c', chatMessage);
+  // });
+
+
+  // clientSocket.on('getfriends', function() {
+  //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
+  //   io.emit(dummyFriends);
+  // });
 });
