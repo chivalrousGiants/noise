@@ -8,6 +8,5 @@ class User: Object {
     dynamic var createdAt = NSDate()
     dynamic var photo = ""
     dynamic var userID = ""
-    
 }
 

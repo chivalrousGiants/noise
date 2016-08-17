@@ -1,9 +1,9 @@
 import UIKit
 import RealmSwift
 
-
 class AddFriendViewController: UIViewController {
     @IBOutlet weak var addFriendTextField: UITextField!
+    
     let realm = try! Realm()
     
     override func viewDidLoad() {
@@ -11,6 +11,13 @@ class AddFriendViewController: UIViewController {
     }
     
     @IBAction func addFriendTapped(sender: AnyObject) {
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleAddFriendNotification),
+            name: "checkUser",
+            object: nil)
+
         let friendToAdd = addFriendTextField.text
         // for testing, will be replaced with a real socket response
         let respondFromSocket = false
