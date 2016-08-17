@@ -13,25 +13,21 @@ class SocketIOManager: NSObject {
     
     func establishConnection() {
         socket.connect()
-    }
-    
-    func signIn(user: Dictionary<String, String>, handleSignIn: (success: Bool) -> Void){
-        //TEST:ping socket, display in console
-        print("Test: hit signIn func for user: \(user)")
         
-        //SEND: userData to db
-        socket.emit("signIn", user)
-        
-          //FAIL: receive user_sign_in_data back from db
-        socket.on("signIn unsuccessful") { (userArray, socketAck) -> Void in
-            print("Unsuccessful userMatch", userArray)
-            handleSignIn(success: false)
+        socket.on("redis response for signin") { (userArray, socketAck) -> Void in
+            print("redis response for signin", userArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-         //SUCCESS: receive user_sign_in_data back from db
-        socket.on("signIn successful") { (userArray, socketAck) -> Void in
-            print("Successful userMatch", userArray)
-            handleSignIn(success: true)
+        socket.on("redis response for signup") { (userArray, socketAck) -> Void in
+            print("redis response for signup", userArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("signup", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
+        }
+        
+        // Listener for AddFriend endpoint
+        socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
+            print("redis response checkUser", userArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
     }
     
@@ -39,17 +35,37 @@ class SocketIOManager: NSObject {
         // TEST: ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
         
-        //SUCCESS: receive user_sign_in_data back from db
-        socket.on("Successful userAdd ") { (user) -> Void in
-            print("signUP success!!!", user)
-            handleSignUp(success: true)
+        // SEND: userData to db
+        socket.emit("signIn", user)
+    }
+    
+    func signUp(user: Dictionary<String, String>) {
+        // TEST: ping socket, display in console
+        print("Test: hit signUp func for user: \(user)")
+        
+        // SEND: userData to db
+        socket.emit("signUp", user)
+    }
+    
+    // change this to 1) encrypted message 2) noisified message --both dictionaries
+    func sendEncryptedChat(message: String){
+        print("From socket func, sendChat: \(message)")
+        
+        //
+        socket.emit("encryptedChatSent", message)
+    }
+    
+    // Dictionary<String, String>
+    func sendNoisifiedChat(messageDP: String){
+        print("TEST: socketMGMT sendingDPChat: \(messageDP)")
+        socket.emit("noisifiedChatSent", messageDP)
+        
+        //listen for successfully added
+        socket.on("DP message sent") { (messageDP) -> Void in
+            
         }
         
-        //FAIL: receive user_sign_UP_data back from db
-        socket.on("signUP unsuccessful") { (user) -> Void in
-            print("Unsuccessful userMatch", user)
-            handleSignUp(success: false)
-        }
+        //listen for fail
     }
     
     // newFriend is the username

@@ -100,5 +100,6 @@ function checkUser(username, clientSocket) {
 
 module.exports = {
   signIn, 
-  signUp
+  signUp,
+  checkUser
 };

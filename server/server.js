@@ -31,16 +31,8 @@ io.on('connection', (clientSocket) => {
     userController.signIn(user, clientSocket);
   });
 
-  clientSocket.on('userSigningUp', function(user) {
-      console.log('hit signUp on server socket: ', user);
-      userController.signUp(user, clientSocket);
-  });
-
-  clientSocket.on('encryptedChatSent', function(chatMessage) {
-  	console.log('Received ChatMessage from client:', chatMessage)
-  	// Insert msg id -time stamp to ordered list
-    // Insert msg hash to msgs
-  });
+  clientSocket.on('signUp', (user) => {
+    console.log('hit signUp on server socket:', user);
 
     userController.signUp(user, clientSocket);
   });
