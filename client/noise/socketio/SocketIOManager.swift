@@ -1,4 +1,6 @@
+import Foundation
 import UIKit
+import RealmSwift
 
 class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
@@ -33,15 +35,9 @@ class SocketIOManager: NSObject {
         }
     }
     
-    func signUp(user: Dictionary<String, String>, handleSignUp: (success: Bool) -> Void) {
-        //TEST:ping socket, display in console
-        print("Test: socket func, addUser: \(user)")
-        
-        //TODO: if pwText1 matches pwText2
-        
-        //SEND: userData to db
-        socket.emit("userSigningUp", user)
-        
+    func signIn(user: Dictionary<String, String>) {
+        // TEST: ping socket, display in console
+        print("Test: hit signIn func for user: \(user)")
         
         //SUCCESS: receive user_sign_in_data back from db
         socket.on("Successful userAdd ") { (user) -> Void in
@@ -56,10 +52,13 @@ class SocketIOManager: NSObject {
         }
     }
     
-    func addFriend(newFriend: String){
-        print("Test: socket func, addFriend: \(newFriend)")
-        socket.emit("friendAdded", newFriend)
-          //Query db for existing friend
+    // newFriend is the username
+    func addFriend(newFriend: String) {
+        
+        print("Test: socket func, addFriend with username: \(newFriend)")
+        
+        // Query redis db
+        socket.emit("find new friend", newFriend)
     }
     
     func closeConnection() {
