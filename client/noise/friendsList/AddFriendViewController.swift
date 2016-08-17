@@ -2,7 +2,6 @@ import UIKit
 import RealmSwift
 
 class AddFriendViewController: UIViewController {
-    
     @IBOutlet weak var addFriendTextField: UITextField!
     
     let realm = try! Realm()
@@ -62,5 +61,10 @@ class AddFriendViewController: UIViewController {
         print("Friends list:", realm.objects(Friend))
         
     }
-
+    func displayAlertMessage(message: String) {
+        let myAlert = UIAlertController(title:"Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler:  nil)
+        myAlert.addAction(okAction)
+        self.presentViewController(myAlert, animated: true, completion: nil)
+    }
 }

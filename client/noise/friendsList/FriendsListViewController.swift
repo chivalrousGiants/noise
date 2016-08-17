@@ -2,7 +2,6 @@ import UIKit
 import RealmSwift
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
     @IBOutlet var friendsTableView: UITableView!
     let realm = try! Realm()
     var friends : Results<Friend>?
@@ -10,11 +9,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         updateFriendsTable()
-        
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
-
-        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -36,9 +32,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         cell.textLabel?.text = friend.username
         return cell
     }
-
-    @IBAction func addFriendButtonClicked(sender: AnyObject) {
-        self.performSegueWithIdentifier("addFriendSegue", sender: self)
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -52,6 +48,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
+    @IBAction func addFriendButtonClicked(sender: AnyObject) {
+        self.performSegueWithIdentifier("addFriendSegue", sender: self)
+    }
+    
     @IBAction func chatsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("chatsSegue", sender: self)
     }
@@ -60,19 +60,4 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
-    }
-    
-    func addPerson(username: String) {
-        let newPerson = User(value:[
-                                "username": username,
-                                "lastname": "dummy",
-                                "firstname": "dummy"
-                                ])
-        try! realm.write{
-            realm.add(newPerson)
-       }
-    }
-
 }
