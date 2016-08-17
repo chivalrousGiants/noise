@@ -49,22 +49,30 @@ function signUp (user, clientSocket) {
 */
         redis.client.incr('global_userId')
 
-function signUp (user, clientSocket) {
-  console.log('hit signUp on redis: ', user);
-  //check if user exists
-  redis.client.hgetAsync('users', user.username)
-//   .then((user) =>{
-// //NO USER OF THAT NAME>>>>>> 
-//     if (!user){
-//     //parse the user obj
-//     //assign an incrementing userID     
-//     //add to db
-//       redis.client.hmsetAsync()
-//       clientSocket.emit('username available', {user: user});
-//     } else {
-//       clientSocket.emit('username taken', {user:user});
-//     }
-//   })
+        ///TESTING >>STRING 
+        let newUserId = redis.client.get('global_userId');
+        // let userName = JSON.stringify(user.username);
+
+        //add a single new username-userId pair to hash: users
+        redis.client.hmsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`)
+        .then(()=>{
+          //create a unique userId hash, storing all affiliated user data here.
+          redis.client.hmsetAsync(`user:${newUserId}`, [
+            user.username,
+            user.password
+          ])
+        })
+        .then(() => { 
+          clientSocket.emit('sign up success');
+        })
+        .catch(err => {
+          console.log('error in inserting new user' , err)
+          clientSocket.emit('signUp failure', err);
+        })
+    } else {
+      clientSocket.emit('username taken', {user:user});
+    }
+  })
   .catch(err => {
     console.log('Error in retreiving user: ', err)
   });
