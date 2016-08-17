@@ -13,75 +13,65 @@ function signIn(user, clientSocket) {
         // Username does not exist
         return null;
       } else {
-        return redis.client.hgetAsync(`user:${userId}`, 'password');
+        return redis.client.hgetallAsync(`user:${userId}`);
       }
     })
-    .then((password) => {
-      console.log('signIn password is', password);
+    .then(foundUser => {
+      console.log('found password for user in db is', foundUser.password);
       // TODO: abstract out comparePassword in utils.js
-      if (password === user.password) {
+      if (foundUser.password === user.password) {
         // Successful login
-        clientSocket.emit('signIn successful', {
-          user: user,
+        clientSocket.emit('redis response for signin', {
+          user: foundUser,
           clientSocketId: clientSocket.id
         });
       } else {
         // Username does not exist or password is incorrect
-        clientSocket.emit('signIn unsuccessful', {
-          user: user,
-          clientSocketId: clientSocket.id
-        });
+        clientSocket.emit('redis response for signin', null);
       }
     }).catch(console.error.bind(console));
 }
 
 function signUp (user, clientSocket) {
-  //check if user exists
-  console.log('TEST signUp on redis: ', user, typeof user, user.username);
-  return redis.client.hgetAsync('users', user.username)
-  .then((returnedUser) =>{
-    //if user doesn't exist
-    //create new user
-    if (!returnedUser){
-        //increment global_userId stored in db
-/*
-  var userID = client.get('global_userId')
-  client.hmsetAsync(`user:${userID}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+  redis.client.hgetAsync('users', user.username)
+    .then(userId => {
+      console.log('signUp userId is', userId);
 
-*/
-        redis.client.incr('global_userId')
+      if (userId === null) {
+        // Username not taken, thus valid for new user
+        
+        // Initiate insertion of new user by incrementing global_userId key
+        redis.client.incr('global_userId', redis.print);
 
-        ///TESTING >>STRING 
-        let newUserId = redis.client.get('global_userId');
-        // let userName = JSON.stringify(user.username);
+        return client.getAsync('global_userId');
 
-        //add a single new username-userId pair to hash: users
-        redis.client.hmsetAsync('users', 'username', `${user.username}`, 'userId', `${newUserId}`)
-        .then(()=>{
-          //create a unique userId hash, storing all affiliated user data here.
-          redis.client.hmsetAsync(`user:${newUserId}`, [
-            user.username,
-            user.password
-          ])
-        })
-        .then(() => { 
-          clientSocket.emit('sign up success');
-        })
-        .catch(err => {
-          console.log('error in inserting new user' , err)
-          clientSocket.emit('signUp failure', err);
-        })
-    } else {
-      clientSocket.emit('username taken', {user:user});
-    }
-  })
-  .catch(err => {
-    console.log('Error in retreiving user: ', err)
-  });
-    //YES>>>>> throw error
+      } else {
+        // Username already exists
+        return null;
+      }
+    })
+    .then(globalUserId => {
+
+      // Username already exists
+      if (globalUserId === null) {
+
+        clientSocket.emit('redis response for signup', null);
+
+      } else {
+
+        client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
+        client.hset('users', [user.username, `${globalUserId}`]);
+        
+        clientSocket.emit('redis response for signup', user);
+
+      }
+    })
+    .catch(console.error.bind(console));
 }
 
 /*
+  Utilized in AddFriend Endpoint
+  
   Given a username (of type String)
   return value:
     if user does not exist return null

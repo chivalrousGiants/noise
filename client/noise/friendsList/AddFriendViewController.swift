@@ -16,7 +16,7 @@ class AddFriendViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handleAddFriendNotification),
-            name: "reply for checkUser",
+            name: "checkUser",
             object: nil)
 
         let friendToAdd = addFriendTextField.text
@@ -27,7 +27,8 @@ class AddFriendViewController: UIViewController {
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
         
-        // friendToAdd is found in redis db
+        // notification.object is either nil or the found user object
+        
         if let userObj = notification.object {
             let newFriend = Friend()
             newFriend.firstname = userObj["firstname"] as! String
@@ -56,8 +57,7 @@ class AddFriendViewController: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
         // Testing
-        let friends = realm.objects(Friend)
-        print("Friends list:", friends)
+        print("Friends list:", realm.objects(Friend))
         
     }
 

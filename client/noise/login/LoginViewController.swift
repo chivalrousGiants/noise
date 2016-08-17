@@ -1,9 +1,12 @@
 import UIKit
+import RealmSwift
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,15 +38,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
                 selector: #selector(handleSignInNotification),
-                name: "signIn successful",
+                name: "signin",
                 object: nil)
-            
-            NSNotificationCenter.defaultCenter().addObserver(
-                self,
-                selector: #selector(handleSignInNotification),
-                name: "signIn unsuccessful",
-                object: nil)
-            
+
             // Log in
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
@@ -54,14 +51,25 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    @IBAction func signUpButtonClicked(sender: AnyObject) {
-        self.performSegueWithIdentifier("signUpSegue", sender: self)
-    }
-    
     @objc func handleSignInNotification(notification: NSNotification) -> Void {
-        let success = notification.object as! Bool
-        if success {
+
+        // notification.object is either nil or the user object
+        print(notification.object)
+        
+        if let userObj = notification.object {
+            
+            // insert user data in realm
+            let user = User()
+            user.firstname = userObj["firstname"] as! String
+            user.lastname = userObj["lastname"] as! String
+            user.username = userObj["username"] as! String
+            
+            try! realm.write {
+                realm.add(user)
+            }
+            
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+            
         } else {
             let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "username or password is incorrect", preferredStyle: UIAlertControllerStyle.Alert)
             let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
@@ -75,5 +83,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+        // Testing
+        print("Logged-in User:", realm.objects(User))
     }
+    
+    @IBAction func signUpButtonClicked(sender: AnyObject) {
+        self.performSegueWithIdentifier("signUpSegue", sender: self)
+    }
+    
 }

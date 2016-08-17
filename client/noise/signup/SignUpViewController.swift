@@ -1,16 +1,21 @@
 import UIKit
+import RealmSwift
 
 class SignUpViewController: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet weak var firstnameTextField: UITextField!
+    @IBOutlet weak var lastnameTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    let realm = try! Realm()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-        
-        // Override username and password events
+        // Override events
+        firstnameTextField.delegate = self;
+        lastnameTextField.delegate = self;
         usernameTextField.delegate = self;
         passwordTextField.delegate = self;
     }
@@ -28,57 +33,71 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if textField == usernameTextField {
+        if textField == firstnameTextField {
+            lastnameTextField.becomeFirstResponder()
+        } else if textField == lastnameTextField {
+            usernameTextField.becomeFirstResponder()
+        } else if textField == usernameTextField {
             passwordTextField.becomeFirstResponder()
         } else if textField == passwordTextField {
+        
             textField.resignFirstResponder()
+            
+            // Attach listeners
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(handleSignUpNotification),
+                name: "signup",
+                object: nil)
+            
             // Sign Up
+            let firstname = firstnameTextField.text
+            let lastname = lastnameTextField.text
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
-            let user: [String: String] = ["username": userName!, "password": userPassword!]
-            if userName!.isEmpty {
-                displayAlertMessage("All fields are required!")
-            } else {
-                SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
-            }
-            //TODO: add to socket call
+            let user: [String: String] = [
+                "firstname": firstname!,
+                "lastname": lastname!,
+                "username": userName!,
+                "password": userPassword!
+            ]
+            
+            SocketIOManager.sharedInstance.signUp(user)
         }
          return true
     }
     
-
-    @IBAction func registerButtonTapped(sender: AnyObject) {
-        let userName = usernameTextField.text
-        let userPassword = passwordTextField.text
-        let user : [String:String] = ["username": userName!, "password": userPassword!]
-        if(userName!.isEmpty){
-            displayAlertMessage("All fields are required!")
-        } else {
-            SocketIOManager.sharedInstance.signUp(user, handleSignUp: handleSignUp)
-        }
-    }
-
-    func displayAlertMessage(userMessage: String) {
-        let myAlert = UIAlertController(title:"Alert", message: userMessage, preferredStyle: UIAlertControllerStyle.Alert)
-        let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil)
+    @objc func handleSignUpNotification(notification: NSNotification) -> Void {
         
-        myAlert.addAction(okAction)
-        self.presentViewController(myAlert, animated: true, completion: nil)
-    }
-    
-    func handleSignUp(success: Bool) {
-        if success {
+        // notification.object is either nil or the user object with new user info
+        
+        if let userObj = notification.object {
+            
+            let newUser = User()
+            newUser.firstname = userObj["firstname"] as! String
+            newUser.lastname = userObj["lastname"] as! String
+            newUser.username = userObj["username"] as! String
+            
+            try! realm.write {
+                realm.add(newUser)
+            }
+            
             performSegueWithIdentifier("signUpToFriendsListSegue", sender: self)
+            
         } else {
-            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "Yoosername is already taken!", preferredStyle: UIAlertControllerStyle.Alert)
-            let action:UIAlertAction = UIAlertAction(title: "okee", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-                print("okee selected")
+            // username already taken, unsuccessful signup
+            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "Yoosername is already taken", preferredStyle: UIAlertControllerStyle.Alert)
+            let action:UIAlertAction = UIAlertAction(title: "wat", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+                print("wat selected")
             }
             alert.addAction(action)
             self.presentViewController(alert, animated:true) { () -> Void in
-                print("alert presented")
+                print("alert presented for unsuccessful signup")
             }
         }
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     @IBAction func logInButtonClicked(sender: AnyObject) {
