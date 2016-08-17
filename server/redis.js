@@ -63,7 +63,7 @@ DP statistics
 // Requires
 const redis = require('redis');
 const bluebird = require('bluebird');
-const utils = require('./utils.js');
+const utils = require('./utils');
 
 const {
   BLOOM_FILTER_SIZE,
@@ -73,7 +73,7 @@ const {
   P_PARAM,
   Q_PARAM,
   MAX_SUM_BITS,
-} = require('./differentialPrivacyParams');
+} = require('./differentialPrivacy/dpParams');
 
 /*
   Promisify redis with bluebird
@@ -147,7 +147,7 @@ client.on('connect', function() {
     .catch(console.error.bind(console));
 
   /////////////////////////////////////////////////////////
-  // Initialize empty DP statistics data structures
+  // Initialize empty DP statistics data structures - comment out to maintain existing data
 
   // 1. Create bit field for each cohort
   for (let cohortNum of Array(NUM_COHORTS).keys()) {
