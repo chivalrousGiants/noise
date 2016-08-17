@@ -1,7 +1,7 @@
 const redis = require('./redis.js');
 
 ////////////////////////////////////
-//////// REDIS-USER FUNCTIONS
+//////// REDIS USER FUNCTIONS
 ////////////////////////////////////
 
 function signIn(user, clientSocket) {

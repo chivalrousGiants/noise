@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 http.listen(HTTP_PORT, () => {
-  console.log(`Listening on port ${HTTP_PORT}`)
+  console.log(`Listening on port ${HTTP_PORT}`);
 });
 
 // Socket.io
@@ -53,6 +53,12 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
+  clientSocket.on('initial loading of new messages', (friends) => {
+    console.log('hit initial-loading-of-new-messages on server socket with friends', friends);
+
+    messageController.loadNewMessages(friends, clientSocket);
+  });
+
   /////////////////////////////////////////////////////////
   // Differential Privacy-related socket routes
   clientSocket.on('getDPParams', function() {
@@ -70,15 +76,6 @@ io.on('connection', (clientSocket) => {
       })
       .catch(console.error.bind(console));
   });
+
 });
 
-  // clientSocket.on('encryptedChatSent', function(chatMessage) {
-  //   console.log('Received ChatMessage from client:', chatMessage)
-  //   // Insert msg id -time stamp to ordered list
-  //   // Insert msg hash to msgs
-  // });
-
-  // clientSocket.on('getfriends', function() {
-  //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
-  //   io.emit(dummyFriends);
-  // });

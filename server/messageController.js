@@ -1,7 +1,13 @@
 const redis = require('./redis.js');
+
 ////////////////////////////////////
-////////REDIS-MESSAGE FUNCTIONS
+//////// REDIS MESSAGE FUNCTIONS
 ////////////////////////////////////
+
+function loadNewMessages(friends, clientSocket) {
+  
+}
+
 
 function addTimeStamp (message) {
 	var score = new Date();
