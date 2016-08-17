@@ -1,34 +1,13 @@
-//
-//  ChatViewController.swift
-//  noise
-//
-//  Created by Michael DLC on 8/17/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
-
 import UIKit
 
 class ChatViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-
     @IBOutlet weak var CollectionView: UICollectionView!
-    
-    let messages = ["hello", "hi"]
- 
     @IBOutlet weak var SendChatTextField: UITextField!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("herreeeee")
-        
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -37,17 +16,20 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         print("where?")
+        // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ReceiveCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
+        // use this cell for all received chats
         cell.receiveChatLabel.layer.cornerRadius = 5
         cell.receiveChatLabel.layer.masksToBounds = true
         
-        //cell.sendChatLabel.layer.cornerRadius = 5
-        //cell.sendChatLabel.layer.masksToBounds = true
+        // use this cell for chats user sends
+        // cell.sendChatLabel.layer.cornerRadius = 5
+        // cell.sendChatLabel.layer.masksToBounds = true
         
-        cell.receiveChatLabel.text = "HEY sdfdsgfdsgsfdgtgfdgdsrtsert the ovdsgsvherewafdcrertfsdcvfgvcxfdgvsdzsgxfdgsvzxvcd"
-        
+        // sample chat
+        cell.receiveChatLabel.text = "The Quick Brown Fox Jumps Over the Lazy Dog"
         return cell
     }
  

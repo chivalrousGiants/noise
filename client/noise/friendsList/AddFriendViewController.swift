@@ -61,7 +61,7 @@ class AddFriendViewController: UIViewController {
         print("Friends list:", realm.objects(Friend))
         
    }
-    
+
     func displayAlertMessage(message: String) {
         let myAlert = UIAlertController(title:"Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
         let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler:  nil)
