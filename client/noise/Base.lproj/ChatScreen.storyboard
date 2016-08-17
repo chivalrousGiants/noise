@@ -33,11 +33,11 @@
                         <viewControllerLayoutGuide type="bottom" id="Gcc-Xa-MXn"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QXm-tI-3in">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="687"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
-                                <rect key="frame" x="5" y="0.0" width="404" height="687"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
+                                <rect key="frame" x="5" y="0.0" width="404" height="679"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uEv-SI-Fa3">
                                     <size key="itemSize" width="399" height="58"/>
@@ -100,10 +100,49 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ps9-br-m49">
+                                <rect key="frame" x="0.0" y="687" width="414" height="49"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Euh-V1-xib">
+                                        <rect key="frame" x="13" y="13" width="234" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9FC-Xv-NHY">
+                                        <rect key="frame" x="255" y="13" width="60" height="30"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <inset key="contentEdgeInsets" minX="-2" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <size key="titleShadowOffset" width="1" height="0.0"/>
+                                        <state key="normal" title="send">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="9FC-Xv-NHY" secondAttribute="trailing" id="39N-Mf-UqT"/>
+                                    <constraint firstItem="9FC-Xv-NHY" firstAttribute="leading" secondItem="Euh-V1-xib" secondAttribute="trailing" constant="8" id="Brl-pM-bfc"/>
+                                    <constraint firstItem="9FC-Xv-NHY" firstAttribute="top" secondItem="ps9-br-m49" secondAttribute="top" id="Ia2-3B-dba"/>
+                                    <constraint firstAttribute="bottom" secondItem="9FC-Xv-NHY" secondAttribute="bottom" id="Wme-w7-KI5"/>
+                                    <constraint firstAttribute="bottom" secondItem="Euh-V1-xib" secondAttribute="bottom" constant="6" id="Zfg-OL-6IM"/>
+                                    <constraint firstItem="Euh-V1-xib" firstAttribute="top" secondItem="ps9-br-m49" secondAttribute="top" constant="7" id="Zzq-Sj-uXW"/>
+                                    <constraint firstItem="Euh-V1-xib" firstAttribute="leading" secondItem="ps9-br-m49" secondAttribute="leading" constant="13" id="zdb-0D-Z9A"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Gcc-Xa-MXn" firstAttribute="top" secondItem="pLd-2X-Qho" secondAttribute="bottom" constant="40" id="E2l-KL-4Xj"/>
+                            <constraint firstItem="Gcc-Xa-MXn" firstAttribute="top" secondItem="ps9-br-m49" secondAttribute="bottom" id="IqQ-vr-Yrs"/>
+                            <constraint firstItem="ps9-br-m49" firstAttribute="leading" secondItem="QXm-tI-3in" secondAttribute="leading" id="Ney-B7-rSG"/>
+                            <constraint firstAttribute="trailing" secondItem="ps9-br-m49" secondAttribute="trailing" id="XKI-Ik-alY"/>
+                            <constraint firstItem="ps9-br-m49" firstAttribute="top" secondItem="pLd-2X-Qho" secondAttribute="bottom" id="aYJ-Wq-2WK"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RnS-k2-2Mf"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="CollectionView" destination="pLd-2X-Qho" id="Ib7-1j-3bm"/>
                     </connections>
