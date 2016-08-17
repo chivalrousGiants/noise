@@ -17,9 +17,9 @@ function signIn(user, clientSocket) {
       }
     })
     .then(foundUser => {
-      console.log('found password for user in db is', foundUser.password);
       // TODO: abstract out comparePassword in utils.js
-      if (foundUser.password === user.password) {
+      if (foundUser !== null && foundUser.password === user.password) {
+        console.log('signin password match successful');
         // Successful login
         clientSocket.emit('redis response for signin', {
           user: foundUser,
@@ -43,7 +43,7 @@ function signUp (user, clientSocket) {
         // Initiate insertion of new user by incrementing global_userId key
         redis.client.incr('global_userId', redis.print);
 
-        return client.getAsync('global_userId');
+        return redis.client.getAsync('global_userId');
 
       } else {
         // Username already exists
@@ -59,8 +59,8 @@ function signUp (user, clientSocket) {
 
       } else {
 
-        client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
-        client.hset('users', [user.username, `${globalUserId}`]);
+        redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
+        redis.client.hset('users', [user.username, `${globalUserId}`]);
         
         clientSocket.emit('redis response for signup', user);
 
@@ -93,7 +93,7 @@ function checkUser(username, clientSocket) {
       // user will be null or an object
       console.log('user is', user);
 
-      clientSocket.emit('reply for checkUser', user);
+      clientSocket.emit('redis response checkUser', user);
      
     }).catch(console.error.bind(console));
 }

@@ -44,7 +44,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             // Log in
             let userName = usernameTextField.text
             let userPassword = passwordTextField.text
-            let user: [String: String] = ["username": userName!, "password": userPassword!]
+            let user: [String: String] = [
+                "username": userName!,
+                "password": userPassword!
+            ]
+            
             SocketIOManager.sharedInstance.signIn(user)
         }
         
@@ -53,16 +57,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @objc func handleSignInNotification(notification: NSNotification) -> Void {
 
-        // notification.object is either nil or the user object
-        print(notification.object)
+        print("signInObj", notification.userInfo)
         
-        if let userObj = notification.object {
+        if let signInObj = notification.userInfo {
+            
+            let userObj = signInObj["user"]
             
             // insert user data in realm
             let user = User()
-            user.firstname = userObj["firstname"] as! String
-            user.lastname = userObj["lastname"] as! String
-            user.username = userObj["username"] as! String
+            user.firstname = userObj!["firstname"] as! String
+            user.lastname = userObj!["lastname"] as! String
+            user.username = userObj!["username"] as! String
             
             try! realm.write {
                 realm.add(user)

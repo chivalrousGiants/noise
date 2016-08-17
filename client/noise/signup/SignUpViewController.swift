@@ -69,14 +69,15 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     
     @objc func handleSignUpNotification(notification: NSNotification) -> Void {
         
-        // notification.object is either nil or the user object with new user info
+        print("signUpObj", notification.userInfo)
         
-        if let userObj = notification.object {
+        if let signUpObj = notification.userInfo {
             
+            // insert user data in realm
             let newUser = User()
-            newUser.firstname = userObj["firstname"] as! String
-            newUser.lastname = userObj["lastname"] as! String
-            newUser.username = userObj["username"] as! String
+            newUser.firstname = signUpObj["firstname"] as! String
+            newUser.lastname = signUpObj["lastname"] as! String
+            newUser.username = signUpObj["username"] as! String
             
             try! realm.write {
                 realm.add(newUser)

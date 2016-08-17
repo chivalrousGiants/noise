@@ -16,18 +16,18 @@ class SocketIOManager: NSObject {
         
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
             print("redis response for signin", userArray[0])
-            NSNotificationCenter.defaultCenter().postNotificationName("signin", object: userArray[0] as? Dictionary<String, String>)
+            NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response for signup") { (userArray, socketAck) -> Void in
             print("redis response for signup", userArray[0])
-            NSNotificationCenter.defaultCenter().postNotificationName("signup", object: userArray[0] as? Dictionary<String, String>)
+            NSNotificationCenter.defaultCenter().postNotificationName("signup", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         // Listener for AddFriend endpoint
         socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
             print("redis response checkUser", userArray)
-            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: userArray[0] as? Dictionary<String, String>)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
     }
     

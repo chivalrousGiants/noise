@@ -27,9 +27,11 @@ class AddFriendViewController: UIViewController {
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
         
-        // notification.object is either nil or the found user object
+        print("friendObj", notification.userInfo)
         
-        if let userObj = notification.object {
+        if let userObj = notification.userInfo {
+            
+            // insert new friend data in realm
             let newFriend = Friend()
             newFriend.firstname = userObj["firstname"] as! String
             newFriend.lastname = userObj["lastname"] as! String
