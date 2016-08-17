@@ -46,6 +46,8 @@
 		4150B4961D5BCE81006B7D57 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4801D5BCE81006B7D57 /* SocketTypes.swift */; };
 		4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */; };
 		4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4821D5BCE81006B7D57 /* WebSocket.swift */; };
+		4198959C1D64DD98003240C1 /* ChatCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */; };
+		4198959E1D64DFA0003240C1 /* ChatCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */; };
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
 		B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */; };
 		BBFBE9EE1D651F48005A9647 /* waitForConfimation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */; };
@@ -93,6 +95,8 @@
 		4150B4801D5BCE81006B7D57 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		4150B4821D5BCE81006B7D57 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewCell.swift; path = noise/chatscreen/ChatCollectionViewCell.swift; sourceTree = "<group>"; };
+		4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewController.swift; path = noise/chatscreen/ChatCollectionViewController.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
 		BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = waitForConfimation.storyboard; sourceTree = "<group>"; };
 		C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,6 +211,8 @@
 				4133BD2F1D5AAB0C001EA380 /* ChatsViewController.swift */,
 				4133BD2A1D5A9761001EA380 /* FriendsListViewController.swift */,
 				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
+				4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */,
+				4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -405,6 +411,8 @@
 				4150B4831D5BCE81006B7D57 /* SocketAckEmitter.swift in Sources */,
 				4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */,
 				4133BD321D5AC635001EA380 /* SettingsViewController.swift in Sources */,
+				4198959E1D64DFA0003240C1 /* ChatCollectionViewController.swift in Sources */,
+				4198959C1D64DD98003240C1 /* ChatCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
