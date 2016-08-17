@@ -65,6 +65,16 @@ const redis = require('redis');
 const bluebird = require('bluebird');
 const utils = require('./utils.js');
 
+const {
+  BLOOM_FILTER_SIZE,
+  NUM_HASH_FUNCTIONS,
+  NUM_COHORTS,
+  F_PARAM,
+  P_PARAM,
+  Q_PARAM,
+  MAX_SUM_BITS,
+} = require('./differentialPrivacyParams');
+
 /*
   Promisify redis with bluebird
 
@@ -136,42 +146,31 @@ client.on('connect', function() {
     })
     .catch(console.error.bind(console));
 
-});
+  /////////////////////////////////////////////////////////
+  // Initialize empty DP statistics data structures
 
+  // 1. Create bit field for each cohort
+  for (let cohortNum of Array(NUM_COHORTS).keys()) {
+    // NUM_COHORTS * MAX_SUM_BITS - 1 is the index of the least significant bit of the last bit's sum.
+    // Set this bit to zero manually to pre-allocate space for this bitfield.
+    client.batch([
+      ['SET', `bitCounts:${cohortNum}`, '0'],
+      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u${MAX_SUM_BITS}`, 0, 0],
+      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u1`, `${NUM_COHORTS * MAX_SUM_BITS - 1}`, 0],
+    ]).exec((err, res) => {
+      if (err) console.error(error);
+    });
+  };
+
+  // 2. Create hash table holding each cohort's total number of reports
+  [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
+    client.hmset(`repTotals`, `coh${cohortNum}`, 0, (err, res) => {
+      if (err) console.error(err);
+    });
+  });
+});
 
 // Exports
 module.exports = {
   client
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
