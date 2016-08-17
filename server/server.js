@@ -12,6 +12,7 @@ const redis = require('./redis.js');
 const userController = require('./userController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
 
+// HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
 });
@@ -48,7 +49,7 @@ io.on('connection', (clientSocket) => {
 
 
   /////////////////////////////////////////////////////////
-  // Differential Privacy-related routes
+  // Differential Privacy-related socket routes
   
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('hit submitIRRReports on server socket:', user);
