@@ -14,6 +14,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     let messages = ["hello", "hi"]
  
+    @IBOutlet weak var SendChatTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,19 +37,25 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         print("where?")
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ReceiveCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
-        //cell.receiveChatLabel.layer.cornerRadius = 5
-        //cell.receiveChatLabel.layer.masksToBounds = true
+        cell.receiveChatLabel.layer.cornerRadius = 5
+        cell.receiveChatLabel.layer.masksToBounds = true
         
-        cell.sendChatLabel.layer.cornerRadius = 5
-        cell.sendChatLabel.layer.masksToBounds = true
+        //cell.sendChatLabel.layer.cornerRadius = 5
+        //cell.sendChatLabel.layer.masksToBounds = true
         
-        cell.sendChatLabel.text = "HEY sdfdsgfdsgsfdgtgfdgdsrtsert the ovdsgsvherewafdcrertfsdcvfgvcxfdgvsdzsgxfdgsvzxvcd"
+        cell.receiveChatLabel.text = "HEY sdfdsgfdsgsfdgtgfdgdsrtsert the ovdsgsvherewafdcrertfsdcvfgvcxfdgvsdzsgxfdgsvzxvcd"
         
         return cell
     }
  
+    @IBAction func sendButtonTapped(sender: AnyObject) {
+        
+    }
+    
+
+    
 
 }
