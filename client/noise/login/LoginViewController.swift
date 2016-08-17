@@ -68,9 +68,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             user.firstname = userObj!["firstname"] as! String
             user.lastname = userObj!["lastname"] as! String
             user.username = userObj!["username"] as! String
+            user.id = 0
             
             try! realm.write {
-                realm.add(user)
+                realm.add(user, update:true)
             }
             
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
