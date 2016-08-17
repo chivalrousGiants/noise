@@ -36,8 +36,4 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     @IBAction func sendButtonTapped(sender: AnyObject) {
         
     }
-    
-
-    
-
 }
