@@ -32,7 +32,29 @@ PendingKeyExchange
   (TO BE DETERMINED)
   source_user_id, target_user_id
 
-DP noisified data, PRR, IRR
+DP IRR Sums
+  Query: Given a cohort number, fetch an array of integers with each value
+  representing the sum of the bits at each corresponding index for IRRs 
+  reported by that cohort.
+
+    BITFIELD coh:cohort_num GET u16 0*16 GET u16 1*16 GET u16 2*16 ...
+
+  Insert: Given a cohort number and a bit place, increment the number at
+  the specified bit place to the sum representing the sum of the bits at
+  each corresponding index for IRRs reported by that cohort.
+    
+    BITFIELD coh:cohort_num OVERFLOW FAIL INCRBY u16 16*bit_place 1
+
+  Bitfield irrsum:cohort_num
+
+DP Total Reports per Cohort
+  Query: Given a cohort number, fetch the total number of reports submitted
+  for that cohort.
+
+  Insert: Given a cohort number, increment the total number of reports.
+
+  Hash cohortSums
+    (coh0, 3456) (coh1, 3544) (coh2, 3654) ...
 
 DP statistics
  ************************************************************/
