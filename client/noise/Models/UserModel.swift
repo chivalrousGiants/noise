@@ -7,6 +7,12 @@ class User: Object {
     dynamic var firstname = ""
     dynamic var createdAt = NSDate()
     dynamic var photo = ""
-    dynamic var userID = ""
+    
+    // Primary key
+    dynamic var id = 0
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
 }
 
