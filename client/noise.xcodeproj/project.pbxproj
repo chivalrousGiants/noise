@@ -47,6 +47,7 @@
 		4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */; };
 		4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4821D5BCE81006B7D57 /* WebSocket.swift */; };
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
+		B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +93,7 @@
 		4150B4811D5BCE81006B7D57 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		4150B4821D5BCE81006B7D57 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
+		C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
 		EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -101,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +121,7 @@
 				4150B46B1D5BCE81006B7D57 /* source */,
 				4133BD101D5A884C001EA380 /* Products */,
 				BEF83FB3F75738DBA04403DC /* Pods */,
+				8B2EAAF746BDE2B48BA5CAE0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,6 +222,14 @@
 			children = (
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		8B2EAAF746BDE2B48BA5CAE0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BEF83FB3F75738DBA04403DC /* Pods */ = {
