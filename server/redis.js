@@ -32,7 +32,29 @@ PendingKeyExchange
   (TO BE DETERMINED)
   source_user_id, target_user_id
 
-DP noisified data, PRR, IRR
+DP IRR Sums
+  Query: Given a cohort number, fetch an array of integers with each value
+  representing the sum of the bits at each corresponding index for IRRs 
+  reported by that cohort.
+
+    BITFIELD coh:cohort_num GET u16 0*16 GET u16 1*16 GET u16 2*16 ...
+
+  Insert: Given a cohort number and a bit place, increment the number at
+  the specified bit place to the sum representing the sum of the bits at
+  each corresponding index for IRRs reported by that cohort.
+    
+    BITFIELD coh:cohort_num OVERFLOW FAIL INCRBY u16 16*bit_place 1
+
+  Bitfield irrsum:cohort_num
+
+DP Total Reports per Cohort
+  Query: Given a cohort number, fetch the total number of reports submitted
+  for that cohort.
+
+  Insert: Given a cohort number, increment the total number of reports.
+
+  Hash cohortSums
+    (coh0, 3456) (coh1, 3544) (coh2, 3654) ...
 
 DP statistics
  ************************************************************/
@@ -42,6 +64,16 @@ DP statistics
 const redis = require('redis');
 const bluebird = require('bluebird');
 const utils = require('./utils.js');
+
+const {
+  BLOOM_FILTER_SIZE,
+  NUM_HASH_FUNCTIONS,
+  NUM_COHORTS,
+  F_PARAM,
+  P_PARAM,
+  Q_PARAM,
+  MAX_SUM_BITS,
+} = require('./differentialPrivacyParams');
 
 /*
   Promisify redis with bluebird
@@ -114,42 +146,31 @@ client.on('connect', function() {
     })
     .catch(console.error.bind(console));
 
-});
+  /////////////////////////////////////////////////////////
+  // Initialize empty DP statistics data structures
 
+  // 1. Create bit field for each cohort
+  for (let cohortNum of Array(NUM_COHORTS).keys()) {
+    // NUM_COHORTS * MAX_SUM_BITS - 1 is the index of the least significant bit of the last bit's sum.
+    // Set this bit to zero manually to pre-allocate space for this bitfield.
+    client.batch([
+      ['SET', `bitCounts:${cohortNum}`, '0'],
+      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u${MAX_SUM_BITS}`, 0, 0],
+      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u1`, `${NUM_COHORTS * MAX_SUM_BITS - 1}`, 0],
+    ]).exec((err, res) => {
+      if (err) console.error(error);
+    });
+  };
+
+  // 2. Create hash table holding each cohort's total number of reports
+  [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
+    client.hmset(`repTotals`, `coh${cohortNum}`, 0, (err, res) => {
+      if (err) console.error(err);
+    });
+  });
+});
 
 // Exports
 module.exports = {
   client
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
