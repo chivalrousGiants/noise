@@ -7,7 +7,10 @@ const HTTP_PORT = 4000;
 
 // Redis Database
 const redis = require('./redis.js');
+
+// Controllers
 const userController = require('./userController.js');
+const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
 
 app.get('/', (req, res) => {
   res.send('Hello world');
@@ -44,18 +47,24 @@ io.on('connection', (clientSocket) => {
   });
 
 
+  /////////////////////////////////////////////////////////
+  // Differential Privacy-related routes
+  
+  clientSocket.on('submitIRRReports', function(IRRReports) {
+    console.log('hit submitIRRReports on server socket:', user);
+    
+    
+    // IngestIRRReports();
+
+    // clientSocket.emit('Reports successfully aggregated', chatMessage);
+  });
+
 
   // clientSocket.on('encryptedChatSent', function(chatMessage) {
   //   console.log('Received ChatMessage from client:', chatMessage)
   //   // Insert msg id -time stamp to ordered list
   //   // Insert msg hash to msgs
   // });
-
-  // clientSocket.on('noisifiedChatSent', function(chatMessage) {
-  //   console.log('TODO: pass nosified chatMessage to redis DB')
-  //   // clientSocket.emit('c', chatMessage);
-  // });
-
 
   // clientSocket.on('getfriends', function() {
   //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
