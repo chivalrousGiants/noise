@@ -40,8 +40,11 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     // pass selected friend's object to ChatViewController on select.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let chatView = segue.destinationViewController as! ChatViewController
-        chatView.friend = sender as! Friend
+        if segue.identifier == "chatScreenSegue" {
+            let chatView = segue.destinationViewController as! ChatViewController
+            chatView.friend = sender as! Friend
+        }
+       
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {

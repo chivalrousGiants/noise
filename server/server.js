@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 // Config
 const HTTP_PORT = 4000;
 
-const DPParams = require('./dpParams');
+const DPParams = require('./differentialPrivacy/dpParams');
 
 // Redis Database
 const redis = require('./redis.js');
@@ -49,7 +49,7 @@ io.on('connection', (clientSocket) => {
   // User socket routes
   clientSocket.on('find new friend', (username) => {
     console.log('hit find-new-friend on server socket with username', username);
-    
+
     userController.checkUser(username, clientSocket);
   });
 
@@ -57,13 +57,13 @@ io.on('connection', (clientSocket) => {
   // Differential Privacy-related socket routes
   clientSocket.on('getDPParams', function() {
     console.log('getDPParams requested by user', user);
-    
+
     clientSocket.emit('DPParams', DPParams);
   });
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('submitIRRReports data received from: ', user);
-    
+
     dpDataIngestController.IngestIRRReports(IRRReports)
       .then((replies) => {
         clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);
