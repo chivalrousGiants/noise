@@ -32,7 +32,14 @@ class SocketIOManager: NSObject {
             print("Still need to undertakeKeyExchange : ")
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
         }
-        //TODO: add listener for undertakeKeyExchange
+        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
+            print("KeyExchange dropped")
+            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
+        }
+        socket.on("keyExchange initiated") { (userArray, socketAck) -> Void in
+            print("keyExchange initiated")
+            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
+        }
     }
     
     func signIn(user: Dictionary<String, String>) {

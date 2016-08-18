@@ -35,7 +35,6 @@ function signIn(user, clientSocket) {
 function signUp (user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
-      console.log('signUp userId is', userId);
 
       if (userId === null) {
         // Username not taken, thus valid for new user
@@ -124,10 +123,11 @@ function determineChatExistence (lesserUserID, greaterUserId){
 
 //initiates redis data structures for the key exchange, inserts values
 function initKeyExchange (dhxObject, clientSocket){
-  console.log(dhxObject);
   //client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-  redis.client.hmset(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E], redis.print);
-  //create pending set: client1 
+  redis.client.hmsetAsync(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E])
+  .then(()=>{
+    clientSocket.emit("keyExchange initiated")
+  })//create pending set: client1 
   //create pending set: client2
 };
 
