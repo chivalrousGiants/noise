@@ -52,7 +52,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                 Alice["p"] = String(p_Alice)
                 Alice["E"] = String(E_Alice)
                 Alice["friendname"] = self.friends![indexPath.row].username
-                SocketIOManager.sharedInstance.initKeyExchange(Alice)
+                SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
 
                 //insert g_Alice, p_Alice, E_Alice into the Redis DB
                 //insert Alice into Bob's pending.

@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 // Config
 const HTTP_PORT = 4000;
 
-const DPParams = require('./dpParams');
+const DPParams = require('./differentialPrivacy/dpParams.js');
 
 // Redis Database
 const redis = require('./redis.js');
@@ -25,36 +25,51 @@ http.listen(HTTP_PORT, () => {
 
 // Socket.io
 io.on('connection', (clientSocket) => {
-  console.log('A user connected with socket id', clientSocket.id);
+  console.log('A user connected');
 
   clientSocket.on('disconnect', () => {
-    console.log('A user disconnected with socket id', clientSocket.id);
+    console.log('A user disconnected');
   });
 
   /////////////////////////////////////////////////////////
   // Auth socket routes
   clientSocket.on('signIn', (user) => {
-    console.log('hit signIn on server socket:', user);
-
     userController.signIn(user, clientSocket);
   });
 
   clientSocket.on('signUp', (user) => {
-    console.log('hit signUp on server socket:', user);
-
     userController.signUp(user, clientSocket);
   });
 
   /////////////////////////////////////////////////////////
   // User socket routes
   clientSocket.on('find new friend', (username) => {
-    console.log('hit find-new-friend on server socket with username', username);
     userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('initial key query', (dhxObject) => {
-    console.log('hit initial-key-query on server socket with username', username);
+  /////////////////////////////////////////////////////////
+  // Differential Privacy-related socket routes
+  clientSocket.on('getDPParams', function() {
+    console.log('getDPParams requested by user', user);
 
+    clientSocket.emit('DPParams', DPParams);
+  });
+      
+
+  clientSocket.on('submitIRRReports', function(IRRReports) {
+    console.log('submitIRRReports data received from: ', user);
+    
+    dpDataIngestController.IngestIRRReports(IRRReports)
+      .then((replies) => {
+        clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);
+      })
+      .catch(console.error.bind(console));
+  });
+  /////////////////////////////////////////////////////////
+  // Diffie Hellman Key Exchange-related socket routes
+  clientSocket.on('initial key query', (dhxObject) => {
+    console.log('hit initial-key-query on server socket with dhxObject', dhxObject);
+    userController.initKeyExchange(dhxObject, clientSocket);
             /* GET USER ID
             ask redis for Alice_id given Alice
             return the userId
@@ -80,14 +95,5 @@ io.on('connection', (clientSocket) => {
 
     //userController.initKeyExchange(dhxObject, clientSocket);
   });
+});
 
-  // clientSocket.on('encryptedChatSent', function(chatMessage) {
-  //   console.log('Received ChatMessage from client:', chatMessage)
-  //   // Insert msg id -time stamp to ordered list
-  //   // Insert msg hash to msgs
-  // });
-
-  // clientSocket.on('getfriends', function() {
-  //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
-  //   io.emit(dummyFriends);
-  // });

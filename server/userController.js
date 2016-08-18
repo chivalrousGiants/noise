@@ -98,8 +98,35 @@ function checkUser(username, clientSocket) {
     }).catch(console.error.bind(console));
 }
 
+function getUserId(username, clientSocket){
+    redis.client.hgetAsync('users', username)
+    .then(userId => {
+      if (userId === null) {
+        return null;
+      } else {
+        //clientSocket.emit("redis response undertakeKeyExchange", userId)
+        return userId;
+      }
+    }).catch(console.error.bind(console));
+};
+
+function checkForChat (userId1, userId2, clientSocket){
+  //TODO
+};
+
+function initKeyExchange (dhxObject, clientSocket){
+  var userId1 = getUserId("hannah");
+  var userId2 = getUserId("ryan");
+  var users = {
+    'userId1' : userId1,
+    'userId2' : userId2
+  };
+  clientSocket.emit("redis response undertakeKeyExchange", users);
+  console.log('hit initKeyExchange function')
+};
+
 module.exports = {
   signIn, 
   signUp,
-  checkUser
+  initKeyExchange
 };
