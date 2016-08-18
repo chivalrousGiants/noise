@@ -42,9 +42,33 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('get userId', (username) => {
-    console.log('hit get-userId on server socket with username', username);
-    userController.checkUser(username, clientSocket);
+  clientSocket.on('initial key query', (dhxObject) => {
+    console.log('hit initial-key-query on server socket with username', username);
+
+            /* GET USER ID
+            ask redis for Alice_id given Alice
+            return the userId
+            */
+
+            /* CHECK FOR CHAT
+            get Alice_id
+            get Bob_id
+            see if Alice and Bob have a Chat
+               >>return true 
+                 >>else return false (no chat)
+            */
+
+    /*  INIT KEY EXCHANGE (obj)
+    var userIds = {
+      userId1 = getUserId('Alice')
+      userId2 = getUserId('Bob')
+    }
+    var chatExists = checkForChat(userId1, userId2)
+    if  !chatExists
+      >> 
+    */
+
+    //userController.initKeyExchange(dhxObject, clientSocket);
   });
 
   // clientSocket.on('encryptedChatSent', function(chatMessage) {

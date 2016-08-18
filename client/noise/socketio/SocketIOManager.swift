@@ -32,49 +32,37 @@ class SocketIOManager: NSObject {
     }
     
     func signIn(user: Dictionary<String, String>) {
-        // TEST: ping socket, display in console
         print("Test: hit signIn func for user: \(user)")
-        
-        // SEND: userData to db
         socket.emit("signIn", user)
     }
     
     func signUp(user: Dictionary<String, String>) {
-        // TEST: ping socket, display in console
         print("Test: hit signUp func for user: \(user)")
-        
-        // SEND: userData to db
         socket.emit("signUp", user)
     }
     
-    // change this to 1) encrypted message 2) noisified message --both dictionaries
+    // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries
     func sendEncryptedChat(message: String){
         print("From socket func, sendChat: \(message)")
-        
-        //
         socket.emit("encryptedChatSent", message)
     }
     
-    // Dictionary<String, String>
+    //TODO: Modify as needed
     func sendNoisifiedChat(messageDP: String){
         print("TEST: socketMGMT sendingDPChat: \(messageDP)")
         socket.emit("noisifiedChatSent", messageDP)
-        
-        //listen for successfully added
-        socket.on("DP message sent") { (messageDP) -> Void in
-            
-        }
-        
-        //listen for fail
+
     }
     
     // newFriend is the username
     func addFriend(newFriend: String) {
-        
         print("Test: socket func, addFriend with username: \(newFriend)")
-        
-        // Query redis db
         socket.emit("find new friend", newFriend)
+    }
+    
+    func initKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
+        print("Test: hit initiKeyExchange socket with dhxObj: \(dhxInfo)")
+        socket.emit("initial key query", dhxInfo)
     }
     
     func closeConnection() {
