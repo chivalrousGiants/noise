@@ -150,17 +150,17 @@ client.on('connect', function() {
   // Initialize empty DP statistics data structures - comment out to maintain existing data
 
   // 1. Create bit field for each cohort
-  for (let cohortNum of Array(NUM_COHORTS).keys()) {
-    // NUM_COHORTS * MAX_SUM_BITS - 1 is the index of the least significant bit of the last bit's sum.
-    // Set this bit to zero manually to pre-allocate space for this bitfield.
-    client.batch([
-      ['SET', `bitCounts:${cohortNum}`, '0'],
-      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u${MAX_SUM_BITS}`, 0, 0],
-      ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u1`, `${NUM_COHORTS * MAX_SUM_BITS - 1}`, 0],
-    ]).exec((err, res) => {
-      if (err) console.error(error);
-    });
-  };
+  // for (let cohortNum of Array(NUM_COHORTS).keys()) {
+  //   // BLOOM_FILTER_SIZE * MAX_SUM_BITS - 1 is the index of the least significant bit of the last bit's sum.
+  //   // Set this bit to zero manually to pre-allocate space for this bitfield.
+  //   client.batch([
+  //     ['SET', `bitCounts:${cohortNum}`, '0'],
+  //     ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u${MAX_SUM_BITS}`, 0, 0],
+  //     ['BITFIELD', `bitCounts:${cohortNum}`, 'SET', `u1`, `${BLOOM_FILTER_SIZE * MAX_SUM_BITS - 1}`, 0],
+  //   ]).exec((err, res) => {
+  //     if (err) console.error(error);
+  //   });
+  // };
 
   // 2. Create hash table holding each cohort's total number of reports
   [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
