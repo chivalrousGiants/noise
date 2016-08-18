@@ -123,15 +123,21 @@ function determineChatExistence (lesserUserID, greaterUserId){
 
 //initiates redis data structures for the key exchange, inserts values
 function initKeyExchange (dhxObject, clientSocket){
-  //client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+  console.log('dhxObject izzzzz', dhxObject)
+  //redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
   redis.client.hmsetAsync(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E])
-  .then(()=>{
-    clientSocket.emit("keyExchange initiated")
-  })//create pending set: client1 
+  //create pending set: client1
+    //redis.client.
   //create pending set: client2
+    //redis.client.
+  .then(()=>{
+    redis.client.get(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, redis.print)
+    clientSocket.emit("keyExchange initiated")
+  })
+  .catch(console.error.bind(console));
 };
 
-//EITHER initiates keyExchange or informs client no need.
+//EITHER initiates keyExchange between two clients or informs Alice_client no need.
 function undertakeKeyExchange (dhxObject, clientSocket){
   redis.client.hgetAsync('users', `${dhxObject.username}`)
   .then(idAlice => {
@@ -161,30 +167,3 @@ module.exports = {
   undertakeKeyExchange,
   initKeyExchange
 };
-
-
-
-
-/*
-function undertakeKeyExchange (dhxObject, clientSocket){
-  //setUp
-  let needToInitKeyExchange = false;
-  let userId1 = redis.client.hgetAsync('users', `${dhxObject.username}`)
-  let userId2 = redis.client.hgetAsync('users', `${dhxObject.friendname}`)
-  // getUserId(dhxObject.username, function(v) { userId1 = v;});
-  // getUserId(dhxObject.friendname, function(v) {userId2 = v;});
-  //  console.log('yoooserid acch', userId2);
-  const greaterUserId = userId1 >= userId2 ? userId1 : userId2;
-  const lesserUserID = userId1 < userId2 ? userId1 : userId2;
-  dhxObject.greaterUserId = greaterUserId;
-  dhxObject.lesserUserId = lesserUserID
-
-  if (determineChatExistence(lesserUserID, greaterUserId)) {
-     needToInitKeyExchange = true;
-     initKeyExchange(dhxObject, clientSocket);
-      clientSocket.emit("redis response undertake KeyExchange", needToInitKeyExchange);
-  } else {
-      clientSocket.emit("redis response no need to undertake KeyExchange", needToInitKeyExchange);
-  }
-};
-*/
