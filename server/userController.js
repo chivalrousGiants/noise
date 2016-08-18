@@ -143,11 +143,11 @@ function undertakeKeyExchange (dhxObject, clientSocket){
     })
     .then(dhxObject => {
       console.log('final then clause', dhxObject)
-      if (determineChatExistence(lesserUserID, greaterUserId)) {
+      if (determineChatExistence(dhxObject.lesserUserID, dhxObject.greaterUserId)) {
         initKeyExchange(dhxObject, clientSocket);
-        clientSocket.emit("redis response undertake KeyExchange", needToInitKeyExchange);
+        clientSocket.emit("redis response undertake KeyExchange");
       } else {
-        clientSocket.emit("redis response no need to undertake KeyExchange", needToInitKeyExchange);
+        clientSocket.emit("redis response no need to undertake KeyExchange");
       }    
     })
   })
