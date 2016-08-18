@@ -25,7 +25,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func updateChatScreen() {
-        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)'")
+        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)' OR sender = 'mikey' ")
         self.CollectionView.reloadData()
     }
     
@@ -33,19 +33,18 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ReceiveCell",
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
         // use this cell for all received chats
-        cell.receiveChatLabel.layer.cornerRadius = 5
-        cell.receiveChatLabel.layer.masksToBounds = true
+        // cell.receiveChatLabel.layer.cornerRadius = 5
+        // cell.receiveChatLabel.layer.masksToBounds = true
         
         // use this cell for chats user sends
-        // cell.sendChatLabel.layer.cornerRadius = 5
-        // cell.sendChatLabel.layer.masksToBounds = true
-        
-        // sample chat
-        cell.receiveChatLabel.text = self.messages![indexPath.row].text
+        cell.sendChatLabel.layer.cornerRadius = 5
+        cell.sendChatLabel.layer.masksToBounds = true
+        cell.sendChatLabel.clipsToBounds = true
+        cell.sendChatLabel.text = self.messages![indexPath.row].text
         return cell
     }
  
