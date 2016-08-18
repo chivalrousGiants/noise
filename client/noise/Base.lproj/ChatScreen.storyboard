@@ -9,7 +9,7 @@
         <!--ChatViewController-->
         <scene sceneID="XuV-Gf-utq">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="IYG-xG-BWK" userLabel="ChatViewController" customClass="ChatViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="currentContext" id="IYG-xG-BWK" userLabel="ChatViewController" customClass="ChatViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="giH-xk-3t2"/>
                         <viewControllerLayoutGuide type="bottom" id="Gcc-Xa-MXn"/>
@@ -52,10 +52,10 @@
                                     <constraint firstItem="Euh-V1-xib" firstAttribute="leading" secondItem="ps9-br-m49" secondAttribute="leading" constant="13" id="zdb-0D-Z9A"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" directionalLockEnabled="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
                                 <rect key="frame" x="0.0" y="0.0" width="404" height="615"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="uEv-SI-Fa3">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="2" minimumInteritemSpacing="1" id="uEv-SI-Fa3">
                                     <size key="itemSize" width="390" height="30"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -88,18 +88,19 @@
                                             <outlet property="receiveChatLabel" destination="2sO-K3-MWv" id="kBC-Ny-l9V"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="SendCell" id="q5W-KJ-yCI" customClass="ChatCollectionViewCell" customModule="noise" customModuleProvider="target">
-                                        <rect key="frame" x="5" y="58" width="394" height="58"/>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="SendCell" id="q5W-KJ-yCI" customClass="ChatCollectionViewCell" customModule="noise" customModuleProvider="target">
+                                        <rect key="frame" x="5" y="60" width="394" height="58"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="394" height="58"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="clip" numberOfLines="8" baselineAdjustment="none" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d1m-lZ-vsM">
-                                                    <rect key="frame" x="367" y="0.0" width="24" height="16"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="clip" numberOfLines="16" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d1m-lZ-vsM">
+                                                    <rect key="frame" x="317" y="0.0" width="74" height="26"/>
                                                     <color key="backgroundColor" red="0.78678155857948284" green="1" blue="0.84711202947139896" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="1"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
+                                                    <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -107,7 +108,7 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="d1m-lZ-vsM" secondAttribute="trailing" constant="100" id="2Fr-nA-ngP"/>
+                                            <constraint firstAttribute="trailing" secondItem="d1m-lZ-vsM" secondAttribute="trailing" constant="90" id="2Fr-nA-ngP"/>
                                         </constraints>
                                         <size key="customSize" width="394" height="58"/>
                                         <connections>
