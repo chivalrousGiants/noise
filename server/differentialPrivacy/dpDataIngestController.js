@@ -26,7 +26,7 @@ const SampleIRRReports = {
 };
 
 // Returns a Promise that is resolved with an Array of all query replies from Redis.
-// For the specified cohort, tell Redis to add each bit to its corresponding sum
+// For the specified cohort, tell Redis to add each bit to its corresponding sum.
 function IngestIRRReports(IRRReports) {
   const commands = [];
 
