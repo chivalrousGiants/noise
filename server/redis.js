@@ -168,6 +168,8 @@ client.on('connect', function() {
   //     if (err) console.error(err);
   //   });
   // });
+
+// (Closing brace for client.on('connect'))
 });
 
 // Exports
