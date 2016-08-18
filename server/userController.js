@@ -112,17 +112,17 @@ function getUserId(username, clientSocket){
 
 function checkForChat (userId1, userId2, clientSocket){
   //TODO
+  return true;
 };
 
 function initKeyExchange (dhxObject, clientSocket){
-  var userId1 = getUserId("hannah");
-  var userId2 = getUserId("ryan");
-  var users = {
-    'userId1' : userId1,
-    'userId2' : userId2
-  };
-  clientSocket.emit("redis response undertakeKeyExchange", users);
-  console.log('hit initKeyExchange function')
+  let needToInitKeyExchange = false;
+  const userId1 = getUserId(dhxObject.username);
+  const userId2 = getUserId(dhxObject.friendname);
+  if (checkForChat(userId1, userId2, clientSocket)) {
+    needToInitKeyExchange = true;
+  }
+  clientSocket.emit("redis response undertakeKeyExchange", needToInitKeyExchange);
 };
 
 module.exports = {

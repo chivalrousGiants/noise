@@ -68,16 +68,9 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
   clientSocket.on('initial key query', (dhxObject) => {
-    console.log('hit initial-key-query on server socket with dhxObject', dhxObject);
     userController.initKeyExchange(dhxObject, clientSocket);
-            /* GET USER ID
-            ask redis for Alice_id given Alice
-            return the userId
-            */
 
             /* CHECK FOR CHAT
-            get Alice_id
-            get Bob_id
             see if Alice and Bob have a Chat
                >>return true 
                  >>else return false (no chat)
