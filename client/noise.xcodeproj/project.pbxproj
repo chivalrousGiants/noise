@@ -51,6 +51,7 @@
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
 		B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */; };
 		BBFBE9EE1D651F48005A9647 /* waitForConfimation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */; };
+		BBFBE9F01D652C5C005A9647 /* KeyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +100,7 @@
 		4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewController.swift; path = noise/chatscreen/ChatCollectionViewController.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
 		BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = waitForConfimation.storyboard; sourceTree = "<group>"; };
+		BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyUtility.swift; sourceTree = "<group>"; };
 		C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
 		EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				4133BD141D5A884C001EA380 /* ViewController.swift */,
 				4133BD191D5A884C001EA380 /* Assets.xcassets */,
 				4133BD1E1D5A884C001EA380 /* Info.plist */,
+				BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */,
 				4150B46B1D5BCE81006B7D57 /* source */,
 				4133BD101D5A884C001EA380 /* Products */,
 				BEF83FB3F75738DBA04403DC /* Pods */,
@@ -377,6 +380,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBFBE9F01D652C5C005A9647 /* KeyUtility.swift in Sources */,
 				4150B4841D5BCE81006B7D57 /* SocketAckManager.swift in Sources */,
 				4150B4881D5BCE81006B7D57 /* SocketEngineClient.swift in Sources */,
 				4133BD2E1D5A9ABA001EA380 /* AddFriendViewController.swift in Sources */,
