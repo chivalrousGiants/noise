@@ -111,25 +111,28 @@ function getUserId(username, cb){
 };
 
 //query redis for existing chat between two specified users, return bool
-function determineChatExistence (lesserUserID, greaterUserId){
-  var startTrueForTESTonly = true;
+function determineChatExistence (lesserUserId, greaterUserId){
 
-  var chatEstablished = startTrueForTESTonly ||
-      redis.client.get(`dh${lesserUserID}:${greaterUserId}`, 'chatEstablished', redis.print) ||
-      redis.client.get(`chat${lesserUserID}:${greaterUserId}`, redis.print);
-
-  return chatEstablished;
+  redis.client.hgetAsync(`dh${lesserUserId}:${greaterUserId}`, 'chatEstablished')
+  .then ((chatEstablishedVal) => {
+    redis.client.hgetallAsync(`chat${lesserUserId}:${greaterUserId}`)
+    .then((existingChatVal)=> {
+      console.log(!!chatEstablishedVal, !!existingChatVal)
+      return Boolean(chatEstablishedVal) || Boolean(existingChatVal)
+    })
+    .then((result)=>{
+      console.log(result)
+    })
+  })
+  .catch(console.error.bind(console));
 };
 
-//initiates redis data structures for the key exchange, inserts values
+//initiates redis data structures & vals : mutual dh exchange hash; alicePendingList; bobPendingList
 function initKeyExchange (dhxObject, clientSocket){
-  redis.client.hmset(`dh${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function (err, res) { if(err) {  console.log(err) } })
-  //create pending set: client1
-    // redis.client.sadd()
-  //create pending set: client2
-    //redis.client.
-
-    clientSocket.emit("keyExchange initiated")
+  redis.client.hmset(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){if(err){console.log(err)}})
+  redis.client.sadd(`pendingChats:${dhxObject.lesserUserId}`, `${dhxObject.greaterUserId}`)
+  redis.client.sadd(`pendingChats:${dhxObject.greaterUserId}`, `${dhxObject.lesserUserId}`)
+  clientSocket.emit("keyExchange initiated", dhxObject)
 };
 
 //EITHER initiates keyExchange between two clients or informs Alice_client no need.
@@ -143,11 +146,12 @@ function undertakeKeyExchange (dhxObject, clientSocket){
         return dhxObject;
     })
     .then(dhxObject => {
-      if (determineChatExistence(dhxObject.lesserUserID, dhxObject.greaterUserId)) {
+        //determine whether keyX has already begun &/ is complete:
+      if (! determineChatExistence(dhxObject.lesserUserId, dhxObject.greaterUserId)) {
         initKeyExchange(dhxObject, clientSocket);
-        clientSocket.emit("redis response undertake KeyExchange");
+        clientSocket.emit("redis response undertake KeyExchange", dhxObject);
       } else {
-        clientSocket.emit("redis response no need to undertake KeyExchange");
+        clientSocket.emit("redis response no need to undertake KeyExchange", dhxObject);
       }    
     })
   })
