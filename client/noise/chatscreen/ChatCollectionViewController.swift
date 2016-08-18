@@ -3,11 +3,13 @@ import UIKit
 class ChatViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     @IBOutlet weak var CollectionView: UICollectionView!
     @IBOutlet weak var SendChatTextField: UITextField!
+    @IBOutlet weak var NavigationLabel: UINavigationItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
+        self.NavigationLabel.title = "Michael"
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -15,7 +17,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        print("where?")
         // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ReceiveCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
