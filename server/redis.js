@@ -147,7 +147,7 @@ client.on('connect', function() {
     .catch(console.error.bind(console));
 
   /////////////////////////////////////////////////////////
-  // Initialize empty DP statistics data structures - comment out to maintain existing data
+  // DP statistics data structures - Uncomment to clear existing data and initialize new data structures
 
   // 1. Create bit field for each cohort
   // for (let cohortNum of Array(NUM_COHORTS).keys()) {
