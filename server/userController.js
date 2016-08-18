@@ -126,7 +126,7 @@ function determineChatExistence (lesserUserID, greaterUserId){
 function initKeyExchange (dhxObject, clientSocket){
   console.log(dhxObject);
   //client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-  redis.client.hmset(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E], function(err, res){});
+  redis.client.hmset(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E], redis.print);
   //create pending set: client1 
   //create pending set: client2
 };
@@ -142,7 +142,6 @@ function undertakeKeyExchange (dhxObject, clientSocket){
         return dhxObject;
     })
     .then(dhxObject => {
-      console.log('final then clause', dhxObject)
       if (determineChatExistence(dhxObject.lesserUserID, dhxObject.greaterUserId)) {
         initKeyExchange(dhxObject, clientSocket);
         clientSocket.emit("redis response undertake KeyExchange");
