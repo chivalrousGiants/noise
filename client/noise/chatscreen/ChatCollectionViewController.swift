@@ -17,11 +17,16 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
         self.NavigationLabel.title =  friend.firstname
-        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)'")
+        updateChatScreen()
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return (self.messages?.count)!
+    }
+    
+    func updateChatScreen() {
+        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)'")
+        self.CollectionView.reloadData()
     }
     
     
@@ -53,8 +58,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         try! realm.write {
             realm.add(message)
-            let sent = realm.objects(Message)
-            print(sent)
+            updateChatScreen()
         }
     }
     
