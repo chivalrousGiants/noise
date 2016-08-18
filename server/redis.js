@@ -63,6 +63,9 @@ const redis = require('redis');
 const bluebird = require('bluebird');
 const utils = require('./utils');
 
+// Generates random sentences (used for initializing message data)
+const chance = new require('chance')();
+
 const {
   BLOOM_FILTER_SIZE,
   NUM_HASH_FUNCTIONS,
@@ -137,8 +140,42 @@ client.on('connect', function() {
           .catch(err => {
             console.log('Error in initialization of user data', err);
           });
+      } 
+
+      // check for whether message data has already been initialized
+      return client.getAsync('global_msgId');
+    })
+    .then(msgId => {
+      // initialize message data
+      if (msgId === null) {
+        let newMsgId = 1;
+
+        for (let cnt = 1; cnt <= 5; cnt++) {
+          for (let sourceId = 1; sourceId <= 4; sourceId++) {
+            for (let targetId = 1; targetId <= 4; targetId++) {
+              if (!(sourceId === targetId)) {
+                client.hmset(`msgs:${newMsgId}`, [
+                  'sourceId', `${sourceId}`,
+                  'targetId', `${targetId}`,
+                  'body', chance.sentence(),
+                  'createdAt', Date.now()
+                ]);
+
+                if (sourceId < targetId) {
+                  client.zadd(`chat:${sourceId}:${targetId}`, `${newMsgId}`, `${newMsgId}`);
+                } else {
+                  client.zadd(`chat:${targetId}:${sourceId}`, `${newMsgId}`, `${newMsgId}`);
+                }
+                newMsgId++;
+              }
+            }
+          }
+        }
+
+        client.set('global_msgId', newMsgId, redis.print);
+
       } else {
-        // user data has been already initialized
+        // message data has been already initialized
         return null;
       }
     })
