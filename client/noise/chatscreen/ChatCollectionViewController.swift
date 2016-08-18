@@ -15,7 +15,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        print("where?")
         // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ReceiveCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell

@@ -98,35 +98,94 @@ function checkUser(username, clientSocket) {
     }).catch(console.error.bind(console));
 }
 
-function getUserId(username, clientSocket){
-    redis.client.hgetAsync('users', username)
+function getUserId(username, cb){
+  redis.client.hgetAsync('users', `${username}`)
     .then(userId => {
       if (userId === null) {
         return null;
       } else {
         //clientSocket.emit("redis response undertakeKeyExchange", userId)
-        return userId;
+        console.log('userId in getUserId is ', userId);
+        cb(userId);
       }
     }).catch(console.error.bind(console));
 };
 
-function checkForChat (userId1, userId2, clientSocket){
-  //TODO
-  return true;
+//query redis for existing chat between two specified users, return bool
+function determineChatExistence (lesserUserID, greaterUserId){
+  var startTrueForTESTonly = true;
+
+  var chatEstablished = startTrueForTESTonly ||
+      redis.client.get(`dh${lesserUserID}:${greaterUserId}`, 'chatEstablished', redis.print) ||
+      redis.client.get(`chat${lesserUserID}:${greaterUserId}`, redis.print);
+
+  return chatEstablished;
 };
 
+//initiates redis data structures for the key exchange, inserts values
 function initKeyExchange (dhxObject, clientSocket){
-  let needToInitKeyExchange = false;
-  const userId1 = getUserId(dhxObject.username);
-  const userId2 = getUserId(dhxObject.friendname);
-  if (checkForChat(userId1, userId2, clientSocket)) {
-    needToInitKeyExchange = true;
-  }
-  clientSocket.emit("redis response undertakeKeyExchange", needToInitKeyExchange);
+  console.log(dhxObject);
+  //client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+  redis.client.hmset(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E], function(err, res){});
+  //create pending set: client1 
+  //create pending set: client2
 };
+
+//EITHER initiates keyExchange or informs client no need.
+function undertakeKeyExchange (dhxObject, clientSocket){
+  redis.client.hgetAsync('users', `${dhxObject.username}`)
+  .then(idAlice => {
+    redis.client.hgetAsync('users', `${dhxObject.friendname}`)
+    .then(idBob => {
+        dhxObject.greaterUserId = idAlice >= idBob ? idAlice : idBob;
+        dhxObject.lesserUserId = idAlice < idBob ? idAlice : idBob;
+        return dhxObject;
+    })
+    .then(dhxObject => {
+      console.log('final then clause', dhxObject)
+      if (determineChatExistence(lesserUserID, greaterUserId)) {
+        initKeyExchange(dhxObject, clientSocket);
+        clientSocket.emit("redis response undertake KeyExchange", needToInitKeyExchange);
+      } else {
+        clientSocket.emit("redis response no need to undertake KeyExchange", needToInitKeyExchange);
+      }    
+    })
+  })
+  .catch(err => console.log('Error in undertakeKeyExchange function', err));
+};
+
 
 module.exports = {
   signIn, 
   signUp,
+  determineChatExistence,
+  undertakeKeyExchange,
   initKeyExchange
 };
+
+
+
+
+/*
+function undertakeKeyExchange (dhxObject, clientSocket){
+  //setUp
+  let needToInitKeyExchange = false;
+  let userId1 = redis.client.hgetAsync('users', `${dhxObject.username}`)
+  let userId2 = redis.client.hgetAsync('users', `${dhxObject.friendname}`)
+  // getUserId(dhxObject.username, function(v) { userId1 = v;});
+  // getUserId(dhxObject.friendname, function(v) {userId2 = v;});
+  //  console.log('yoooserid acch', userId2);
+  const greaterUserId = userId1 >= userId2 ? userId1 : userId2;
+  const lesserUserID = userId1 < userId2 ? userId1 : userId2;
+  dhxObject.greaterUserId = greaterUserId;
+  dhxObject.lesserUserId = lesserUserID
+
+  if (determineChatExistence(lesserUserID, greaterUserId)) {
+     needToInitKeyExchange = true;
+     initKeyExchange(dhxObject, clientSocket);
+      clientSocket.emit("redis response undertake KeyExchange", needToInitKeyExchange);
+  } else {
+      clientSocket.emit("redis response no need to undertake KeyExchange", needToInitKeyExchange);
+  }
+};
+*/

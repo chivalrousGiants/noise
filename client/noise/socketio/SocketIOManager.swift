@@ -28,7 +28,7 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response undertakeKeyExchange") { (bool, socketAck) -> Void in
+        socket.on("redis response undertake KeyExchange") { (bool, socketAck) -> Void in
             print("Still need to undertakeKeyExchange : ", bool)
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: bool[0] as? [NSObject : AnyObject])
         }

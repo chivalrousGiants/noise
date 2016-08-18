@@ -68,7 +68,7 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
   clientSocket.on('initial key query', (dhxObject) => {
-    userController.initKeyExchange(dhxObject, clientSocket);
+    userController.undertakeKeyExchange(dhxObject, clientSocket);
 
             /* CHECK FOR CHAT
             see if Alice and Bob have a Chat

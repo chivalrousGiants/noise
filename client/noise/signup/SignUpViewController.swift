@@ -69,8 +69,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     
     @objc func handleSignUpNotification(notification: NSNotification) -> Void {
         
-        print("signUpObj", notification.userInfo)
-        
         if let signUpObj = notification.userInfo {
             
             // insert user data in realm
