@@ -25,6 +25,7 @@ const SampleIRRReports = {
   ],
 };
 
+// Returns a Promise that is resolved with an Array of all query replies from Redis.
 // For the specified cohort, tell Redis to add each bit to its corresponding sum
 function IngestIRRReports(IRRReports) {
   const commands = [];
@@ -34,15 +35,12 @@ function IngestIRRReports(IRRReports) {
     IRR.forEach((bit, index) => {
       commands.push(['BITFIELD', `bitCounts:${IRRReports.cohortNum}`, 'INCRBY', `u${MAX_SUM_BITS}`, `${MAX_SUM_BITS * index}`, bit]);
     });
-
-    // Increment the total number of received reports for this cohort
-    commands.push(['HINCRBY', 'repTotals', `coh${IRRReports.cohortNum}`, 1]);    
   });
 
-  redis.client.batch(commands).exec((err, res) => {
-    if (err) console.error(error);
-    console.log(res);
-  });
+  // Add to the total number of received reports for this cohort
+  commands.push(['HINCRBY', 'repTotals', `coh${IRRReports.cohortNum}`, IRRReports.IRRs.length]);
+
+  return redis.client.multi(commands).execAsync();
 }
 
 // Exports

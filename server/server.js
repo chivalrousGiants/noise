@@ -54,12 +54,13 @@ io.on('connection', (clientSocket) => {
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('hit submitIRRReports on server socket:', user);
     
-    
-    // IngestIRRReports();
-
-    // clientSocket.emit('Reports successfully aggregated', chatMessage);
+    dpDataIngestController.IngestIRRReports(IRRReports)
+      .then((replies) => {
+        clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);
+      })
+      .catch(console.error.bind(console));
   });
-
+});
 
   // clientSocket.on('encryptedChatSent', function(chatMessage) {
   //   console.log('Received ChatMessage from client:', chatMessage)
@@ -71,4 +72,3 @@ io.on('connection', (clientSocket) => {
   //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
   //   io.emit(dummyFriends);
   // });
-});
