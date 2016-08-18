@@ -10,12 +10,15 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     let realm = try! Realm()
     var friend = Friend()
     var messages : Results<Message>?
+    var user: Results<User>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
         self.NavigationLabel.title =  friend.firstname
+        self.user = realm.objects(User)
+        print("user", self.user)
         updateChatScreen()
     }
     
@@ -24,7 +27,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func updateChatScreen() {
-        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)' OR sender = 'mikey' ")
+        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)' AND sender = '\(self.user![0].username)' ")
         self.CollectionView.reloadData()
     }
     
