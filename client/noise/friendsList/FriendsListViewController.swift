@@ -35,10 +35,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friendToChat = self.friends![indexPath.row]
-        
         self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
     }
     
+    // pass selected friend's object to ChatViewController on select.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let chatView = segue.destinationViewController as! ChatViewController
         chatView.friend = sender as! Friend
@@ -46,7 +46,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            
             let friendToDelete = self.friends![indexPath.row]
             try! realm.write {
                 realm.delete(friendToDelete)

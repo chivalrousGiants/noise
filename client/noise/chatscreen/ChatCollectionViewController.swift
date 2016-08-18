@@ -12,7 +12,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     var messages : Results<Message>?
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
@@ -29,10 +28,8 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         self.CollectionView.reloadData()
     }
     
-    
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
-        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
