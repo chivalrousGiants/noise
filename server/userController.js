@@ -125,16 +125,16 @@ function determineChatExistence (lesserUserID, greaterUserId){
 function initKeyExchange (dhxObject, clientSocket){
   console.log('dhxObject izzzzz', dhxObject)
   //redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
-  redis.client.hmsetAsync(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, ['pAlice', dhxObject.p, 'gAlice', dhxObject.g, 'eAlice', dhxObject.E])
+  redis.client.hmset(`dh${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`], function (err, res){ console.log(err)})
   //create pending set: client1
     //redis.client.
   //create pending set: client2
     //redis.client.
-  .then(()=>{
-    redis.client.get(`dh${dhxObject.lesserUserID}:${dhxObject.greaterUserId}`, redis.print)
+  // .then(()=>{
+    redis.client.hgetall(`dh${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, redis.print)
     clientSocket.emit("keyExchange initiated")
-  })
-  .catch(console.error.bind(console));
+  // })
+  // .catch(console.error.bind(console));
 };
 
 //EITHER initiates keyExchange between two clients or informs Alice_client no need.
