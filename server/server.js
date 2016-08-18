@@ -12,6 +12,7 @@ const redis = require('./redis.js');
 
 // Controllers
 const userController = require('./userController.js');
+const messageController = require('./messageController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
 
 // HTTP
@@ -53,10 +54,11 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('initial loading of new messages', (friends) => {
-    console.log('hit initial-loading-of-new-messages on server socket with friends', friends);
+  clientSocket.on('initial retrieval of new messages', (username, friends) => {
+    console.log('hit initial-retrieval-of-new-messages on server socket with username', username);
+    console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
-    messageController.loadNewMessages(friends, clientSocket);
+    messageController.retrieveNewMessages(username, friends, clientSocket);
   });
 
   /////////////////////////////////////////////////////////
