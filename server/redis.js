@@ -29,9 +29,18 @@ Messages
     (time, msg_id)
 
 PendingKeyExchange
-  (TO BE DETERMINED)
-  source_user_id, target_user_id
 
+  Hash DH:lesser_user_id:greater_user_id
+    lesser_user_p: 
+    lesser_user_g:
+    lesser_user_E:
+    greater_user_p: 
+    greater_user_g:
+    greater_user_E:
+
+  Set pendingChats:user_id
+
+  
 DP IRR Sums
   Query: Given a cohort number, fetch an array of integers with each value
   representing the sum of the bits at each corresponding index for IRRs 

@@ -36,28 +36,27 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         //////////CODE INSIDE OF COMMENT -> POPUP INIT WHEN READY
         
-        //fetch username from the selected cell
-        let user = self.friends![indexPath.row]
-        let username = user.username
-        print("Username is \(username)")
-        //get Alice's userId from redis
-        //get Bob's userId from redis
-        //query if user1/user2 has a chat history
-           //YES >>> segue
-           //NO >>>
+
                 //compute DHX numbers
-                let g_Alice = 666.gCreate()
-                    print("her g is \(g_Alice)")
+                let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
                 let p_Alice = 666.pCreate()
-                    print("her p is \(p_Alice)")
                 let a_Alice = 666.aAliceCreate()
-                    print("her a is \(a_Alice)")
                 let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
-                    print("her e is \(E_Alice)")
-                //insert a_Alice into keychain
+    
+                //insert a_Alice, E_Alice into user keychain
+
+                //create an Alice obj that we will pass through sockets to the server
+                var Alice : [String:AnyObject] = [:]
+                Alice["username"] = realm.objects(User)[0]["username"]
+                Alice["g"] = String(g_Alice)
+                Alice["p"] = String(p_Alice)
+                Alice["E"] = String(E_Alice)
+                Alice["friendname"] = self.friends![indexPath.row].username
+                print(Alice)
+
                 //insert g_Alice, p_Alice, E_Alice into the Redis DB
                 //insert Alice into Bob's pending.
-                      ///???????????? insert Bob into Alice's pending. 
+                      ///???????????? insert Bob into Alice's pending.
         
         ////////////////////////////////////////////////////////////////
         

@@ -39,11 +39,13 @@ io.on('connection', (clientSocket) => {
   
   clientSocket.on('find new friend', (username) => {
     console.log('hit find-new-friend on server socket with username', username);
-    
     userController.checkUser(username, clientSocket);
   });
 
-
+  clientSocket.on('get userId', (username) => {
+    console.log('hit get-userId on server socket with username', username);
+    userController.checkUser(username, clientSocket);
+  });
 
   // clientSocket.on('encryptedChatSent', function(chatMessage) {
   //   console.log('Received ChatMessage from client:', chatMessage)
