@@ -45,7 +45,7 @@ DP IRR Sums
     
     BITFIELD coh:cohort_num OVERFLOW FAIL INCRBY u16 16*bit_place 1
 
-  Bitfield irrsum:cohort_num
+  Bitfield bitCounts:cohort_num
 
 DP Total Reports per Cohort
   Query: Given a cohort number, fetch the total number of reports submitted
@@ -53,8 +53,8 @@ DP Total Reports per Cohort
 
   Insert: Given a cohort number, increment the total number of reports.
 
-  Hash cohortSums
-    (coh0, 3456) (coh1, 3544) (coh2, 3654) ...
+  Hash repTotals
+    (coh:0, 3456) (coh:1, 3544) (coh:2, 3654) ...
 
 DP statistics
  ************************************************************/
