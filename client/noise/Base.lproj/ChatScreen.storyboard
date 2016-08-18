@@ -21,7 +21,7 @@
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ps9-br-m49">
                                 <rect key="frame" x="0.0" y="687" width="414" height="49"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Euh-V1-xib">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Euh-V1-xib">
                                         <rect key="frame" x="13" y="13" width="234" height="27"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -52,7 +52,7 @@
                                     <constraint firstItem="Euh-V1-xib" firstAttribute="leading" secondItem="ps9-br-m49" secondAttribute="leading" constant="13" id="zdb-0D-Z9A"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" directionalLockEnabled="YES" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pLd-2X-Qho">
                                 <rect key="frame" x="0.0" y="0.0" width="404" height="615"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="0.0" id="uEv-SI-Fa3">
@@ -127,11 +127,12 @@
                             <constraint firstItem="ps9-br-m49" firstAttribute="top" secondItem="pLd-2X-Qho" secondAttribute="bottom" id="aYJ-Wq-2WK"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="YO" id="PhD-P3-rqU"/>
+                    <navigationItem key="navigationItem" title="Friend" id="PhD-P3-rqU"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="CollectionView" destination="pLd-2X-Qho" id="Ib7-1j-3bm"/>
+                        <outlet property="MessageTextFieldLabel" destination="Euh-V1-xib" id="KER-Ku-ghn"/>
                         <outlet property="NavigationLabel" destination="PhD-P3-rqU" id="ERv-DW-3Uh"/>
                         <outlet property="SendChatTextField" destination="Euh-V1-xib" id="HyK-0I-374"/>
                     </connections>

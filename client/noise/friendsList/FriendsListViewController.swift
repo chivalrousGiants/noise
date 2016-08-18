@@ -34,7 +34,14 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+        let friendToChat = self.friends![indexPath.row]
+        
+        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let chatView = segue.destinationViewController as! ChatViewController
+        chatView.friend = sender as! Friend
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
