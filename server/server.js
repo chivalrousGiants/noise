@@ -5,10 +5,16 @@ const io = require('socket.io')(http);
 // Config
 const HTTP_PORT = 4000;
 
+const DPParams = require('./dpParams');
+
 // Redis Database
 const redis = require('./redis.js');
-const userController = require('./userController.js');
 
+// Controllers
+const userController = require('./userController.js');
+const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
+
+// HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
 });
@@ -25,6 +31,8 @@ io.on('connection', (clientSocket) => {
     console.log('A user disconnected with socket id', clientSocket.id);
   });
 
+  /////////////////////////////////////////////////////////
+  // Auth socket routes
   clientSocket.on('signIn', (user) => {
     console.log('hit signIn on server socket:', user);
 
@@ -36,14 +44,33 @@ io.on('connection', (clientSocket) => {
 
     userController.signUp(user, clientSocket);
   });
-  
+
+  /////////////////////////////////////////////////////////
+  // User socket routes
   clientSocket.on('find new friend', (username) => {
     console.log('hit find-new-friend on server socket with username', username);
     
     userController.checkUser(username, clientSocket);
   });
 
+  /////////////////////////////////////////////////////////
+  // Differential Privacy-related socket routes
+  clientSocket.on('getDPParams', function() {
+    console.log('getDPParams requested by user', user);
+    
+    clientSocket.emit('DPParams', DPParams);
+  });
 
+  clientSocket.on('submitIRRReports', function(IRRReports) {
+    console.log('submitIRRReports data received from: ', user);
+    
+    dpDataIngestController.IngestIRRReports(IRRReports)
+      .then((replies) => {
+        clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);
+      })
+      .catch(console.error.bind(console));
+  });
+});
 
   // clientSocket.on('encryptedChatSent', function(chatMessage) {
   //   console.log('Received ChatMessage from client:', chatMessage)
@@ -51,14 +78,7 @@ io.on('connection', (clientSocket) => {
   //   // Insert msg hash to msgs
   // });
 
-  // clientSocket.on('noisifiedChatSent', function(chatMessage) {
-  //   console.log('TODO: pass nosified chatMessage to redis DB')
-  //   // clientSocket.emit('c', chatMessage);
-  // });
-
-
   // clientSocket.on('getfriends', function() {
   //   var dummyFriends = ["Ryan", "Jae", "Michael", "Hannah"]
   //   io.emit(dummyFriends);
   // });
-});
