@@ -30,9 +30,13 @@ function IngestIRRReports(IRRReports) {
   const commands = [];
 
   IRRReports.IRRs.forEach((IRR) => {
+    // For each report, add its bits to the bitsums
     IRR.forEach((bit, index) => {
       commands.push(['BITFIELD', `bitCounts:${IRRReports.cohortNum}`, 'INCRBY', `u${MAX_SUM_BITS}`, `${MAX_SUM_BITS * index}`, bit]);
     });
+
+    // Increment the total number of received reports for this cohort
+    commands.push(['HINCRBY', 'repTotals', `coh${IRRReports.cohortNum}`, 1]);    
   });
 
   redis.client.batch(commands).exec((err, res) => {
@@ -42,7 +46,7 @@ function IngestIRRReports(IRRReports) {
 }
 
 // Testing
-// for (let i = 0; i < 10000; i++) {
+// for (let i = 0; i < 1000; i++) {
 //   IngestIRRReports(SampleIRRReports);
 // }
 

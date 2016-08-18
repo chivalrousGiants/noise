@@ -163,11 +163,11 @@ client.on('connect', function() {
   // };
 
   // 2. Create hash table holding each cohort's total number of reports
-  [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
-    client.hmset(`repTotals`, `coh${cohortNum}`, 0, (err, res) => {
-      if (err) console.error(err);
-    });
-  });
+  // [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
+  //   client.hmset(`repTotals`, `coh${cohortNum}`, 0, (err, res) => {
+  //     if (err) console.error(err);
+  //   });
+  // });
 });
 
 // Exports
