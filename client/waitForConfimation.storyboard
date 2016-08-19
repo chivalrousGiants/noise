@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--ChatScreen-->
@@ -13,17 +14,39 @@
             </objects>
             <point key="canvasLocation" x="424.5" y="-424"/>
         </scene>
-        <!--View Controller-->
+        <!--Wait For-->
         <scene sceneID="xBy-WA-kHf">
             <objects>
-                <viewController id="qIy-Fg-1BJ" sceneMemberID="viewController">
-                    <label key="view" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting for your friendship to be confirmed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QOn-2G-Peu">
+                <viewController id="qIy-Fg-1BJ" customClass="waitFor" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="BFj-mK-3wY"/>
+                        <viewControllerLayoutGuide type="bottom" id="wLD-mQ-w1J"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HdB-xi-WH9">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eUo-cA-LWJ">
+                                <rect key="frame" x="154" y="200" width="240" height="128"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Wait!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3HS-16-aXN">
+                                        <rect key="frame" x="102" y="42" width="39" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="eUo-cA-LWJ" secondAttribute="trailing" constant="186" id="Igf-aR-Ok7"/>
+                            <constraint firstItem="eUo-cA-LWJ" firstAttribute="top" secondItem="BFj-mK-3wY" secondAttribute="bottom" constant="180" id="Wce-D5-o11"/>
+                            <constraint firstItem="wLD-mQ-w1J" firstAttribute="top" secondItem="eUo-cA-LWJ" secondAttribute="bottom" constant="272" id="oVx-O3-NNZ"/>
+                            <constraint firstItem="eUo-cA-LWJ" firstAttribute="leading" secondItem="HdB-xi-WH9" secondAttribute="leadingMargin" constant="134" id="yek-dv-I0c"/>
+                        </constraints>
+                    </view>
                     <connections>
                         <segue destination="UUp-4B-4TB" kind="show" identifier="waitToChatScreenSegue" id="PSd-dH-ABq"/>
                     </connections>

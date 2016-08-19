@@ -5,12 +5,26 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet var friendsTableView: UITableView!
     let realm = try! Realm()
     var friends : Results<Friend>?
+    var keyExchangeComplete = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         updateFriendsTable()
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
+        
+        // Attach listeners
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handlePursuingKeyExchange),
+            name: "stillPursuingKeyExchange",
+            object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleCompletedKeyExchange),
+            name: "KeyExchangeComplete",
+            object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -37,29 +51,33 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         //////////CODE INSIDE OF COMMENT -> POPUP INIT WHEN READY
         
 
-                //compute DHX numbers
-                let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
-                let p_Alice = 666.pCreate()
-                let a_Alice = 666.aAliceCreate()
-                let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
-    
-                //insert a_Alice, E_Alice into user keychain
+        //compute DHX numbers
+        let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
+        let p_Alice = 666.pCreate()
+        let a_Alice = 666.aAliceCreate()
+        let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
 
-                //create an Alice obj that we will pass through sockets to the server
-                var Alice : [String:AnyObject] = [:]
-                Alice["username"] = realm.objects(User)[0]["username"]
-                Alice["g"] = String(g_Alice)
-                Alice["p"] = String(p_Alice)
-                Alice["E"] = String(E_Alice)
-                Alice["friendname"] = self.friends![indexPath.row].username
-                SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+        //insert a_Alice, p_alice, E_Alice into user keychain
 
-                //insert g_Alice, p_Alice, E_Alice into the Redis DB
-                //insert Alice into Bob's pending.
-                      ///TODO: determine whether to insert Bob into Alice's pending.
-        
+        //create an Alice obj that we will pass through sockets to the server
+        var Alice : [String:AnyObject] = [:]
+        Alice["username"] = realm.objects(User)[0]["username"]
+        Alice["g"] = String(g_Alice)
+        Alice["p"] = String(p_Alice)
+        Alice["E"] = String(E_Alice)
+        Alice["friendname"] = self.friends![indexPath.row].username
+        SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
         ////////////////////////////////////////////////////////////////
         
+
+    }
+    
+    @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
+        keyExchangeComplete = false
+        self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
+    }
+    @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
+        keyExchangeComplete = true
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
     

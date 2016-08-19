@@ -52,6 +52,7 @@
 		B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */; };
 		BBFBE9EE1D651F48005A9647 /* waitForConfimation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */; };
 		BBFBE9F01D652C5C005A9647 /* KeyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */; };
+		BBFBE9F41D66B61B005A9647 /* WaitForConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,6 +102,7 @@
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
 		BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = waitForConfimation.storyboard; sourceTree = "<group>"; };
 		BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyUtility.swift; sourceTree = "<group>"; };
+		BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitForConfirmationViewController.swift; sourceTree = "<group>"; };
 		C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_noise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
 		EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				4133BD2D1D5A9ABA001EA380 /* AddFriendViewController.swift */,
 				4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */,
 				4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */,
+				BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 				4133BD251D5A8A48001EA380 /* LoginViewController.swift in Sources */,
 				4150B48B1D5BCE81006B7D57 /* SocketEngineSpec.swift in Sources */,
 				4150B4381D5BB382006B7D57 /* SocketIOManager.swift in Sources */,
+				BBFBE9F41D66B61B005A9647 /* WaitForConfirmationViewController.swift in Sources */,
 				4150B48F1D5BCE81006B7D57 /* SocketIOClient.swift in Sources */,
 				4150B4871D5BCE81006B7D57 /* SocketEngine.swift in Sources */,
 				4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */,
