@@ -7,7 +7,7 @@ class Friend: Object {
     dynamic var firstname = ""
     dynamic var friendedAt = NSDate()
     dynamic var photo = ""
-    dynamic var friendID = ""
+    dynamic var friendID = 0
     
     // boolean flag denoting whether a private chat has been initiated with this friend
     dynamic var chatInitiated: Bool = false

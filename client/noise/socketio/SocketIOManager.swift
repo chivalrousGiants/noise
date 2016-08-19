@@ -29,6 +29,11 @@ class SocketIOManager: NSObject {
             print("redis response checkUser", userArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
+        
+        socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
+            print("redis response checkMessages", messageArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
+        }
     }
     
     func signIn(user: Dictionary<String, String>) {
