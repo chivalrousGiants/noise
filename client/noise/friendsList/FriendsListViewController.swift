@@ -55,7 +55,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         //let convo = realm.objects(Conversation.self).filter("friendId = \(self.friendToChat["friendID"])")
         //.filter("friendId = \(self.friendToChat["friendID"])")
-        print(convo)
+        //print(convo)
         
         
         //realm if there is already established friend1/friend2 conversation
