@@ -48,6 +48,7 @@
 		4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4150B4821D5BCE81006B7D57 /* WebSocket.swift */; };
 		4198959C1D64DD98003240C1 /* ChatCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */; };
 		4198959E1D64DFA0003240C1 /* ChatCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */; };
+		419895A21D65513E003240C1 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419895A11D65513E003240C1 /* MessageModel.swift */; };
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +96,7 @@
 		4150B4821D5BCE81006B7D57 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		4198959B1D64DD98003240C1 /* ChatCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewCell.swift; path = noise/chatscreen/ChatCollectionViewCell.swift; sourceTree = "<group>"; };
 		4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewController.swift; path = noise/chatscreen/ChatCollectionViewController.swift; sourceTree = "<group>"; };
+		419895A11D65513E003240C1 /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageModel.swift; path = noise/chatscreen/MessageModel.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
 		CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.release.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.release.xcconfig"; sourceTree = "<group>"; };
 		EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-noise.debug.xcconfig"; path = "Pods/Target Support Files/Pods-noise/Pods-noise.debug.xcconfig"; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			children = (
 				41F2A25D1D602D97006FACDF /* FriendModel.swift */,
 				411604F71D627C91000D5FC0 /* UserModel.swift */,
+				419895A11D65513E003240C1 /* MessageModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -393,6 +396,7 @@
 				4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */,
 				4150B48D1D5BCE81006B7D57 /* SocketEventHandler.swift in Sources */,
 				4150B4831D5BCE81006B7D57 /* SocketAckEmitter.swift in Sources */,
+				419895A21D65513E003240C1 /* MessageModel.swift in Sources */,
 				4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */,
 				4133BD321D5AC635001EA380 /* SettingsViewController.swift in Sources */,
 				4198959E1D64DFA0003240C1 /* ChatCollectionViewController.swift in Sources */,

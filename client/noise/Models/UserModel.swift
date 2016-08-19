@@ -7,6 +7,8 @@ class User: Object {
     dynamic var firstname = ""
     dynamic var createdAt = NSDate()
     dynamic var photo = ""
+    dynamic var userID = 0
+    
     
     // Primary key
     dynamic var id = 0
