@@ -3,9 +3,9 @@ const redis = require('./redis.js');
 //initiates redis data structures & vals : mutual dh exchange hash; alicePendingList; bobPendingList
 function initKeyExchange (dhxObject, clientSocket){
   console.log('in initKeyExchange')
-  redis.client.hmset(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){console.log(err)});
-  redis.client.sadd(`pendingChats:${dhxObject.lesserUserId}`, `${dhxObject.greaterUserId}`);
-  redis.client.sadd(`pendingChats:${dhxObject.greaterUserId}`, `${dhxObject.lesserUserId}`);
+  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){console.log(err)});
+  redis.client.sadd(`pendingChats:${dhxObject.lesserUserID}`, `${dhxObject.greaterUserID}`);
+  redis.client.sadd(`pendingChats:${dhxObject.greaterUserID}`, `${dhxObject.lesserUserID}`);
   clientSocket.emit("redis response KeyExchange initiated", dhxObject);
 };
 
@@ -13,16 +13,16 @@ function initKeyExchange (dhxObject, clientSocket){
 function undertakeKeyExchange (dhxObject, clientSocket){
 	console.log('Diffie Hellman obj in undertakeKeyExchange', dhxObject)
   redis.client.hgetAsync('users', `${dhxObject.username}`)
-  .then(idAlice => {
+  .then(ID_Alice => {
     redis.client.hgetAsync('users', `${dhxObject.friendname}`)
-    .then(idBob => {
-        dhxObject.greaterUserId = idAlice >= idBob ? idAlice : idBob;
-        dhxObject.lesserUserId = idAlice < idBob ? idAlice : idBob;
+    .then(ID_Bob => {
+        dhxObject.greaterUserID = ID_Alice >= ID_Bob ? ID_Alice : ID_Bob;
+        dhxObject.lesserUserID = ID_Alice < ID_Bob ? ID_Alice : ID_Bob;
         return dhxObject;
     })
     .then(dhxObject => {
         //determine whether keyX has already begun &/ is complete:
-        redis.client.hgetAsync(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, 'chatEstablished')
+        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
         .then ((chatEstablishedVal) => {
             if(chatEstablishedVal === 2) {
             	//can now delete now-unnecessary data structures
