@@ -56,8 +56,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func handleSignInNotification(notification: NSNotification) -> Void {
-
-        print("signInObj", notification.userInfo)
         
         if let signInObj = notification.userInfo {
             
@@ -90,9 +88,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        
-        // Testing
-        print("Logged-in User:", realm.objects(User))
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

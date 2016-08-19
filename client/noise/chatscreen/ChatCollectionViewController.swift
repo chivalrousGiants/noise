@@ -19,6 +19,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         self.NavigationLabel.title =  friend.firstname
         self.user = realm.objects(User)
         print("user", self.user)
+        print(friend)
         updateChatScreen()
     }
     
