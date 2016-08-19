@@ -42,7 +42,6 @@ function signIn(user, clientSocket) {
 function signUp (user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userId => {
-      console.log('signUp userId is', userId);
 
       if (userId === null) {
         // Username not taken, thus valid for new user
@@ -113,8 +112,21 @@ function checkUser(username, clientSocket) {
     }).catch(console.error.bind(console));
 }
 
+function getUserId(username, cb){
+  redis.client.hgetAsync('users', `${username}`)
+    .then(userId => {
+      if (userId === null) {
+         cb(null);
+      } else {
+        console.log('userId in getUserId is ', userId);
+        cb(userId);
+      }
+    }).catch(console.error.bind(console));
+};
+
 module.exports = {
   signIn, 
   signUp,
-  checkUser
+  checkUser,
+  getUserId
 };

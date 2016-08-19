@@ -15,12 +15,10 @@ class SocketIOManager: NSObject {
         socket.connect()
         
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
-            print("redis response for signin", userArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response for signup") { (userArray, socketAck) -> Void in
-            print("redis response for signup", userArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("signup", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
@@ -37,18 +35,10 @@ class SocketIOManager: NSObject {
     }
     
     func signIn(user: Dictionary<String, String>) {
-        // TEST: ping socket, display in console
-        print("Test: hit signIn func for user: \(user)")
-        
-        // SEND: userData to db
         socket.emit("signIn", user)
     }
     
     func signUp(user: Dictionary<String, String>) {
-        // TEST: ping socket, display in console
-        print("Test: hit signUp func for user: \(user)")
-        
-        // SEND: userData to db
         socket.emit("signUp", user)
     }
     
@@ -59,9 +49,8 @@ class SocketIOManager: NSObject {
         socket.emit("encryptedChatSent", message)
     }
     
-    // Dictionary<String, String>
+    //TODO: Modify as needed
     func sendNoisifiedChat(messageDP: String){
-        print("TEST: socketMGMT sendingDPChat: \(messageDP)")
         socket.emit("noisifiedChatSent", messageDP)
         
         // listen for successfully added
@@ -74,11 +63,11 @@ class SocketIOManager: NSObject {
     
     // newFriend is the username
     func addFriend(newFriend: String) {
-        
-        print("Test: socket func, addFriend with username: \(newFriend)")
-        
-        // Query redis db
         socket.emit("find new friend", newFriend)
+    }
+    
+    func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
+        socket.emit("initial key query", dhxInfo)
     }
     
     func closeConnection() {

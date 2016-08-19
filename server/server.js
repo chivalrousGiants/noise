@@ -14,7 +14,7 @@ const redis = require('./redis.js');
 const userController = require('./userController.js');
 const messageController = require('./messageController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
-
+const dh = require('./dhKeyExchange.js');
 // HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
@@ -50,21 +50,18 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Auth socket routes
   clientSocket.on('signIn', (user) => {
-    console.log('hit signIn on server socket:', user);
+    // console.log('hit signIn on server socket:', user);
+
     userController.signIn(user, clientSocket);
   });
 
   clientSocket.on('signUp', (user) => {
-    console.log('hit signUp on server socket:', user);
-
     userController.signUp(user, clientSocket);
   });
 
   /////////////////////////////////////////////////////////
   // User socket routes
   clientSocket.on('find new friend', (username) => {
-    console.log('hit find-new-friend on server socket with username', username);
-
     userController.checkUser(username, clientSocket);
   });
 
@@ -82,6 +79,7 @@ io.on('connection', (clientSocket) => {
 
     clientSocket.emit('DPParams', DPParams);
   });
+      
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('submitIRRReports data received from: ', user);
@@ -91,6 +89,16 @@ io.on('connection', (clientSocket) => {
         clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);
       })
       .catch(console.error.bind(console));
+  });
+
+  /////////////////////////////////////////////////////////
+  // Diffie Hellman Key Exchange-related socket routes
+  clientSocket.on('initial key query', (dhxObject) => {
+    dh.undertakeKeyExchange(dhxObject, clientSocket);
+  });
+
+  clientSocket.on('secondary key query', (dhxObject) => {
+    //dh.commenceKeyExchange(dhxObject, clientSocket);
   });
 
 });
