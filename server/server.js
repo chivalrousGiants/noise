@@ -58,7 +58,7 @@ io.on('connection', (clientSocket) => {
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('submitIRRReports data received from: ', user);
-    
+
     dpDataIngestController.IngestIRRReports(IRRReports)
       .then((replies) => {
         clientSocket.emit(`${IRRReports.IRRs.length} reports successfully aggregated.`);

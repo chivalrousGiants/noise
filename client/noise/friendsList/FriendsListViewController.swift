@@ -83,7 +83,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            
             let friendToDelete = self.friends![indexPath.row]
             try! realm.write {
                 realm.delete(friendToDelete)
