@@ -110,29 +110,16 @@ function getUserId(username, cb){
     }).catch(console.error.bind(console));
 };
 
-//query redis for existing chat between two specified users, return bool
-function determineChatExistence (lesserUserId, greaterUserId){
 
-  redis.client.hgetAsync(`dh${lesserUserId}:${greaterUserId}`, 'chatEstablished')
-  .then ((chatEstablishedVal) => {
-    redis.client.hgetallAsync(`chat${lesserUserId}:${greaterUserId}`)
-    .then((existingChatVal)=> {
-      console.log(!!chatEstablishedVal, !!existingChatVal)
-      return Boolean(chatEstablishedVal) || Boolean(existingChatVal)
-    })
-    .then((result)=>{
-      console.log(result)
-    })
-  })
-  .catch(console.error.bind(console));
-};
 
 //initiates redis data structures & vals : mutual dh exchange hash; alicePendingList; bobPendingList
 function initKeyExchange (dhxObject, clientSocket){
-  redis.client.hmset(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){if(err){console.log(err)}})
-  redis.client.sadd(`pendingChats:${dhxObject.lesserUserId}`, `${dhxObject.greaterUserId}`)
-  redis.client.sadd(`pendingChats:${dhxObject.greaterUserId}`, `${dhxObject.lesserUserId}`)
-  clientSocket.emit("keyExchange initiated", dhxObject)
+  console.log('dhxxxxxObject izzz', dhxObject);
+  console.log(`${dhxObject.p}`, `${dhxObject.g}`, `${dhxObject.E}`)
+  redis.client.hmset(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){console.log(err)});
+  redis.client.sadd(`pendingChats:${dhxObject.lesserUserId}`, `${dhxObject.greaterUserId}`);
+  redis.client.sadd(`pendingChats:${dhxObject.greaterUserId}`, `${dhxObject.lesserUserId}`);
+  clientSocket.emit("keyExchange initiated", dhxObject);
 };
 
 //EITHER initiates keyExchange between two clients or informs Alice_client no need.
@@ -147,12 +134,21 @@ function undertakeKeyExchange (dhxObject, clientSocket){
     })
     .then(dhxObject => {
         //determine whether keyX has already begun &/ is complete:
-      if (! determineChatExistence(dhxObject.lesserUserId, dhxObject.greaterUserId)) {
-        initKeyExchange(dhxObject, clientSocket);
-        clientSocket.emit("redis response undertake KeyExchange", dhxObject);
-      } else {
-        clientSocket.emit("redis response no need to undertake KeyExchange", dhxObject);
-      }    
+        redis.client.hgetAsync(`dh${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, 'chatEstablished')
+        .then ((chatEstablishedVal) => {
+          redis.client.hgetallAsync(`chat${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`)
+
+            //query redis for existing chat between two specified users, return bool
+          .then((existingChatVal)=> {
+            console.log(!!chatEstablishedVal, !!existingChatVal)
+            if( Boolean(chatEstablishedVal) || Boolean(existingChatVal) ) {
+              clientSocket.emit("redis response no need to undertake KeyExchange", dhxObject);
+            } else {
+              initKeyExchange(dhxObject, clientSocket);
+              clientSocket.emit("redis response undertaking KeyExchange", dhxObject);
+            } 
+          })
+        })
     })
   })
   .catch(err => console.log('Error in undertakeKeyExchange function', err));
@@ -162,7 +158,6 @@ function undertakeKeyExchange (dhxObject, clientSocket){
 module.exports = {
   signIn, 
   signUp,
-  determineChatExistence,
   undertakeKeyExchange,
   initKeyExchange
 };

@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 // Config
 const HTTP_PORT = 4000;
 
-const DPParams = require('./differentialPrivacy/dpParams.js');
+const DPParams = require('./differentialPrivacy/dpParams');
 
 // Redis Database
 const redis = require('./redis.js');
