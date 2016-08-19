@@ -28,12 +28,13 @@ extension Int {
     func computeSecret (foreignE: UInt32, mySecret: UInt32, p:UInt32) -> UInt32 {
         return (foreignE^mySecret) % p
     }
-    func alicify (username:String, friendName:String) -> Dictionary<String,String> {
+   /* func alicify (username:String, friendName:String) -> Dictionary<String,String> {
         //TODO: move functionality into here once you have testable product
         return ["test", "test"]
     }
-    func bobify (username:String, friendName:String) -> Dictionary<String,String> {
+    //func bobify (username:String, friendName:String) -> Dictionary<String,String> {
         //TODO: move functionality into here once you have testable product
     }
     //TODO: layer cryptoSwift encryption over secret and pubKey
+ */
 }
