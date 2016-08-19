@@ -3,32 +3,32 @@
  ************************************************************
  
  Users
- *   userId
+ *   userID
  *   1      (username: hannah, pw: hannah, firstname: Hannah, lastname: Brannan) 
  *   2      (username: mikey, pw: mikey, firstname: Michael, lastname: De La Cruz)
  *   3      (username: ryan, pw: ryan, firstname: Ryan, lastname: Hanzawa)
  *   4      (username: jae, pw: jae, firstname: Jae, lastname: Shin)
 
 Users
-  Query: fetch certain user fields with user_id or username
+  Query: fetch certain user fields with userID or username
 
-  Hash user:user_id
+  Hash user:userID
     (firstname, 'Jae') (lastname, 'Shin') (username, 'jaebear') (password, 'xoxo')
     (auth, authSecret)
   Hash users
-    (username, user_id)
+    (username, userID)
 
 Messages
   Query: fetch all new messages that is not already written in Realm
 
-  Hash msgs:msg_id
-    (field, value) = (sourceId, user_id), (targetId, user_id) (body, 'hey') (createdAt, time_stamp)
-  Ordered-Set chat:user_id_small:user_id_big
-    (score, element) = (index, msg_id)
+  Hash msgs:msgID
+    (field, value) = (sourceID, userID), (targetID, userID) (body, 'hey') (createdAt, time_stamp)
+  Ordered-Set chat:smaller_userID:larger_userID
+    (score, element) = (index, msgID)
 
 PendingKeyExchange
 
-  Hash   DH:lesser_user_id:greater_user_id
+  Hash   DH:lesser_user_ID:greater_user_ID
     lesser_user_p: 
     lesser_user_g:
     lesser_user_E:
@@ -37,7 +37,7 @@ PendingKeyExchange
     greater_user_E:
     can_chat: 0/1
 
-  Set   pendingChats:user_id
+  Set   pendingChats:user_ID
       targetUserID1
       targetUserID2
       targetUserID3
@@ -122,67 +122,67 @@ client.on('connect', function() {
   console.log('Successfully connected to redis client!');
 
   // Initialize User data
-  client.getAsync('global_userId')
-    .then(userId => {
+  client.getAsync('global_userID')
+    .then(userID => {
 
       // Users have not been initialized
-      if (userId === null) {
-        client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+      if (userID === null) {
+        client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah']);
         client.hset('users', ['hannah', 1]);
 
-        client.hmset('user:2', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+        client.hmset('user:2', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey']);
         client.hset('users', ['mikey', 2]);
 
-        client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+        client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan']);
         client.hset('users', ['ryan', 3]);
 
-        client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+        client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae']);
         client.hset('users', ['jae', 4]);
 
-        // global_userId = # of users so far
-        // global_userId increments when a new user signs up
-        client.set('global_userId', 4, redis.print);
+        // global_userID = # of users so far
+        // global_userID increments when a new user signs up
+        client.set('global_userID', 4, redis.print);
       } 
 
       // Initialize Message data
-      return client.getAsync('global_msgId');
+      return client.getAsync('global_msgID');
     })
-    .then(msgId => {
+    .then(msgID => {
       // Initialize message data for users 1, 2, 3, 4
       //    Each user sends 5 messages each to other users
       //    A pair of two users has ten messages between them
       //    Each message is prefixed by 'num1:num2:num3'
-      //        num1 = messageId
-      //        num2 = sourceId
-      //        num3 = targetId
-      if (msgId === null) {
-        let newMsgId = 0;
+      //        num1 = messageID
+      //        num2 = sourceID
+      //        num3 = targetID
+      if (msgID === null) {
+        let newMsgID = 0;
 
         for (let cnt = 1; cnt <= 5; cnt++) {
-          for (let sourceId = 1; sourceId <= 4; sourceId++) {
-            for (let targetId = 1; targetId <= 4; targetId++) {
-              if (!(sourceId === targetId)) {
-                newMsgId++;
-                client.hmset(`msgs:${newMsgId}`, [
-                  'sourceId', `${sourceId}`,
-                  'targetId', `${targetId}`,
-                  'body', `${newMsgId}:${sourceId}:${targetId} ${chance.sentence()}`,
+          for (let sourceID = 1; sourceID <= 4; sourceID++) {
+            for (let targetID = 1; targetID <= 4; targetID++) {
+              if (!(sourceID === targetID)) {
+                newMsgID++;
+                client.hmset(`msgs:${newMsgID}`, [
+                  'sourceID', `${sourceID}`,
+                  'targetID', `${targetID}`,
+                  'body', `${newMsgID}:${sourceID}:${targetID} ${chance.sentence()}`,
                   'createdAt', Date.now()
                 ]);
 
-                if (sourceId < targetId) {
-                  client.zadd(`chat:${sourceId}:${targetId}`, `${newMsgId}`, `${newMsgId}`);
+                if (sourceID < targetID) {
+                  client.zadd(`chat:${sourceID}:${targetID}`, `${newMsgID}`, `${newMsgID}`);
                 } else {
-                  client.zadd(`chat:${targetId}:${sourceId}`, `${newMsgId}`, `${newMsgId}`);
+                  client.zadd(`chat:${targetID}:${sourceID}`, `${newMsgID}`, `${newMsgID}`);
                 }
               }
             }
           }
         }
 
-        // global_msgId = # of total msgs so far
-        // global_msgId is incremented before adding new message
-        client.set('global_msgId', newMsgId, redis.print);
+        // global_msgID = # of total msgs so far
+        // global_msgID is incremented before adding new message
+        client.set('global_msgID', newMsgID, redis.print);
 
       } else {
         // message data has been already initialized

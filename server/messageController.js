@@ -8,46 +8,46 @@ const activeSocketConnections = require('./activeSocketConnections');
 /*
   Input Parameters
     friends = { 
-      friend_id: largestMessageId
-      friend_id: largestMessageId
+      friendID: largestMessageID
+      friendID: largestMessageID
       ...
     }
 
   Return value
     Array of objs for each friend
       {
-        friendId
-        messages: Array of msgObjs [ {targetId, sourceId, createdAt, body, msgId} ]
-        largestMessageId
+        friendID
+        messages: Array of msgObjs [ {targetID, sourceID, createdAt, body, msgID} ]
+        largestMessageID
       }
  */
-function retrieveNewMessages(userId, friends, clientSocket) {
+function retrieveNewMessages(userID, friends, clientSocket) {
   
   let result = [],
-    smallerId,
-    largerId,
-    largestMessageId,
+    smallerID,
+    largerID,
+    largestMessageID,
     newMessages,
-    getMsgIdsPromiseArray = [],
+    getMsgIDsPromiseArray = [],
     getMsgsPromiseArray = [];
   
   
-  Object.keys(friends).forEach(friendId => {
+  Object.keys(friends).forEach(friendID => {
     
-    largestMessageId = friends[friendId];
+    largestMessageID = friends[friendID];
 
-    [smallerId, largerId] = userId < friendId ? [userId, friendId] : [friendId, userId];
+    [smallerID, largerID] = userID < friendID ? [userID, friendID] : [friendID, userID];
 
-    getMsgIdsPromiseArray.push(
-      redis.client.zrangebyscoreAsync(`chat:${smallerId}:${largerId}`, (largestMessageId + 1), '+inf')
-        .then(msgIds => {
+    getMsgIDsPromiseArray.push(
+      redis.client.zrangebyscoreAsync(`chat:${smallerID}:${largerID}`, (largestMessageID + 1), '+inf')
+        .then(msgIDs => {
           let getMsgsPromiseArray = [];
           
-          msgIds.forEach(msgId => {
+          msgIDs.forEach(msgID => {
             getMsgsPromiseArray.push(
-              redis.client.hgetallAsync(`msgs:${msgId}`)
+              redis.client.hgetallAsync(`msgs:${msgID}`)
                 .then(msg => {
-                  msg.msgId = msgId;
+                  msg.msgID = msgID;
                   return msg;
                 })
                 .catch(console.error.bind(console))
@@ -58,9 +58,9 @@ function retrieveNewMessages(userId, friends, clientSocket) {
         })
         .then(arrayOfNewMessagesPerFriend => {
           return {
-            friendId,
+            friendID,
             messages: arrayOfNewMessagesPerFriend,
-            latestMessageId: arrayOfNewMessagesPerFriend[arrayOfNewMessagesPerFriend.length - 1].msgId
+            latestMessageID: arrayOfNewMessagesPerFriend[arrayOfNewMessagesPerFriend.length - 1].msgID
           };
         })
         .catch(console.error.bind(console))
@@ -68,7 +68,7 @@ function retrieveNewMessages(userId, friends, clientSocket) {
 
   });
 
-  Promise.all(getMsgIdsPromiseArray).then(returnValue => {
+  Promise.all(getMsgIDsPromiseArray).then(returnValue => {
     
     /////////// Testing
     // let cnt = 1;
@@ -92,33 +92,33 @@ function retrieveNewMessages(userId, friends, clientSocket) {
     TO: clientSocket
       userArray[0] = messageID (generated when inserting new message to redis)
 
-    TO: targetId's socket
+    TO: targetID's socket
       userArray[0] = messageID
-      userArray[1] = msgObj { sourceId, targetId, body, createdAt }
+      userArray[1] = msgObj { sourceID, targetID, body, createdAt }
  */
 function handleNewMessage(message, clientSocket) {
   // write new message to db
-  redis.client.incr('global_msgId', redis.print);
-  redis.client.getAsync('global_msgId')
-    .then(msgId => {
+  redis.client.incr('global_msgID', redis.print);
+  redis.client.getAsync('global_msgID')
+    .then(msgID => {
 
-      redis.client.hmset(`msgs:${msgId}`, [
-        'sourceId', message.sourceID,
-        'targetId', message.targetID,
+      redis.client.hmset(`msgs:${msgID}`, [
+        'sourceID', message.sourceID,
+        'targetID', message.targetID,
         'body', message.body,
         'createdAt', message.createdAt
       ]);
 
-      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgId}`, `${msgId}`);
+      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
 
-      clientSocket.emit('successfully sent new message', msgId);
+      clientSocket.emit('successfully sent new message', msgID);
 
       // check if friend (target of msg) is online
-      let friendSocketId = activeSocketConnections[`${message.targetID}`];
+      let friendSocketID = activeSocketConnections[`${message.targetID}`];
 
-      if (friendSocketId) {
-        clientSocket.broadcast.to(friendSocketId)
-          .emit('receive new message', msgId, message);
+      if (friendSocketID) {
+        clientSocket.broadcast.to(friendSocketID)
+          .emit('receive new message', msgID, message);
       }
     })
     .catch(console.error.bind(console));
@@ -135,6 +135,6 @@ function handleNewMessage(message, clientSocket) {
 // retrieveNewMessages(4, friends);
 
 module.exports = {
-  retrieveNewMessages
+  retrieveNewMessages,
   handleNewMessage
 };
