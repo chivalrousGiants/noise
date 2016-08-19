@@ -72,8 +72,8 @@ io.on('connection', (clientSocket) => {
     dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
 
-  clientSocket.on('secondary key query', (dhxObject) => {
-    //dh.commenceKeyExchange(dhxObject, clientSocket);
+  clientSocket.on('check for pending key exchange', (dhxObject) => {
+    dh.commenceKeyExchange(dhxObject, clientSocket);
   });
 
 });
