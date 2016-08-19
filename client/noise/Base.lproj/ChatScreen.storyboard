@@ -38,7 +38,7 @@
                                             <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="sendButtonTapped:" destination="IYG-xG-BWK" eventType="touchUpInside" id="rYh-jn-qbV"/>
+                                            <action selector="sendButtonTapped:" destination="IYG-xG-BWK" eventType="touchUpInside" id="mWi-Yi-RZY"/>
                                         </connections>
                                     </button>
                                 </subviews>

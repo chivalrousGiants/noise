@@ -8,58 +8,34 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var MessageTextFieldLabel: UITextField!
     
     let realm = try! Realm()
-    
-    // passed in by FriendslistViewController
     var friend = Friend()
-    //  var below wont be needed as soon as friendId incorp in redis schema
-    var friendID = 2
-    
     var messages = List<Message>()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // configure states
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
-        
-        
         self.NavigationLabel.title = friend.firstname
-
-        
-//        try! realm.write{
-//            let newConversation = Conversation()
-//            newConversation.friendId = friendID
-//            realm.add(newConversation)
-//            
-//        }
-       print("add Convo Class", realm.objects(Conversation))
-        
-        try! realm.write{
-            let newMessage = Message()
-            newMessage.sourceID = 111
-            newMessage.targetID = 222
-            newMessage.body = "dummy"
-            newMessage.messageID = 333
-            
-            let addMessageToConvo = realm.objects(Conversation).filter("friendId = \(friendID) ")[0]
-            addMessageToConvo.messages.append(newMessage)
-            
-            print("this is addMessageObeject", addMessageToConvo)
-            
-        }
-        
         updateChatScreen()
     }
-    
-    
-    
+
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-        //(self.messages?.count)!
+        return self.messages.count
     }
     
     func updateChatScreen() {
-        self.messages = realm.objects(Conversation).filter("friendId = \(friendID) ")[0].messages
-        print("printing messages", self.messages)
+        if realm.objects(Conversation).filter("friendId = \(friend.friendID) ").count == 0 {
+            try! realm.write{
+                let startNewConversation = Conversation()
+                startNewConversation.friendId = friend.friendID
+                realm.add(startNewConversation)
+            }
+        } else {
+            self.messages = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
+            print("not new", realm.objects(Conversation).filter("friendId = \(friend.friendID) "))
+        }
         self.CollectionView.reloadData()
     }
     
@@ -81,16 +57,24 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
-        let message = Message()
-         message.sourceID = friendID
-        // message.text = self.MessageTextFieldLabel.text!
-        // message.receiver = friend.username
-        // message.sender = realm.objects(User)[0].username
+        let newMessage = Message()
+        newMessage.sourceID = realm.objects(User)[0].userID
+        newMessage.targetID = friend.friendID
+        newMessage.body = self.SendChatTextField.text!
         
-        try! realm.write {
-            realm.add(message)
+        try! realm.write{
+            let conversationHistory = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
+            conversationHistory.append(newMessage)
+            print("new history added", conversationHistory)
             updateChatScreen()
         }
+        
+        // send newMessage obj to socket
+            // wait/listen for messageId from server
+            // upon receive, query realm for the same newMessage sent
+                // update message obj's messageID property
+        
     }
     
   }
+
