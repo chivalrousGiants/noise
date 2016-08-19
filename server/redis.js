@@ -22,11 +22,9 @@ Messages
   Query: fetch chat history for each friend that is not already in localDB
 
   Hash msgs:msg_id
-    (source_user_id, id), (target_user_id, id)
-    (text_encrypted, 'hey'), (has_been_deleted, 0/1) -- 0: false, 1: true
-    (time, 1453425)
-  Ordered Set chat:user_id_small:user_id_big
-    (time, msg_id)
+    (field, value) = (sourceId, user_id), (targetId, user_id) (body, 'hey') (createdAt, time_stamp)
+  Ordered-Set chat:user_id_small:user_id_big
+    (score, element) = (index, msg_id)
 
 PendingKeyExchange
   (TO BE DETERMINED)
@@ -64,6 +62,9 @@ DP statistics
 const redis = require('redis');
 const bluebird = require('bluebird');
 const utils = require('./utils');
+
+// Generates random sentences (used for initializing message data)
+const chance = new require('chance')();
 
 const {
   BLOOM_FILTER_SIZE,
@@ -139,8 +140,42 @@ client.on('connect', function() {
           .catch(err => {
             console.log('Error in initialization of user data', err);
           });
+      } 
+
+      // check for whether message data has already been initialized
+      return client.getAsync('global_msgId');
+    })
+    .then(msgId => {
+      // initialize message data
+      if (msgId === null) {
+        let newMsgId = 1;
+
+        for (let cnt = 1; cnt <= 5; cnt++) {
+          for (let sourceId = 1; sourceId <= 4; sourceId++) {
+            for (let targetId = 1; targetId <= 4; targetId++) {
+              if (!(sourceId === targetId)) {
+                client.hmset(`msgs:${newMsgId}`, [
+                  'sourceId', `${sourceId}`,
+                  'targetId', `${targetId}`,
+                  'body', chance.sentence(),
+                  'createdAt', Date.now()
+                ]);
+
+                if (sourceId < targetId) {
+                  client.zadd(`chat:${sourceId}:${targetId}`, `${newMsgId}`, `${newMsgId}`);
+                } else {
+                  client.zadd(`chat:${targetId}:${sourceId}`, `${newMsgId}`, `${newMsgId}`);
+                }
+                newMsgId++;
+              }
+            }
+          }
+        }
+
+        client.set('global_msgId', newMsgId, redis.print);
+
       } else {
-        // user data has been already initialized
+        // message data has been already initialized
         return null;
       }
     })
