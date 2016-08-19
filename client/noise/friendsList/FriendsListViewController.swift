@@ -50,26 +50,19 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
          self.friendToChat = self.friends![indexPath.row]
-
-        //compute DHX numbers
-        let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
-        let p_Alice = 666.pCreate()
-        let a_Alice = 666.aAliceCreate()
-        let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
-
-        //insert a_Alice, p_alice, E_Alice into user keychain
-
-        //create an Alice obj that we will pass through sockets to the server
-        var Alice : [String:AnyObject] = [:]
-        Alice["username"] = realm.objects(User)[0]["username"]
-        Alice["g"] = String(g_Alice)
-        Alice["p"] = String(p_Alice)
-        Alice["E"] = String(E_Alice)
-        Alice["friendname"] = friendToChat!.username
+        //TODO: ON EVERY ask redis if there is already a conversation between friend_friended
+        
+        //realm.objects(Messages)
+        
+        //if YES: 
+        
+        
+        //ELSE
+        let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: friendToChat!.username)
         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
         
         //TODO: refactor this so it
-        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+       // self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {

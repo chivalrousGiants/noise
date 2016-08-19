@@ -20,18 +20,18 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         self.user = realm.objects(User)
         print("user", self.user)
         print(friend)
-        updateChatScreen()
+        //updateChatScreen()
     }
-    
+
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (self.messages?.count)!
+       return (self.messages?.count)! + 1
     }
-    
+ /*
     func updateChatScreen() {
-        self.messages = realm.objects(Message.self).filter("receiver = '\(self.friend.username)' AND sender = '\(self.user![0].username)' ")
+        self.messages = realm.objects(Message.self).filter("targetId = \(self.friend.targetId)")
         self.CollectionView.reloadData()
     }
-    
+    */
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
@@ -58,7 +58,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         try! realm.write {
             realm.add(message)
-            updateChatScreen()
+            //updateChatScreen()
         }
     }
     
