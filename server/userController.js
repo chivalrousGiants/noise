@@ -134,9 +134,9 @@ function undertakeKeyExchange (dhxObject, clientSocket){
     })
     .then(dhxObject => {
         //determine whether keyX has already begun &/ is complete:
-        redis.client.hgetAsync(`dh${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, 'chatEstablished')
+        redis.client.hgetAsync(`dh:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`, 'chatEstablished')
         .then ((chatEstablishedVal) => {
-          redis.client.hgetallAsync(`chat${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`)
+          redis.client.hgetallAsync(`chat:${dhxObject.lesserUserId}:${dhxObject.greaterUserId}`)
 
             //query redis for existing chat between two specified users, return bool
           .then((existingChatVal)=> {
