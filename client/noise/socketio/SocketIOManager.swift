@@ -28,9 +28,14 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
+        socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
+            print("redis response checkMessages", messageArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
+        }
+        
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
             print("KeyExchange complete")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, )
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil)
         }
         
         socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in

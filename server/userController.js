@@ -112,5 +112,6 @@ function getUserId(username, cb){
 module.exports = {
   signIn, 
   signUp,
+  checkUser,
   getUserId
 };

@@ -6,13 +6,14 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     let realm = try! Realm()
     var friends : Results<Friend>?
     var keyExchangeComplete = false
+    var friendToChat : AnyObject?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         updateFriendsTable()
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
-        
+
         // Attach listeners
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -48,8 +49,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //////////CODE INSIDE OF COMMENT -> POPUP INIT WHEN READY
-        
+         self.friendToChat = self.friends![indexPath.row]
 
         //compute DHX numbers
         let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
@@ -65,20 +65,34 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         Alice["g"] = String(g_Alice)
         Alice["p"] = String(p_Alice)
         Alice["E"] = String(E_Alice)
-        Alice["friendname"] = self.friends![indexPath.row].username
+        Alice["friendname"] = friendToChat!.username
         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-        ////////////////////////////////////////////////////////////////
         
-
+        //TODO: refactor this so it
+        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
+        let userInfo = notification.userInfo
+        print("segue user info \(userInfo)")
         keyExchangeComplete = false
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
+        //sender: self
     }
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
+        
         keyExchangeComplete = true
-        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+        //sender: self
+    }
+    
+    // pass selected friend's object to ChatViewController on select.
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "chatScreenSegue" {
+            let chatView = segue.destinationViewController as! ChatViewController
+            chatView.friend = sender as! Friend
+        }
+       
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
