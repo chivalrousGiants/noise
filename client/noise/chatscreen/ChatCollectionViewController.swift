@@ -33,13 +33,12 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
         } else {
             self.messages = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
-            print("not new", realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0])
         }
         self.CollectionView.reloadData()
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
+        // tell the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
@@ -67,7 +66,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             print("new history added", conversationHistory)
             updateChatScreen()
         }
-        
         // send newMessage obj to socket
             // wait/listen for messageId from server
             // upon receive, query realm for the same newMessage sent
