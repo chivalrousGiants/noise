@@ -44,16 +44,16 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         cell.sendChatLabel.layer.cornerRadius = 5
         cell.sendChatLabel.layer.masksToBounds = true
         cell.sendChatLabel.clipsToBounds = true
-        cell.sendChatLabel.text = self.messages![indexPath.row].text
+        //cell.sendChatLabel.text = self.messages![indexPath.row].text
         return cell
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
         print("my friend", friend)
         let message = Message()
-        message.text = self.MessageTextFieldLabel.text!
-        message.receiver = friend.username
-        message.sender = realm.objects(User)[0].username
+        // message.text = self.MessageTextFieldLabel.text!
+        // message.receiver = friend.username
+        // message.sender = realm.objects(User)[0].username
         
         try! realm.write {
             realm.add(message)
