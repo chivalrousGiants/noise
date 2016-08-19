@@ -27,9 +27,22 @@ Messages
     (score, element) = (index, msg_id)
 
 PendingKeyExchange
-  (TO BE DETERMINED)
-  source_user_id, target_user_id
 
+  Hash   DH:lesser_user_id:greater_user_id
+    lesser_user_p: 
+    lesser_user_g:
+    lesser_user_E:
+    greater_user_p: 
+    greater_user_g:
+    greater_user_E:
+    can_chat: 0/1
+
+  Set   pendingChats:user_id
+      targetUserID1
+      targetUserID2
+      targetUserID3
+      et al
+  
 DP IRR Sums
   Query: Given a cohort number, fetch an array of integers with each value
   representing the sum of the bits at each corresponding index for IRRs 
