@@ -1,7 +1,8 @@
 const redis = require('./redis.js');
+const activeSocketConnections = require('./activeSocketConnections.js');
 
 ////////////////////////////////////
-//////// REDIS-USER FUNCTIONS
+//////// REDIS USER FUNCTIONS
 ////////////////////////////////////
 
 function signIn(user, clientSocket) {
@@ -11,16 +12,22 @@ function signIn(user, clientSocket) {
       // NULL is returned for non-existent key
       if (userId === null) {
         // Username does not exist
-        return null;
+        return [null, null];
       } else {
-        return redis.client.hgetallAsync(`user:${userId}`);
+        return Promise.all([redis.client.hgetallAsync(`user:${userId}`), userId]);
       }
     })
-    .then(foundUser => {
+    .then(([foundUser, userId]) => {
       // TODO: abstract out comparePassword in utils.js
       if (foundUser !== null && foundUser.password === user.password) {
         console.log('signin password match successful');
+        
         // Successful login
+        foundUser.userId = userId;
+
+        // add socket.id to activeConnections
+        activeSocketConnections[`${userId}`] = clientSocket.id;
+
         clientSocket.emit('redis response for signin', {
           user: foundUser,
           clientSocketId: clientSocket.id
@@ -61,6 +68,10 @@ function signUp (user, clientSocket) {
         redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
         redis.client.hset('users', [user.username, `${globalUserId}`]);
         
+        // add socket.id to activeConnections
+        activeSocketConnections[`${globalUserId}`] = clientSocket.id;
+
+        user.userId = globalUserId;
         clientSocket.emit('redis response for signup', user);
 
       }
@@ -74,7 +85,7 @@ function signUp (user, clientSocket) {
   Given a username (of type String)
   return value:
     if user does not exist return null
-    else return all fields of user:userId hash (username, lastname, firstname, userId)
+    else return userObj (username, lastname, firstname, userId)
  */
 function checkUser(username, clientSocket) {
   redis.client.hgetAsync('users', username)
@@ -83,14 +94,18 @@ function checkUser(username, clientSocket) {
       // NULL is returned for non-existent key
       if (userId === null) {
         // Username does not exist
-        return null;
+        return [null, null];
       } else {
-        return redis.client.hgetallAsync(`user:${userId}`);
+        return Promise.all([redis.client.hgetallAsync(`user:${userId}`), userId]);
       }
     })
-    .then(user => {
+    .then(([user, userId]) => {
       // user will be null or an object
       console.log('user is', user);
+
+      if (user !== null) {
+        user.userId = userId;
+      }
 
       clientSocket.emit('redis response checkUser', user);
      
