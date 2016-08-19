@@ -25,10 +25,10 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func updateChatScreen() {
-        if realm.objects(Conversation).filter("friendId = \(friend.friendID) ").count == 0 {
+        if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             try! realm.write{
                 let startNewConversation = Conversation()
-                startNewConversation.friendId = friend.friendID
+                startNewConversation.friendID = friend.friendID
                 realm.add(startNewConversation)
                 print("instantiated a conversation")
             }
@@ -58,22 +58,20 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
         let newMessage = Message()
-        newMessage.sourceID = 2 //realm.objects(User)[0].userID
+        newMessage.sourceID = realm.objects(User)[0].userID
         newMessage.targetID = friend.friendID
         newMessage.body = self.SendChatTextField.text!
         
         try! realm.write{
-            let conversationHistory = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
+            let conversationHistory = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
             conversationHistory.append(newMessage)
             print("new history added", conversationHistory)
             updateChatScreen()
             self.SendChatTextField.text = ""
+            
         }
-        
-        //dispatch_async(dispatch_get_main_queue(), )
         //SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
-        
-        
+    
         // send newMessage obj to socket
             // wait/listen for messageId from server
             // upon receive, query realm for the same newMessage sent
