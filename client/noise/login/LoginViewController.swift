@@ -56,8 +56,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func handleSignInNotification(notification: NSNotification) -> Void {
-
-        print("signInObj", notification.userInfo)
         
         if let signInObj = notification.userInfo {
             

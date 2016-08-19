@@ -28,16 +28,13 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response undertaking KeyExchange") { (userArray, socketAck) -> Void in
-            print("Undertaking KeyExchange")
+        socket.on("redis response KeyExchange complete") { (userArray, socketAck) -> Void in
+            print("initial KeyExchange complete")
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
         }
-        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
-            print("KeyExchange dropped")
-            NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
-        }
-        socket.on("keyExchange initiated") { (userArray, socketAck) -> Void in
-            print("keyExchange initiated")
+        
+        socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
+            print("pursuing keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil)
         }
     }
@@ -67,7 +64,6 @@ class SocketIOManager: NSObject {
     }
     
     func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        print("Test: hit initiKeyExchange socket with dhxObj: \(dhxInfo)")
         socket.emit("initial key query", dhxInfo)
     }
     

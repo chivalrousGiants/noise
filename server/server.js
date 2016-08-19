@@ -13,7 +13,7 @@ const redis = require('./redis.js');
 // Controllers
 const userController = require('./userController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
-
+const dh = require('./dhKeyExchange.js');
 // HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
@@ -65,28 +65,16 @@ io.on('connection', (clientSocket) => {
       })
       .catch(console.error.bind(console));
   });
+
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
   clientSocket.on('initial key query', (dhxObject) => {
-    userController.undertakeKeyExchange(dhxObject, clientSocket);
-
-            /* CHECK FOR CHAT
-            see if Alice and Bob have a Chat
-               >>return true 
-                 >>else return false (no chat)
-            */
-
-    /*  INIT KEY EXCHANGE (obj)
-    var userIds = {
-      userId1 = getUserId('Alice')
-      userId2 = getUserId('Bob')
-    }
-    var chatExists = checkForChat(userId1, userId2)
-    if  !chatExists
-      >> 
-    */
-
-    //userController.initKeyExchange(dhxObject, clientSocket);
+    dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
+
+  clientSocket.on('secondary key query', (dhxObject) => {
+    //dh.commenceKeyExchange(dhxObject, clientSocket);
+  });
+
 });
 
