@@ -30,6 +30,7 @@ extension Int {
     }
     func alicify (username:String, friendName:String) -> Dictionary<String,String> {
         //TODO: move functionality into here once you have testable product
+        return ["test", "test"]
     }
     func bobify (username:String, friendName:String) -> Dictionary<String,String> {
         //TODO: move functionality into here once you have testable product
