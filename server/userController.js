@@ -79,7 +79,7 @@ function signUp (user, clientSocket) {
   Given a username (of type String)
   return value:
     if user does not exist return null
-    else return all fields of user:userId hash (username, lastname, firstname, userId)
+    else return userObj (username, lastname, firstname, userId)
  */
 function checkUser(username, clientSocket) {
   redis.client.hgetAsync('users', username)
