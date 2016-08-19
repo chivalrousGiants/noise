@@ -28,10 +28,20 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-        //socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
-           // print("redis response checkMessages", messageArray)
-           // NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
-        //}
+        socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
+            print("redis response checkMessages", messageArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
+        }
+        
+        socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
+            print("KeyExchange complete")
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil)
+        }
+        
+        socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
+            print("pursuing keyExchange")
+            NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
+        }
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -42,23 +52,15 @@ class SocketIOManager: NSObject {
         socket.emit("signUp", user)
     }
     
-    // change this to 1) encrypted message 2) noisified message --both dictionaries
-    func sendEncryptedChat(message: AnyObject){
-        print("From socket func, sendEncryptedChat: \(message)")
-        
+    // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries
+    func sendEncryptedChat(message: String){
         socket.emit("encryptedChatSent", message)
     }
     
     //TODO: Modify as needed
     func sendNoisifiedChat(messageDP: String){
         socket.emit("noisifiedChatSent", messageDP)
-        
-        // listen for successfully added
-        socket.on("DP message sent") { (messageDP) -> Void in
-            
-        }
-        
-        // listen for fail
+
     }
     
     // newFriend is the username
