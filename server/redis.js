@@ -126,7 +126,7 @@ client.on('connect', function() {
     .then(userId => {
 
       // Users have not been initialized
-      if (userId === null) {  
+      if (userId === null) {
         client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
         client.hset('users', ['hannah', 1]);
 
@@ -135,7 +135,7 @@ client.on('connect', function() {
 
         client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
         client.hset('users', ['ryan', 3]);
-       
+
         client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
         client.hset('users', ['jae', 4]);
 

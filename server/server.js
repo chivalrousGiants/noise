@@ -60,11 +60,17 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
+  /////////////////////////////////////////////////////////
+  // Message socket routes
   clientSocket.on('initial retrieval of new messages', (userId, friends) => {
     // console.log('hit initial-retrieval-of-new-messages on server socket with userId', userId);
     // console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
     messageController.retrieveNewMessages(userId, friends, clientSocket);
+  });
+
+  clientSocket.on('send new message', (message) => {
+    messageController.handleNewMessage(message, clientSocket);
   });
 
   /////////////////////////////////////////////////////////

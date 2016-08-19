@@ -14,11 +14,10 @@ const activeSocketConnections = require('./activeSocketConnections');
     }
 
   Return value
-    Array of objects for each friend
+    Array of objs for each friend
       {
-        friendId: friend_id
-        messages: Array of message objs 
-          [ {targetId, sourceId, createdAt, body, msgId} ]
+        friendId
+        messages: Array of msgObjs [ {targetId, sourceId, createdAt, body, msgId} ]
         largestMessageId
       }
  */
@@ -85,6 +84,48 @@ function retrieveNewMessages(userId, friends, clientSocket) {
 
 }
 
+/*
+  Input Parameters
+    message = { sourceID, targetID, body, createdAt }
+
+  Return value
+    TO: clientSocket
+      userArray[0] = messageID (generated when inserting new message to redis)
+
+    TO: targetId's socket
+      userArray[0] = messageID
+      userArray[1] = msgObj { sourceId, targetId, body, createdAt }
+ */
+function handleNewMessage(message, clientSocket) {
+  // write new message to db
+  redis.client.incr('global_msgId', redis.print);
+  redis.client.getAsync('global_msgId')
+    .then(msgId => {
+
+      redis.client.hmset(`msgs:${msgId}`, [
+        'sourceId', message.sourceID,
+        'targetId', message.targetID,
+        'body', message.body,
+        'createdAt', message.createdAt
+      ]);
+
+      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgId}`, `${msgId}`);
+
+      clientSocket.emit('successfully sent new message', msgId);
+
+      // check if friend (target of msg) is online
+      let friendSocketId = activeSocketConnections[`${message.targetID}`];
+
+      if (friendSocketId) {
+        clientSocket.broadcast.to(friendSocketId)
+          .emit('receive new message', msgId, message);
+      }
+    })
+    .catch(console.error.bind(console));
+}
+
+
+
 /////////// Testing
 // let friends = {
 //   '1': 15, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
@@ -95,4 +136,5 @@ function retrieveNewMessages(userId, friends, clientSocket) {
 
 module.exports = {
   retrieveNewMessages
+  handleNewMessage
 };
