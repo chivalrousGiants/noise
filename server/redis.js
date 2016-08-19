@@ -2,7 +2,7 @@
  ******************* REDIS DATA STRUCTURE *******************
  ************************************************************
  
- Users Dummy Data
+ Users
  *   userId
  *   1      (username: hannah, pw: hannah, firstname: Hannah, lastname: Brannan) 
  *   2      (username: mikey, pw: mikey, firstname: Michael, lastname: De La Cruz)
@@ -19,7 +19,7 @@ Users
     (username, user_id)
 
 Messages
-  Query: fetch chat history for each friend that is not already in localDB
+  Query: fetch all new messages that is not already written in Realm
 
   Hash msgs:msg_id
     (field, value) = (sourceId, user_id), (targetId, user_id) (body, 'hey') (createdAt, time_stamp)
@@ -109,9 +109,9 @@ bluebird.promisifyAll(redis.Multi.prototype);
 client = redis.createClient();
 
 
-//////////////////////////////////////////////////////////////
-//////// Initialization of Users dummy data :: TESTING ONLY!
-//////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+//////// Initialization of Users 1, 2, 3, 4 ////////
+////////////////////////////////////////////////////
 
 /*
   Connect to Redis Client
@@ -121,56 +121,52 @@ client.on('connect', function() {
   
   console.log('Successfully connected to redis client!');
 
+  // Initialize User data
   client.getAsync('global_userId')
     .then(userId => {
-      // initialize user data
-      if (userId === null) {
-        client.set('global_userId', 0, redis.print);
-        client.incr('global_userId', redis.print);
-        client.getAsync('global_userId')
-          .then(userId => {
-            client.hmset(`user:${userId}`, ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
-            client.hset('users', ['hannah', `${userId}`]);
-            client.incr('global_userId', redis.print);
-            return client.getAsync('global_userId');
-          })
-          .then(userId => {
-            client.hmset(`user:${userId}`, ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
-            client.hset('users', ['mikey', `${userId}`]);
-            client.incr('global_userId', redis.print);
-            return client.getAsync('global_userId');
-          })
-          .then(userId => {
-            client.hmset(`user:${userId}`, ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
-            client.hset('users', ['ryan', `${userId}`]);
-            client.incr('global_userId', redis.print);
-            return client.getAsync('global_userId'); 
-          })
-          .then(userId => {
-            client.hmset(`user:${userId}`, ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
-            client.hset('users', ['jae', `${userId}`]);
-          })
-          .catch(err => {
-            console.log('Error in initialization of user data', err);
-          });
+
+      // Users have not been initialized
+      if (userId === null) {  
+        client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah'], function(err, res) {});
+        client.hset('users', ['hannah', 1]);
+
+        client.hmset('user:2', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey'], function(err, res) {});
+        client.hset('users', ['mikey', 2]);
+
+        client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan'], function(err, res) {});
+        client.hset('users', ['ryan', 3]);
+       
+        client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae'], function(err, res) {});
+        client.hset('users', ['jae', 4]);
+
+        // global_userId = # of users so far
+        // global_userId increments when a new user signs up
+        client.set('global_userId', 4, redis.print);
       } 
 
-      // check for whether message data has already been initialized
+      // Initialize Message data
       return client.getAsync('global_msgId');
     })
     .then(msgId => {
-      // initialize message data
+      // Initialize message data for users 1, 2, 3, 4
+      //    Each user sends 5 messages each to other users
+      //    A pair of two users has ten messages between them
+      //    Each message is prefixed by 'num1:num2:num3'
+      //        num1 = messageId
+      //        num2 = sourceId
+      //        num3 = targetId
       if (msgId === null) {
-        let newMsgId = 1;
+        let newMsgId = 0;
 
         for (let cnt = 1; cnt <= 5; cnt++) {
           for (let sourceId = 1; sourceId <= 4; sourceId++) {
             for (let targetId = 1; targetId <= 4; targetId++) {
               if (!(sourceId === targetId)) {
+                newMsgId++;
                 client.hmset(`msgs:${newMsgId}`, [
                   'sourceId', `${sourceId}`,
                   'targetId', `${targetId}`,
-                  'body', chance.sentence(),
+                  'body', `${newMsgId}:${sourceId}:${targetId} ${chance.sentence()}`,
                   'createdAt', Date.now()
                 ]);
 
@@ -179,12 +175,13 @@ client.on('connect', function() {
                 } else {
                   client.zadd(`chat:${targetId}:${sourceId}`, `${newMsgId}`, `${newMsgId}`);
                 }
-                newMsgId++;
               }
             }
           }
         }
 
+        // global_msgId = # of total msgs so far
+        // global_msgId is incremented before adding new message
         client.set('global_msgId', newMsgId, redis.print);
 
       } else {

@@ -14,7 +14,8 @@ const redis = require('./redis.js');
 const userController = require('./userController.js');
 const messageController = require('./messageController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
-const dh = require('./dhKeyExchange.js');
+// const dh = require('./dhKeyExchange.js');
+
 // HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
@@ -59,11 +60,11 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('initial retrieval of new messages', (username, friends) => {
-    console.log('hit initial-retrieval-of-new-messages on server socket with username', username);
-    console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
+  clientSocket.on('initial retrieval of new messages', (userId, friends) => {
+    // console.log('hit initial-retrieval-of-new-messages on server socket with userId', userId);
+    // console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
-    messageController.retrieveNewMessages(username, friends, clientSocket);
+    messageController.retrieveNewMessages(userId, friends, clientSocket);
   });
 
   /////////////////////////////////////////////////////////

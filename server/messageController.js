@@ -71,7 +71,7 @@ function retrieveNewMessages(userId, friends, clientSocket) {
 
   Promise.all(getMsgIdsPromiseArray).then(returnValue => {
     
-    // Testing
+    /////////// Testing
     // let cnt = 1;
     // returnValue.forEach(obj => {
     //   console.log(`returnValue for obj ${cnt}:`, obj);
@@ -85,13 +85,12 @@ function retrieveNewMessages(userId, friends, clientSocket) {
 
 }
 
-// Testing
+/////////// Testing
 // let friends = {
 //   '1': 15, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
 //   '2': 30, // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
 //   '3': 10
 // };
-
 // retrieveNewMessages(4, friends);
 
 module.exports = {
