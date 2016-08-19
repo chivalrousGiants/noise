@@ -30,10 +30,10 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
-            print("redis response checkMessages", messageArray)
-            NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
-        }
+        //socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
+           // print("redis response checkMessages", messageArray)
+           // NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
+        //}
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -53,10 +53,9 @@ class SocketIOManager: NSObject {
     }
     
     // change this to 1) encrypted message 2) noisified message --both dictionaries
-    func sendEncryptedChat(message: String){
-        print("From socket func, sendChat: \(message)")
+    func sendEncryptedChat(message: AnyObject){
+        print("From socket func, sendEncryptedChat: \(message)")
         
-        //
         socket.emit("encryptedChatSent", message)
     }
     
@@ -65,12 +64,12 @@ class SocketIOManager: NSObject {
         print("TEST: socketMGMT sendingDPChat: \(messageDP)")
         socket.emit("noisifiedChatSent", messageDP)
         
-        //listen for successfully added
+        // listen for successfully added
         socket.on("DP message sent") { (messageDP) -> Void in
             
         }
         
-        //listen for fail
+        // listen for fail
     }
     
     // newFriend is the username

@@ -30,11 +30,13 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
                 let startNewConversation = Conversation()
                 startNewConversation.friendId = friend.friendID
                 realm.add(startNewConversation)
+                print("instantiated a conversation")
             }
         } else {
+            self.CollectionView.reloadData()
             self.messages = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
         }
-        self.CollectionView.reloadData()
+     
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -56,7 +58,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
         let newMessage = Message()
-        newMessage.sourceID = realm.objects(User)[0].userID
+        newMessage.sourceID = 2 //realm.objects(User)[0].userID
         newMessage.targetID = friend.friendID
         newMessage.body = self.SendChatTextField.text!
         
@@ -65,7 +67,13 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             conversationHistory.append(newMessage)
             print("new history added", conversationHistory)
             updateChatScreen()
+            self.SendChatTextField.text = ""
         }
+        
+        //dispatch_async(dispatch_get_main_queue(), )
+        //SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+        
+        
         // send newMessage obj to socket
             // wait/listen for messageId from server
             // upon receive, query realm for the same newMessage sent

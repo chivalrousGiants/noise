@@ -26,11 +26,17 @@ http.listen(HTTP_PORT, () => {
 
 // Socket.io
 
-// activeSocketConnections object that keep track of logged-in & active users 
+// activeSocketConnections object that keep track of logged-in & active users
 const activeSocketConnections = require('./activeSocketConnections');
 
 io.on('connection', (clientSocket) => {
   console.log('A user connected with socket id', clientSocket.id);
+
+  clientSocket.on('encryptedChatSent', function(message) {
+    console.log("is it getting here")
+    console.log('checking if the message obj makes it to the server', message)
+  })
+
 
   clientSocket.on('disconnect', () => {
 
@@ -88,4 +94,3 @@ io.on('connection', (clientSocket) => {
   });
 
 });
-
