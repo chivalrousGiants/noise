@@ -11,7 +11,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     var friend = Friend()
     var messages = List<Message>()
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // configure states
@@ -34,7 +33,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
         } else {
             self.messages = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
-            print("not new", realm.objects(Conversation).filter("friendId = \(friend.friendID) "))
+            print("not new", realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0])
         }
         self.CollectionView.reloadData()
     }
@@ -52,7 +51,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         cell.sendChatLabel.layer.cornerRadius = 5
         cell.sendChatLabel.layer.masksToBounds = true
         cell.sendChatLabel.clipsToBounds = true
-        //cell.sendChatLabel.text = self.messages![indexPath.row].text
+        cell.sendChatLabel.text = self.messages[indexPath.row].body
         return cell
     }
  
