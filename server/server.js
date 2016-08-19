@@ -25,10 +25,19 @@ http.listen(HTTP_PORT, () => {
 });
 
 // Socket.io
+
+// activeSocketConnections object that keep track of logged-in & active users 
+const activeSocketConnections = require('./activeSocketConnections');
+
 io.on('connection', (clientSocket) => {
   console.log('A user connected with socket id', clientSocket.id);
 
   clientSocket.on('disconnect', () => {
+
+    // if client was a logged-in active user, delete from activeConnections array
+    if (`${clientSocket.id}` in activeSocketConnections) {
+      delete activeSocketConnections[`${clientSocket.id}`];
+    }
     console.log('A user disconnected with socket id', clientSocket.id);
   });
 

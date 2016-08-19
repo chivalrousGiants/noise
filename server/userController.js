@@ -1,4 +1,5 @@
 const redis = require('./redis.js');
+const activeSocketConnections = require('./activeSocketConnections.js');
 
 ////////////////////////////////////
 //////// REDIS USER FUNCTIONS
@@ -23,6 +24,9 @@ function signIn(user, clientSocket) {
         
         // Successful login
         foundUser.userId = userId;
+
+        // add socket.id to activeConnections
+        activeSocketConnections[`${userId}`] = clientSocket.id;
 
         clientSocket.emit('redis response for signin', {
           user: foundUser,
@@ -65,6 +69,9 @@ function signUp (user, clientSocket) {
         redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
         redis.client.hset('users', [user.username, `${globalUserId}`]);
         
+        // add socket.id to activeConnections
+        activeSocketConnections[`${globalUserId}`] = clientSocket.id;
+
         user.userId = globalUserId;
         clientSocket.emit('redis response for signup', user);
 

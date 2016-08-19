@@ -1,5 +1,6 @@
 const redis = require('./redis.js');
 const bluebird = require('bluebird');
+const activeSocketConnections = require('./activeSocketConnections');
 
 ////////////////////////////////////
 //////// REDIS MESSAGE FUNCTIONS
