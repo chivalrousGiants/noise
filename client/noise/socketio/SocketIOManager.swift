@@ -30,7 +30,7 @@ class SocketIOManager: NSObject {
         
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
             print("KeyExchange complete")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: user[0] as? [NSObject : AnyObject])
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, )
         }
         
         socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
