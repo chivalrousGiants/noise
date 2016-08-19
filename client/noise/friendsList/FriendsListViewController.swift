@@ -6,7 +6,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     let realm = try! Realm()
     var friends : Results<Friend>?
     var keyExchangeComplete = false
-    var friendToChat : AnyObject?
+    var friendToChat : AnyObject!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,27 +49,25 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-         self.friendToChat = self.friends![indexPath.row]
-
-        //compute DHX numbers
-        let g_Alice = 666.gCreate()                    //TODO: explore: information loss from uint to string?
-        let p_Alice = 666.pCreate()
-        let a_Alice = 666.aAliceCreate()
-        let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
-
-        //insert a_Alice, p_alice, E_Alice into user keychain
-
-        //create an Alice obj that we will pass through sockets to the server
-        var Alice : [String:AnyObject] = [:]
-        Alice["username"] = realm.objects(User)[0]["username"]
-        Alice["g"] = String(g_Alice)
-        Alice["p"] = String(p_Alice)
-        Alice["E"] = String(E_Alice)
-        Alice["friendname"] = friendToChat!.username
-        SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+        self.friendToChat = self.friends![indexPath.row]
+        //TEST
+        print(self.friendToChat)
         
-        //TODO: refactor this so it
-        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+        //let convo = realm.objects(Conversation.self).filter("friendId = \(self.friendToChat["friendID"])")
+        //.filter("friendId = \(self.friendToChat["friendID"])")
+        //print(convo)
+        
+        
+        //realm if there is already established friend1/friend2 conversation
+        if (0 == 0){
+            let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+            //if not, query redis for status of the key exchange && wait for notification of keyExchangeCompletion
+            SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+        }
+        else {
+            //if is already established chat, segue to chatScreen
+            self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+        }
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
