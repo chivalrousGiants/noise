@@ -6,7 +6,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     let realm = try! Realm()
     var friends : Results<Friend>?
     var keyExchangeComplete = false
-    var friendToChat : AnyObject?
+    var friendToChat : AnyObject!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,20 +49,25 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-         self.friendToChat = self.friends![indexPath.row]
-        //TODO: ON EVERY ask redis if there is already a conversation between friend_friended
+        self.friendToChat = self.friends![indexPath.row]
+        //TEST
+        print(self.friendToChat)
         
-        //realm.objects(Messages)
+        //let convo = realm.objects(Conversation.self).filter("friendId = \(self.friendToChat["friendID"])")
+        //.filter("friendId = \(self.friendToChat["friendID"])")
+        print(convo)
         
-        //if YES: 
         
-        
-        //ELSE
-        let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: friendToChat!.username)
-        SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-        
-        //TODO: refactor this so it
-       // self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+        //realm if there is already established friend1/friend2 conversation
+        if (0 == 0){
+            let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+            //if not, query redis for status of the key exchange && wait for notification of keyExchangeCompletion
+            SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+        }
+        else {
+            //if is already established chat, segue to chatScreen
+            self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+        }
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
