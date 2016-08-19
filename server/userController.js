@@ -11,16 +11,21 @@ function signIn(user, clientSocket) {
       // NULL is returned for non-existent key
       if (userId === null) {
         // Username does not exist
-        return null;
+        return [null, null];
       } else {
-        return redis.client.hgetallAsync(`user:${userId}`);
+        return Promise.all([redis.client.hgetallAsync(`user:${userId}`), userId]);
       }
     })
-    .then(foundUser => {
+    .then(([foundUser, userId]) => {
+      console.log('userId', userId);
+      console.log('foundUser', foundUser);
       // TODO: abstract out comparePassword in utils.js
       if (foundUser !== null && foundUser.password === user.password) {
         console.log('signin password match successful');
+        
         // Successful login
+        foundUser.userId = userId;
+
         clientSocket.emit('redis response for signin', {
           user: foundUser,
           clientSocketId: clientSocket.id

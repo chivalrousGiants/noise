@@ -36,7 +36,6 @@ io.on('connection', (clientSocket) => {
   // Auth socket routes
   clientSocket.on('signIn', (user) => {
     console.log('hit signIn on server socket:', user);
-
     userController.signIn(user, clientSocket);
   });
 

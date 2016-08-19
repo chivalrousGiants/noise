@@ -1,4 +1,5 @@
 const redis = require('./redis.js');
+const bluebird = require('bluebird');
 
 ////////////////////////////////////
 //////// REDIS MESSAGE FUNCTIONS
@@ -16,54 +17,90 @@ function retrieveNewMessages(username, friends, clientSocket) {
 
     need to return 
       Array of objects for each friend
-      {
-        friend: friend_id
+      newMessages = {
+        friendId: friend_id
         messages: [ {msgObj - including msgId} {msgObj} ... ]
         largestMessageId
       }
    */
   
+  let result = [],
+    smallerId,
+    largerId,
+    largestMessageId,
+    newMessages,
+    msgIdsPromiseArray = [];
+  
+  redis.client.hgetAsync('users', username)
+    .then(userId => {
 
-  let result = [];
+      Object.keys(friends).forEach(friendId => {
+        largestMessageId = friends[friendId];
 
-  // loop through friend_id's in friends parameter
-  // let newMessages = {};
-  // zrange chat:user_id:user:id from (largestMessageId + 1) to -1
-  // add them to newMessages.messages including the msgId subkeys
-  // set newMessages.friend and newMessages.largestMessageId
-  // result.push(newMessages)
+        [smallerId, largerId] = userId < friendId ? [userId, friendId] : [friendId, userId];
 
-  return result;
+        msgIdsPromiseArray.push(redis.client.zrangeAsync(`chat:${smallerId}:${largerId}`, `${largestMessageId + 1}`, -1));
+      });
+
+      return bluebird.all(msgIdsPromiseArray).then(arr => {
+        console.log(arr);
+      });
+
+      console.log('after bluebird.all');
+      
+    }).catch(console.error.bind(console));
+
+    // .then(userId => {
+    //   // loop through friend_id's in friends parameter
+    //   for (let friendId in friends) {
+
+    //     largestMessageId = friends[friendId];
+        
+    //     newMessages = {};
+    //     newMessages.friendId = friendId;
+    //     newMessages.messages = [];
+
+    //     [smallerId, largerId] = userId < friendId ? [userId, friendId] : [friendId, userId];
+
+    //     redis.client.zrangeAsync(`chat:${smallerId}:${largerId}`, largestMessageId + 1, -1)
+    //       .then(msgIds => {
+
+    //         // msgIds = array of msgIds
+    //         msgIds.forEach(msgId => {
+    //           redis.client.hgetallAsync(`msgs:${msgId}`)
+    //             .then(msg => {
+    //               if (msg === null) {
+    //                 throw 'Msg for given msgId does not exist';
+    //               }
+
+    //               // add msgId key to msg obj
+    //               msg.msgId = msgId;
+    //               newMessages.messages.push(msg);
+
+    //             }).catch(console.error.bind(console));
+    //         });
+
+    //         newMessages.largestMessageId = msgIds.pop();
+    //       });
+
+    //     result.push(newMessages);
+        
+    //   }
+
+    //   console.log('result is:', result);
+    //   // clientSocket.emit('redis response for retrieveNewMessages', result);
+
+    // })
+    // .catch(console.error.bind(console));
+
+}
+
+// Testing
+let friends = {
+  '1': 0, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
+  '2': 0  // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
 };
-
-
-// function addTimeStamp (message) {
-// 	var score = new Date();
-// 	message.score = score;
-// 	return message;
-// }
-
-// function addNewMessageToSet (message){
-// 	let scoredMessage = addTimeStamp(message);
-// 	//redis.client.zadd()
-// }
-
-// function addNewMessageHash (timestampedMessage){
-// 	//redis.client.
-// }
-
-// function retrieveNewMessages (latestTimeStamp){
-
-// }
-
-// function deleteMessage (messageID){
-
-// }
-
-//STRETCH:
-  // retrieve all messages
-  // delete all messages (associated with userX)
-  // 
+retrieveNewMessages('jae', friends);
 
 module.exports = {
   retrieveNewMessages
