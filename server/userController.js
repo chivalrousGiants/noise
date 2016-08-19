@@ -17,8 +17,6 @@ function signIn(user, clientSocket) {
       }
     })
     .then(([foundUser, userId]) => {
-      console.log('userId', userId);
-      console.log('foundUser', foundUser);
       // TODO: abstract out comparePassword in utils.js
       if (foundUser !== null && foundUser.password === user.password) {
         console.log('signin password match successful');
@@ -67,6 +65,7 @@ function signUp (user, clientSocket) {
         redis.client.hmset(`user:${globalUserId}`, ['firstname', user.firstname, 'lastname', user.lastname, 'username', user.username, 'password', user.password], function(err, res) {});
         redis.client.hset('users', [user.username, `${globalUserId}`]);
         
+        user.userId = globalUserId;
         clientSocket.emit('redis response for signup', user);
 
       }
@@ -89,14 +88,18 @@ function checkUser(username, clientSocket) {
       // NULL is returned for non-existent key
       if (userId === null) {
         // Username does not exist
-        return null;
+        return [null, null];
       } else {
-        return redis.client.hgetallAsync(`user:${userId}`);
+        return Promise.all([redis.client.hgetallAsync(`user:${userId}`), userId]);
       }
     })
-    .then(user => {
+    .then(([user, userId]) => {
       // user will be null or an object
       console.log('user is', user);
+
+      if (user !== null) {
+        user.userId = userId;
+      }
 
       clientSocket.emit('redis response checkUser', user);
      
