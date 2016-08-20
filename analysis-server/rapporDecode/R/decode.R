@@ -337,10 +337,21 @@ CheckDecodeInputs <- function(counts, map, params) {
   return(NULL)  # no error
 }
 
-Decode <- function(counts, map, params, alpha = 0.05,
+Decode <- function(counts, map, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
   library(Matrix)
+
+  ######## Read params file ########
+  params <- as.list(read.csv(params_file))
+  if (length(params) != 6) {
+    stop("There should be exactly 6 columns in the parameter file.")
+  }
+  if (any(names(params) != c("k", "h", "m", "p", "q", "f"))) {
+    stop("Parameter names must be k,h,m,p,q,f.")
+  }
+
+  cat("params")
 
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
