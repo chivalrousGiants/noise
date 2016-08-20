@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-# This library implements the RAPPOR marginal decoding algorithms using LASSO.
-
-library(glmnet)
+install.packages("limSolve", repos="https://cran.cnr.berkeley.edu/")
+install.packages("glmnet", repos="https://cran.cnr.berkeley.edu/")
+install.packages("RJSONIO", repos="https://cran.cnr.berkeley.edu/")
 
 # So we don't have to change pwd
 source.rappor <- function(rel_path)  {
@@ -354,8 +353,11 @@ CheckDecodeInputs <- function(counts, map, params) {
 Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
-  library(Matrix)
+  library(limSolve)
+  library(glmnet)
   library(RJSONIO)
+
+  library(Matrix)
 
   ######## Read params file ########
   params <- as.list(read.csv(params_file))
