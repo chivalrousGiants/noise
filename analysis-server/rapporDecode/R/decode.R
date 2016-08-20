@@ -368,8 +368,6 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
     stop("Counts file: all counts must be positive.")
   }
 
-  cat("counts")
-
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
     stop(error_msg)
