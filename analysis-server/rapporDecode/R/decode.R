@@ -368,8 +368,7 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
   }
 
   ######## Read counts file ########
-  # counts <- as.matrix(read.csv(counts_file, header = FALSE))
-  counts <- fromJSON(counts_file)
+  counts <- as.matrix(read.csv(counts_file, header = FALSE))
 
   if (nrow(counts) != params$m) {
     stop(sprintf("Got %d rows in the counts file, expected m = %d",
@@ -421,10 +420,6 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
 
   ########################
   ######## Decode ########
-
-  print(toJSON(counts))
-  print(toJSON(map))
-  print(toJSON(params))
 
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
