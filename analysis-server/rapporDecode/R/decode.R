@@ -23,7 +23,7 @@ source.rappor <- function(rel_path)  {
   source(abs_path)
 }
 
-source.rappor('analysis/R/alternative.R')
+source.rappor('./R/alternative.R')
 
 EstimateBloomCounts <- function(params, obs_counts) {
   # Estimates the number of times each bit in each cohort was set in original
@@ -395,11 +395,11 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
     col_pos <- col_pos[-removed]
   }
 
-  mapInt <- sparseMatrix(row_pos, col_pos,
+  map <- sparseMatrix(row_pos, col_pos,
                       dims = c(params$m * params$k, length(strs)))
 
-  colnames(mapInt) <- strs
-  map <- list(mapInt = mapInt, strs = strs, map_pos = map_pos)
+  colnames(map) <- strs
+  # map <- list(mapInt = mapInt, strs = strs, map_pos = map_pos)
 
 
   ########################
@@ -535,7 +535,7 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
   list(fit = fit, summary = res_summary, privacy = privacy, params = params,
        lasso = NULL, residual = as.vector(residual),
        counts = counts[, -1], resid = NULL, metrics = metrics,
-       ests = es$estimates  # ests needed by Shiny rappor-sim app      
+       ests = es$estimates  # ests needed by Shiny rappor-sim app
   )
 }
 
