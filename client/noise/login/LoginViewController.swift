@@ -48,8 +48,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 "username": userName!,
                 "password": userPassword!
             ]
-            
+            ////////////////////////////
+            let userID = realm.objects(User)[0]["userID"]
             SocketIOManager.sharedInstance.signIn(user)
+            SocketIOManager.sharedInstance.checkForPendingKeyExchange(userID!)
         }
         
         return true

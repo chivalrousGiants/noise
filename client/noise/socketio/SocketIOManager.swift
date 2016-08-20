@@ -9,11 +9,14 @@ class SocketIOManager: NSObject {
     
     override init() {
         super.init()
+        //TODO: get below line to hit server on app init
+        //self.checkForPendingKeyExchange() <<gets called, but doesn't hit server
     }
     
     func establishConnection() {
         socket.connect()
-        
+        //TODO: get below line to hit server on app init
+        //self.checkForPendingKeyExchange() <<gets called, but doesn't hit server
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
@@ -52,15 +55,9 @@ class SocketIOManager: NSObject {
         socket.emit("signUp", user)
     }
     
-    // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries
+    // TODO: send encrypted message
     func sendEncryptedChat(message: String){
         socket.emit("encryptedChatSent", message)
-    }
-    
-    //TODO: Modify as needed
-    func sendNoisifiedChat(messageDP: String){
-        socket.emit("noisifiedChatSent", messageDP)
-
     }
     
     // newFriend is the username
@@ -72,8 +69,14 @@ class SocketIOManager: NSObject {
         socket.emit("initial key query", dhxInfo)
     }
     
-    func checkForPendingKeyExchange () {
-        socket.emit("check for pending key exchange")
+    func checkForPendingKeyExchange (userID: AnyObject) {
+        print("on load check for pending key exchange")
+        //print("TEST: \(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])"))")
+        //if(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])")) {
+           socket.emit("check for pending key exchange", userID)
+        //}
+        //else, send notification: 
+          //NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
     }
     
     func closeConnection() {
