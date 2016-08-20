@@ -5,7 +5,7 @@ class Message: Object {
     dynamic var sourceID = 0
     dynamic var targetID = 0
     dynamic var body = ""
-    dynamic var createdAt = NSDate()
+    dynamic var createdAt = 0
     dynamic var messageID = 0
 }
 

@@ -83,3 +83,12 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# RStudio
+.Rhistory
+.Rproj.user
+
+# VS
+.browse.VC.db
+.browse.VC.db-shm
+.browse.VC.db-wal
