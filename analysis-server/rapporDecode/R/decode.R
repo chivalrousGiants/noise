@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-install.packages("limSolve", repos="https://cran.cnr.berkeley.edu/")
-install.packages("glmnet", repos="https://cran.cnr.berkeley.edu/")
-install.packages("RJSONIO", repos="https://cran.cnr.berkeley.edu/")
-
 # So we don't have to change pwd
 source.rappor <- function(rel_path)  {
   abs_path <- paste0(Sys.getenv("RAPPOR_REPO", ""), rel_path)
