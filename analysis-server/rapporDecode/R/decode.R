@@ -355,6 +355,7 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
   library(Matrix)
+  library(RJSONIO)
 
   ######## Read params file ########
   params <- as.list(read.csv(params_file))
