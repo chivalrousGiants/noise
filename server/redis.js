@@ -35,9 +35,9 @@ PendingKeyExchange
     greater_user_p: 
     greater_user_g:
     greater_user_E:
-    can_chat: 0/1
+    chatEstablished: 0/1/2
 
-  Set   pendingChats:user_ID
+  Set   pending:user_ID
       targetUserID1
       targetUserID2
       targetUserID3

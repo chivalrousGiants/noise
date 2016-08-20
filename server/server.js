@@ -30,7 +30,6 @@ http.listen(HTTP_PORT, () => {
 
 // activeSocketConnections object that keep track of logged-in & active users 
 const activeSocketConnections = require('./activeSocketConnections');
-console.log("on server.js page");
 
 io.on('connection', (clientSocket) => {
   console.log('A user connected with socket id', clientSocket.id);
@@ -99,13 +98,15 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
   clientSocket.on('initial key query', (dhxObject) => {
-    console.log('hit initial key query on server', dhxObject)
     dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
-
+/*
+if the dhxObject has a bobE > call some function
+if the dhxObject has a pg, AliceE > call some other function 
+*/
   clientSocket.on('check for pending key exchange', (dhxObject) => {
     console.log('hit server check for pending key exchange', dhxObject)
-    dh.commenceKeyExchange(dhxObject, clientSocket);
+    dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
 
 });

@@ -48,10 +48,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 "username": userName!,
                 "password": userPassword!
             ]
-            ////////////////////////////
-            let userID = realm.objects(User)[0]["userID"]
+
             SocketIOManager.sharedInstance.signIn(user)
-            SocketIOManager.sharedInstance.checkForPendingKeyExchange(userID!)
         }
         
         return true
@@ -74,7 +72,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             try! realm.write {
                 realm.add(user, update:true)
             }
+            var dhxObj : [String:AnyObject] = [:]
+            dhxObj["userID"] = user.userID
+            dhxObj["username"] = user.username
+            //what else?!
             
+            SocketIOManager.sharedInstance.checkForPendingKeyExchange(dhxObj)
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
             
         } else {

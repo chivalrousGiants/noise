@@ -1,53 +1,99 @@
 const redis = require('./redis.js');
 
+//updates object passed during Diffie Hellman exchaange with descriptive IDs
+function updateInfoWithIds (dhxObject, sourceUserId, pendingID){
+    dhxObject.greaterUserID = sourceUserId >= pendingID ? sourceUserId : pendingID;
+    dhxObject.lesserUserID = sourceUserId < pendingID ? sourceUserId : pendingID;
+    dhxObject.userID = sourceUserId;
+    dhxObject.friendID = pendingID;
+    return dhxObject;
+};
+
 //initiates redis data structures & vals : mutual dh exchange hash; alicePendingList; bobPendingList
 function initKeyExchange (dhxObject, clientSocket){
   console.log('in initKeyExchange', dhxObject)
-  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){console.log(err)});
-  //add whichever of these places Alice userId in Bob's object && only that one
-  if (dhxObject.lesserUserID === dhxObject.aliceID){
-	  redis.client.sadd(`pendingChats:${dhxObject.greaterUserID}`, `${dhxObject.lesserUserID}`);
-  } else {
-	  redis.client.sadd(`pendingChats:${dhxObject.lesserUserID}`, `${dhxObject.greaterUserID}`);
-  }
+  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){if (err) {console.log(err)}});
+  //add Alice userId in Bob's object
+  redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
   clientSocket.emit("redis response KeyExchange initiated", dhxObject);
 };
 
-//EITHER initiates keyExchange between two clients or informs Alice_client no need.
+
+
+//EITHER initiates keyExchange between sourceClient and friendClient(s) or informs Alice_client no need.
 function undertakeKeyExchange (dhxObject, clientSocket){
+
   redis.client.hgetAsync('users', `${dhxObject.username}`)
-  .then(ID_Alice => {
-    redis.client.hgetAsync('users', `${dhxObject.friendname}`)
-    .then(ID_Bob => {
-        dhxObject.greaterUserID = ID_Alice >= ID_Bob ? ID_Alice : ID_Bob;
-        dhxObject.lesserUserID = ID_Alice < ID_Bob ? ID_Alice : ID_Bob;
-        dhxObject.aliceID = ID_Alice;
-        dhxObject.bobID = ID_Bob;
-        return dhxObject;
+  .then(sourceUserId => {
+  	  console.log(dhxObject, sourceUserId, 'xxxxx')
+    	//determine whether pending requests are waiting for the user
+    	redis.client.smembersAsync(`pending:${sourceUserId}`)
+    	.then(anyPendingRequests => {
+    		console.log('pending requests is ', anyPendingRequests);
+    		if (anyPendingRequests.length > 0) {
+		        anyPendingRequests.forEach(function(pendingID){
+
+			        //first, sort & store the IDs of each pending relationship
+				    dhxObject = updateInfoWithIds(dhxObject, sourceUserId, pendingID);
+
+
+		           //then determine the stage of the Diffie Hellman Key Exchange (nil/0/1/2)
+			        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
+			        .then ((chatEstablishedVal) => {
+			        	console.log('chatEstablishedVal is ', chatEstablishedVal);
+			            if(chatEstablishedVal === 2) {
+			              //action MUST be needed (only 1 person has pending status)
+			              //remove self from other's pending list
+			              //remove dh:lesser:greater object completely
+			              //inform user so they can instantiate chat.
+			              clientSocket.emit("redis response KeyExchange complete", dhxObject);
+			            } else if (chatEstablishedVal === 0){
+			            	//action MUST be needed (only 1 person has pending status)
+			            	//perform pt 2 of key exchange:
+			            	commenceKeyExchange(dhxObject, clientSocket);
+			            } else if (chatEstablishedVal === 1) {
+			            	console.log('1 confirmed')
+			            	//action MAY be needed (I could be either user)
+			            	//if I've never seen Bob'sE, I'm Alice and I need to act.
+			            	//if I have Bob's E already, I'm Bob, and I can do nothing.
+			            } 
+			        })	
+		        });
+
+    		} else {
+    		//no pending requests exist, but also no chat exists (with your requested friend).
+    		//>>>> initialize the key exchange.
+    		  if (dhxObject.friendname){
+    		  	redis.client.hgetAsync('users', `${dhxObject.username}`)
+    		  	.then(friendID=>{
+    		  		var dhxObjectMod = updateInfoWithIds(dhxObject, sourceUserId, friendID);
+    		  		console.log('dhxObjectMod izzzz', dhxObjectMod);
+	                initKeyExchange(dhxObjectMod, clientSocket);
+	                clientSocket.emit("initiating keyExchange");
+    		  	})
+	          }
+	          //this is a routine query with no results && there is no friend-in-mind
+    		  clientSocket.emit("No pending KeyExchanges")
+    		}
+    	})
     })
-    .then(dhxObject => {
-        //determine whether keyX has already begun &/ is complete:
-        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
-        .then ((chatEstablishedVal) => {
-            if(chatEstablishedVal === 2) {
-            	//can now delete now-unnecessary data structures
-              clientSocket.emit("redis response KeyExchange complete", dhxObject);
-            } else if (chatEstablishedVal === 1){
-            	//perform pt 2 key exchange
-            } else {
-            	//perform pt 1 key exchange
-              initKeyExchange(dhxObject, clientSocket);
-                //emit 'still waiting?'
-            } 
-        })
-    })
-  })
   .catch(err => console.log('Error in undertakeKeyExchange function', err));
 };
 
 function commenceKeyExchange (dhxObject, clientSocket){
-// 	console.log(' in commence key exchange function!!')
-// 	redis.client.smembersAsync(`pendingChats:${dhxObject.userID}`)
+	console.log(' in commence key exchange function!!')
+
+
+	            //get info... 
+            	//    ... go down to client
+            	//        gen secret, make E, compute secret, store
+
+            	//>>> make another call to server: 
+            	//put up E, toggle 0 -> 1. 
+            	    //(keep self on friends' list)//
+
+
+// 	redis.client.smembersAsync(`pending:${dhxObject.userID}`)
 // 	.then(list => {
 // 		if (list || list.length)
 // 		console.log(list)

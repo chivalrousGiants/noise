@@ -6,17 +6,16 @@ class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
-    
+    let realm = try! Realm()
     override init() {
         super.init()
-        //TODO: get below line to hit server on app init
-        //self.checkForPendingKeyExchange() <<gets called, but doesn't hit server
     }
     
     func establishConnection() {
         socket.connect()
         //TODO: get below line to hit server on app init
-        //self.checkForPendingKeyExchange() <<gets called, but doesn't hit server
+        //self.checkForPendingKeyExchange("Key IS \(realm.objects(User)[0].userID)")
+        
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
@@ -45,6 +44,10 @@ class SocketIOManager: NSObject {
             print("pursuing keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
         }
+        socket.on("redis response KeyExchange dropped") { (userArray, socketAck) -> Void in
+            print("keyExchange dropped")
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
+        }
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -69,11 +72,11 @@ class SocketIOManager: NSObject {
         socket.emit("initial key query", dhxInfo)
     }
     
-    func checkForPendingKeyExchange (userID: AnyObject) {
+    func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
         print("on load check for pending key exchange")
         //print("TEST: \(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])"))")
         //if(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])")) {
-           socket.emit("check for pending key exchange", userID)
+           socket.emit("check for pending key exchange", dhxInfo)
         //}
         //else, send notification: 
           //NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)

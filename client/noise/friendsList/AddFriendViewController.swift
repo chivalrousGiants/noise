@@ -59,7 +59,7 @@ class AddFriendViewController: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
         // Testing
-        print("Friends list:", realm.objects(Friend))
+        //print("Friends list:", realm.objects(Friend))
         
     }
     func displayAlertMessage(message: String) {
