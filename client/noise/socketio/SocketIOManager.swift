@@ -24,7 +24,7 @@ class SocketIOManager: NSObject {
         
         // Listener for AddFriend endpoint
         socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
-            print("redis response checkUser", userArray)
+            // print("redis response checkUser", userArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         

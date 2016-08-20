@@ -102,23 +102,27 @@ function handleNewMessage(message, clientSocket) {
   redis.client.getAsync('global_msgID')
     .then(msgID => {
 
+      let timeStamp = Date.now();
+
       redis.client.hmset(`msgs:${msgID}`, [
         'sourceID', message.sourceID,
         'targetID', message.targetID,
         'body', message.body,
-        'createdAt', message.createdAt
+        'createdAt', `${timeStamp}`
       ]);
 
       redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
 
-      clientSocket.emit('successfully sent new message', msgID);
+      clientSocket.emit('successfully sent new message', {msgID, timeStamp});
 
       // check if friend (target of msg) is online
       let friendSocketID = activeSocketConnections[`${message.targetID}`];
 
       if (friendSocketID) {
+        message.messageID = msgID;
+        message.createdAt = timeStamp;
         clientSocket.broadcast.to(friendSocketID)
-          .emit('receive new message', msgID, message);
+          .emit('receive new message', message);
       }
     })
     .catch(console.error.bind(console));
