@@ -10,7 +10,7 @@ class Message: Object {
 }
 
 class Conversation: Object {
-    dynamic var friendId = 0
+    dynamic var friendID = 0
     let messages = List<Message>()
     dynamic var largestMessageID = 0
 }

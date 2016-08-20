@@ -28,7 +28,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
  /*
     func updateChatScreen() {
-        self.messages = realm.objects(Message.self).filter("targetId = \(self.friend.targetId)")
+        self.messages = realm.objects(Message.self).filter("targetID = \(self.friend.targetID)")
         self.CollectionView.reloadData()
     }
     */

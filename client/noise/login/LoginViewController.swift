@@ -66,7 +66,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             user.firstname = userObj!["firstname"] as! String
             user.lastname = userObj!["lastname"] as! String
             user.username = userObj!["username"] as! String
-            user.userID = Int(userObj!["userId"] as! String)!
+            user.userID = Int(userObj!["userID"] as! String)!
             user.id = 0
             
             try! realm.write {

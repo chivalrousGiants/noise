@@ -1,6 +1,6 @@
 /*
-  Object that keeps track of logged-in & active (userId: socketId) pairs
+  Object that keeps track of logged-in & active (userID: socketID) pairs
  */
 module.exports = {
-  // userId: socketId
+  // userID: socketID
 };

@@ -53,8 +53,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         //TEST
         print(self.friendToChat)
         
-        //let convo = realm.objects(Conversation.self).filter("friendId = \(self.friendToChat["friendID"])")
-        //.filter("friendId = \(self.friendToChat["friendID"])")
+        //let convo = realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])")
+        //.filter("friendID = \(self.friendToChat["friendID"])")
         //print(convo)
         
         
