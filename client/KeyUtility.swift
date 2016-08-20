@@ -48,7 +48,7 @@ extension Int {
         
         return Alice
     }
-    func bobify (userId:AnyObject, friendId:AnyObject, E_Alice:String, p:String, g:String) -> Dictionary<String,AnyObject> {
+    func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:String, p:String, g:String) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
         let b_Bob = 666.bBobCreate()
         let g_computational = UInt32(g)
@@ -63,9 +63,9 @@ extension Int {
         //create a Bob obj that we will pass through sockets to the server
         //TODO: layer cryptoSwift encryption over secret and pubKey
         var Bob : [String:AnyObject] = [:]
-        Bob["userId"] = userId
+        Bob["userID"] = userID
         Bob["E"] = String(E_Bob)
-        Bob["friendname"] = friendId
+        Bob["friendname"] = friendID
         
         return Bob
     }

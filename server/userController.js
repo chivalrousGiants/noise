@@ -8,7 +8,8 @@ const activeSocketConnections = require('./activeSocketConnections.js');
 function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userID => {
-      console.log('signIn userID is', userID);
+      // console.log('signIn userID is', userID);
+
       // NULL is returned for non-existent key
       if (userID === null) {
         // Username does not exist
@@ -20,7 +21,7 @@ function signIn(user, clientSocket) {
     .then(([foundUser, userID]) => {
       // TODO: abstract out comparePassword in utils.js
       if (foundUser !== null && foundUser.password === user.password) {
-        console.log('signin password match successful');
+        // console.log('signin password match successful');
         
         // Successful login
         foundUser.userID = userID;

@@ -14,7 +14,7 @@ const redis = require('./redis.js');
 const userController = require('./userController.js');
 const messageController = require('./messageController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
-// const dh = require('./dhKeyExchange.js');
+const dh = require('./dhKeyExchange.js');
 
 // HTTP
 app.get('/', (req, res) => {
