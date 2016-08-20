@@ -10,20 +10,20 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     let realm = try! Realm()
     var friend = Friend()
     var messages = List<Message>()
-
+    var newMessage = [String: AnyObject]()
     override func viewDidLoad() {
         super.viewDidLoad()
         // configure states
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
-        self.NavigationLabel.title = friend.firstname
+        self.title = friend.firstname
         updateChatScreen()
     }
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.messages.count
     }
- /*
+ 
     func updateChatScreen() {
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             try! realm.write{
@@ -33,12 +33,12 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
                 print("instantiated a conversation")
             }
         } else {
+            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
             self.CollectionView.reloadData()
-            self.messages = realm.objects(Conversation).filter("friendId = \(friend.friendID) ")[0].messages
         }
      
     }
-    */
+
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         // tell the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
@@ -57,25 +57,45 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
-        let newMessage = Message()
-        newMessage.sourceID = realm.objects(User)[0].userID
-        newMessage.targetID = friend.friendID
-        newMessage.body = self.SendChatTextField.text!
+        self.newMessage = [
+                "sourceID" : realm.objects(User)[0].userID,
+                "targetID" : self.friend.friendID,
+                "body"     : self.SendChatTextField.text!
+            ]
         
-        try! realm.write{
-            let conversationHistory = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
-            conversationHistory.append(newMessage)
-            print("new history added", conversationHistory)
-            updateChatScreen()
-            self.SendChatTextField.text = ""
-            
-        }
-        //SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+//        newMessage.sourceID = realm.objects(User)[0].userID
+//        newMessage.targetID = friend.friendID
+//        newMessage.body = self.SendChatTextField.text!
+//        
+        // for immediate persistence to improve UX
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(handleNewMessage), name: "newMessage", object: nil)
+        
+        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+        
     
         // send newMessage obj to socket
             // wait/listen for messageId from server
             // upon receive, query realm for the same newMessage sent
                 // update message obj's messageID property
+        
+    }
+    
+    @objc func handleNewMessage(notification: NSNotification) -> Void {
+        let message = Message()
+        message.sourceID = self.newMessage["sourceID"] as! Int
+        message.targetID = self.newMessage["targetID"] as! Int
+        message.body = self.newMessage["body"] as! String
+        message.messageID = Int(notification.userInfo!["messageID"] as! String)!
+        
+        let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
+        
+        try! realm.write{
+            conversationHistory.largestMessageID = message.messageID
+            conversationHistory.messages.append(message)
+            // TODO: optimize such that only new message is loaded.=
+            updateChatScreen()
+        }
+        
         
     }
     

@@ -49,9 +49,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.friendToChat = self.friends![indexPath.row]
+        //self.friendToChat = self.friends![indexPath.row]
+        let friendToChat = friends![indexPath.row]
         //TEST
-        print(self.friendToChat)
+        // print(self.friendToChat)
         
         //let convo = realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])")
         //.filter("friendID = \(self.friendToChat["friendID"])")
@@ -59,15 +60,15 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         
         //realm if there is already established friend1/friend2 conversation
-        if (0 == 0){
-            let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+       // if (2 == 1){
+           // let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
             //if not, query redis for status of the key exchange && wait for notification of keyExchangeCompletion
-            SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-        }
-        else {
+         //   SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+      //  }
+      //  else {
             //if is already established chat, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        }
+        //}
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {

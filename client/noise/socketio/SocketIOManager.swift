@@ -32,6 +32,10 @@ class SocketIOManager: NSObject {
             print("redis response checkMessages", messageArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
+        socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
+            print("successfully sent new message", messageArray)
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: ["messageID" : messageArray[0]])
+        }
         
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
             print("KeyExchange complete")
@@ -53,8 +57,12 @@ class SocketIOManager: NSObject {
     }
     
     // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries
-    func sendEncryptedChat(message: String){
-        socket.emit("encryptedChatSent", message)
+    func sendEncryptedChat(message: AnyObject){
+      
+        ///let newmessage = realm.objects(Conversation).filter("friendID = \(messageID)")
+        print("newMessage", message)
+        
+        socket.emit("send new message", message)
     }
     
     //TODO: Modify as needed
