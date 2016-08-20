@@ -337,7 +337,7 @@ CheckDecodeInputs <- function(counts, map, params) {
   return(NULL)  # no error
 }
 
-Decode <- function(counts, map, params_file, alpha = 0.05,
+Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
   library(Matrix)
