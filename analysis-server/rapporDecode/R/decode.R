@@ -340,6 +340,8 @@ CheckDecodeInputs <- function(counts, map, params) {
 Decode <- function(counts, map, params, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
+  library(Matrix)
+
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
     stop(error_msg)
