@@ -40,7 +40,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
 
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        // tell the controller to use the reusuable 'receivecell' from chatCollectionViewCell
+        // tell the controller to use the reusuable 'receivecell' controlled by chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
@@ -67,7 +67,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             "targetID" : self.friend.friendID,
             "body"     : self.SendChatTextField.text!
         ]
-        // future refactor: consider immediate persistence (not wait for the server) to improve UX
+        // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
         SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
     }
     
@@ -78,12 +78,11 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         message.body = self.newMessage["body"] as! String
         message.messageID = Int(notification.userInfo!["messageID"] as! String)!
         
-        let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
-        
         try! realm.write{
+            let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
             conversationHistory.largestMessageID = message.messageID
             conversationHistory.messages.append(message)
-            // TODO: optimize such that only new message is loaded.=
+            // TODO: optimize such that only new message is loaded.
             updateChatScreen()
         }
         
