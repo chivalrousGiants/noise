@@ -75,6 +75,8 @@ MakeLseiModel <- function(X, Y, stds) {
 
 # CustomLM(X, Y)
 ConstrainedLinModel <- function(X,Y) {
+  library(limSolve)
+
   model <- MakeLseiModel(X, Y$estimates, Y$stds)
   coefs <- do.call(lsei, model)$X
   names(coefs) <- colnames(X)
