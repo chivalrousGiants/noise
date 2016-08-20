@@ -401,6 +401,10 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
   colnames(mapInt) <- strs
   map <- list(mapInt = mapInt, strs = strs, map_pos = map_pos)
 
+
+  ########################
+  ######## Decode ########
+
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
     stop(error_msg)
