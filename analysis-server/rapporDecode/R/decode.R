@@ -350,7 +350,6 @@ CheckDecodeInputs <- function(counts, map, params) {
 #' @keywords rappor
 #' @export
 #'
-#' Decode(counts_file, map_file, params_file)
 
 Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
