@@ -4,15 +4,15 @@
 \alias{Decode}
 \title{Decode}
 \usage{
-Decode(counts, map, params, alpha = 0.05, correction = c("Bonferroni"),
-  quiet = FALSE, ...)
+Decode(counts_file, map_file, params_file, alpha = 0.05,
+  correction = c("Bonferroni"), quiet = FALSE, ...)
 }
 \arguments{
-\item{counts}{Counts}
+\item{counts_file}{Counts}
 
-\item{map}{Map}
+\item{map_file}{Map}
 
-\item{params}{Params}
+\item{params_file}{Params}
 
 \item{alpha}{Alpha. Defaults to 0.05.}
 
@@ -23,5 +23,5 @@ Decode(counts, map, params, alpha = 0.05, correction = c("Bonferroni"),
 \description{
 This function decodes rappor reports.
 }
-\keyword{cats}
+\keyword{rappor}
 
