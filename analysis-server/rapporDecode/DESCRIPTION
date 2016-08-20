@@ -1,0 +1,10 @@
+Package: rappor
+Type: Package
+Title: Rappor Analysis
+Version: 1.0.0
+Author: Chivalrous Giants
+Maintainer: Chivalrous Giants <none@none.com>
+Description: None
+License: None
+LazyData: TRUE
+RoxygenNote: 5.0.1.9000
