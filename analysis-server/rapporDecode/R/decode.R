@@ -546,11 +546,15 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                   explained_var = explained_var,
                   missing_var = missing_var)
 
-  list(fit = fit, summary = res_summary, privacy = privacy, params = params,
+  results <- list(fit = fit, summary = res_summary, privacy = privacy, params = params,
        lasso = NULL, residual = as.vector(residual),
        counts = counts[, -1], resid = NULL, metrics = metrics,
        ests = es$estimates  # ests needed by Shiny rappor-sim app
   )
+
+  write(toJSON(results), "results.json")
+
+  return()
 }
 
 ComputeCounts <- function(reports, cohorts, params) {
