@@ -337,6 +337,21 @@ CheckDecodeInputs <- function(counts, map, params) {
   return(NULL)  # no error
 }
 
+#' Decode
+#'
+#' This function decodes rappor reports.
+#'
+#' @param counts_file Counts
+#' @param map_file Map
+#' @param params_file Params
+#' @param alpha Alpha. Defaults to 0.05.
+#' @param correction Correction. Defaults to Bonferroni.
+#' @param quiet Quiet. Defaults to FALSE.
+#' @keywords rappor
+#' @export
+#'
+#' Decode(counts_file, map_file, params_file)
+
 Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
