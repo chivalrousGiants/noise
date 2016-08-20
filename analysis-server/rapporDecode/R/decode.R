@@ -477,9 +477,9 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
   fit <- inf$fit
   # If this is a basic RAPPOR instance, just use the counts for the estimate
   #     (Check if the map is diagonal to tell if this is basic RAPPOR.)
-  if (sum(map) == sum(diag(map))) {
-    fit$Estimate <- colSums(counts)[-1]
-  }
+  # if (sum(map) == sum(diag(map))) {
+  #   fit$Estimate <- colSums(counts)[-1]
+  # }
 
   # Estimates from the model are per instance so must be multipled by h.
   # Standard errors are also adjusted.
