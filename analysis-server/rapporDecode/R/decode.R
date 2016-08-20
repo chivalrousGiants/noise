@@ -368,6 +368,39 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
     stop("Counts file: all counts must be positive.")
   }
 
+  ######## Read map file ########
+  map_pos <- read.csv(map_file, header = FALSE, as.is = TRUE)
+  strs <- map_pos[, 1]
+  strs[strs == ""] <- "Empty"
+
+  # Remove duplicated strings.
+  ind <- which(!duplicated(strs))
+  strs <- strs[ind]
+  map_pos <- map_pos[ind, ]
+
+  n <- ncol(map_pos) - 1
+  if (n != (params$h * params$m)) {
+    stop(paste0("Map file: number of columns should equal hm + 1:",
+                n, "_", params$h * params$m))
+  }
+
+  row_pos <- unlist(map_pos[, -1], use.names = FALSE)
+  col_pos <- rep(1:nrow(map_pos), times = ncol(map_pos) - 1)
+
+  # TODO: When would this ever happen?
+  removed <- which(is.na(row_pos))
+  if (length(removed) > 0) {
+    Log("Removed %d entries", length(removed))
+    row_pos <- row_pos[-removed]
+    col_pos <- col_pos[-removed]
+  }
+
+  mapInt <- sparseMatrix(row_pos, col_pos,
+                      dims = c(params$m * params$k, length(strs)))
+
+  colnames(mapInt) <- strs
+  map <- list(mapInt = mapInt, strs = strs, map_pos = map_pos)
+
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
     stop(error_msg)
