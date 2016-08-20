@@ -351,7 +351,24 @@ Decode <- function(counts, map, params_file, alpha = 0.05,
     stop("Parameter names must be k,h,m,p,q,f.")
   }
 
-  cat("params")
+  ######## Read counts file ########
+  counts <- as.matrix(read.csv(counts_file, header = FALSE))
+
+  if (nrow(counts) != params$m) {
+    stop(sprintf("Got %d rows in the counts file, expected m = %d",
+                 nrow(counts), params$m))
+  }
+
+  if ((ncol(counts) - 1) != params$k) {
+    stop(paste0("Counts file: number of columns should equal to k + 1: ",
+                ncol(counts)))
+  }
+
+  if (any(counts < 0)) {
+    stop("Counts file: all counts must be positive.")
+  }
+
+  cat("counts")
 
   error_msg <- CheckDecodeInputs(counts, map, params)
   if (!is.null(error_msg)) {
