@@ -15,6 +15,7 @@ const userController = require('./userController.js');
 const messageController = require('./messageController.js');
 const dpDataIngestController = require('./differentialPrivacy/dpDataIngestController.js');
 const dh = require('./dhKeyExchange.js');
+
 // HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
@@ -65,11 +66,17 @@ io.on('connection', (clientSocket) => {
     userController.checkUser(username, clientSocket);
   });
 
-  clientSocket.on('initial retrieval of new messages', (username, friends) => {
-    console.log('hit initial-retrieval-of-new-messages on server socket with username', username);
-    console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
+  /////////////////////////////////////////////////////////
+  // Message socket routes
+  clientSocket.on('initial retrieval of new messages', (userID, friends) => {
+    // console.log('hit initial-retrieval-of-new-messages on server socket with userID', userID);
+    // console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
-    messageController.retrieveNewMessages(username, friends, clientSocket);
+    messageController.retrieveNewMessages(userID, friends, clientSocket);
+  });
+
+  clientSocket.on('send new message', (message) => {
+    messageController.handleNewMessage(message, clientSocket);
   });
 
   /////////////////////////////////////////////////////////
@@ -97,8 +104,8 @@ io.on('connection', (clientSocket) => {
     dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
 
-  clientSocket.on('secondary key query', (dhxObject) => {
-    //dh.commenceKeyExchange(dhxObject, clientSocket);
+  clientSocket.on('check for pending key exchange', (dhxObject) => {
+    dh.commenceKeyExchange(dhxObject, clientSocket);
   });
 
 });

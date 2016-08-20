@@ -72,8 +72,13 @@ class SocketIOManager: NSObject {
         socket.emit("initial key query", dhxInfo)
     }
     
+    func checkForPendingKeyExchange () {
+        socket.emit("check for pending key exchange")
+    }
+    
     func closeConnection() {
         socket.disconnect()
     }
+
 
 }

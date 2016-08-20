@@ -23,7 +23,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.messages.count
     }
-    
+ /*
     func updateChatScreen() {
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             try! realm.write{
@@ -38,7 +38,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
      
     }
-    
+    */
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         // tell the controller to use the reusuable 'receivecell' from chatCollectionViewCell
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",

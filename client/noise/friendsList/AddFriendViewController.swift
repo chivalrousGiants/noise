@@ -35,7 +35,7 @@ class AddFriendViewController: UIViewController {
             newFriend.firstname = userObj["firstname"] as! String
             newFriend.lastname = userObj["lastname"] as! String
             newFriend.username = userObj["username"] as! String
-            newFriend.friendID = Int(userObj["userId"] as! String)!
+            newFriend.friendID = Int(userObj["userID"] as! String)!
             
             try! realm.write {
                 realm.add(newFriend)

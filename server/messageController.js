@@ -1,108 +1,140 @@
 const redis = require('./redis.js');
-const bluebird = require('bluebird');
 const activeSocketConnections = require('./activeSocketConnections');
 
 ////////////////////////////////////
 //////// REDIS MESSAGE FUNCTIONS
 ////////////////////////////////////
 
-function retrieveNewMessages(username, friends, clientSocket) {
-  /*
-    username = username of the logged-in user
-
-    friends = {
-      friend_id: largestMessageId
-      friend_id: largestMessageId
+/*
+  Input Parameters
+    friends = { 
+      friendID: largestMessageID
+      friendID: largestMessageID
       ...
     }
 
-    need to return 
-      Array of objects for each friend
-      newMessages = {
-        friendId: friend_id
-        messages: [ {msgObj - including msgId} {msgObj} ... ]
-        largestMessageId
+  Return value
+    Array of objs for each friend
+      {
+        friendID
+        messages: Array of msgObjs [ {targetID, sourceID, createdAt, body, msgID} ]
+        largestMessageID
       }
-   */
+ */
+function retrieveNewMessages(userID, friends, clientSocket) {
   
   let result = [],
-    smallerId,
-    largerId,
-    largestMessageId,
+    smallerID,
+    largerID,
+    largestMessageID,
     newMessages,
-    msgIdsPromiseArray = [];
+    getMsgIDsPromiseArray = [],
+    getMsgsPromiseArray = [];
   
-  redis.client.hgetAsync('users', username)
-    .then(userId => {
+  
+  Object.keys(friends).forEach(friendID => {
+    
+    largestMessageID = friends[friendID];
 
-      Object.keys(friends).forEach(friendId => {
-        largestMessageId = friends[friendId];
+    [smallerID, largerID] = userID < friendID ? [userID, friendID] : [friendID, userID];
 
-        [smallerId, largerId] = userId < friendId ? [userId, friendId] : [friendId, userId];
+    getMsgIDsPromiseArray.push(
+      redis.client.zrangebyscoreAsync(`chat:${smallerID}:${largerID}`, (largestMessageID + 1), '+inf')
+        .then(msgIDs => {
+          let getMsgsPromiseArray = [];
+          
+          msgIDs.forEach(msgID => {
+            getMsgsPromiseArray.push(
+              redis.client.hgetallAsync(`msgs:${msgID}`)
+                .then(msg => {
+                  msg.msgID = msgID;
+                  return msg;
+                })
+                .catch(console.error.bind(console))
+            );
+          });
 
-        msgIdsPromiseArray.push(redis.client.zrangeAsync(`chat:${smallerId}:${largerId}`, `${largestMessageId + 1}`, -1));
-      });
+          return Promise.all(getMsgsPromiseArray);
+        })
+        .then(arrayOfNewMessagesPerFriend => {
+          return {
+            friendID,
+            messages: arrayOfNewMessagesPerFriend,
+            latestMessageID: arrayOfNewMessagesPerFriend[arrayOfNewMessagesPerFriend.length - 1].msgID
+          };
+        })
+        .catch(console.error.bind(console))
+    );
 
-      return bluebird.all(msgIdsPromiseArray).then(arr => {
-        console.log(arr);
-      });
+  });
 
-      console.log('after bluebird.all');
-      
-    }).catch(console.error.bind(console));
+  Promise.all(getMsgIDsPromiseArray).then(returnValue => {
+    
+    // ///////// Testing
+    // let cnt = 1;
+    // returnValue.forEach(obj => {
+    //   console.log(`returnValue for obj ${cnt}:`, obj);
+    //   cnt++;
+    // });
 
-    // .then(userId => {
-    //   // loop through friend_id's in friends parameter
-    //   for (let friendId in friends) {
+    clientSocket.emit('redis response for retrieveNewMessages', returnValue);
 
-    //     largestMessageId = friends[friendId];
-        
-    //     newMessages = {};
-    //     newMessages.friendId = friendId;
-    //     newMessages.messages = [];
-
-    //     [smallerId, largerId] = userId < friendId ? [userId, friendId] : [friendId, userId];
-
-    //     redis.client.zrangeAsync(`chat:${smallerId}:${largerId}`, largestMessageId + 1, -1)
-    //       .then(msgIds => {
-
-    //         // msgIds = array of msgIds
-    //         msgIds.forEach(msgId => {
-    //           redis.client.hgetallAsync(`msgs:${msgId}`)
-    //             .then(msg => {
-    //               if (msg === null) {
-    //                 throw 'Msg for given msgId does not exist';
-    //               }
-
-    //               // add msgId key to msg obj
-    //               msg.msgId = msgId;
-    //               newMessages.messages.push(msg);
-
-    //             }).catch(console.error.bind(console));
-    //         });
-
-    //         newMessages.largestMessageId = msgIds.pop();
-    //       });
-
-    //     result.push(newMessages);
-        
-    //   }
-
-    //   console.log('result is:', result);
-    //   // clientSocket.emit('redis response for retrieveNewMessages', result);
-
-    // })
-    // .catch(console.error.bind(console));
+  })
+  .catch(console.error.bind(console));
 
 }
 
-// Testing
-let friends = {
-  '1': 0, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
-  '2': 0  // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
-};
-retrieveNewMessages('jae', friends);
+/*
+  Input Parameters
+    message = { sourceID, targetID, body, createdAt }
+
+  Return value
+    TO: clientSocket
+      userArray[0] = messageID (generated when inserting new message to redis)
+
+    TO: targetID's socket
+      userArray[0] = messageID
+      userArray[1] = msgObj { sourceID, targetID, body, createdAt }
+ */
+function handleNewMessage(message, clientSocket) {
+  // write new message to db
+  redis.client.incr('global_msgID', redis.print);
+  redis.client.getAsync('global_msgID')
+    .then(msgID => {
+
+      redis.client.hmset(`msgs:${msgID}`, [
+        'sourceID', message.sourceID,
+        'targetID', message.targetID,
+        'body', message.body,
+        'createdAt', message.createdAt
+      ]);
+
+      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
+
+      clientSocket.emit('successfully sent new message', msgID);
+
+      // check if friend (target of msg) is online
+      let friendSocketID = activeSocketConnections[`${message.targetID}`];
+
+      if (friendSocketID) {
+        clientSocket.broadcast.to(friendSocketID)
+          .emit('receive new message', msgID, message);
+      }
+    })
+    .catch(console.error.bind(console));
+}
+
+
+
+// ///////// Testing
+// let friends = {
+//   '1': 15, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
+//   '2': 30, // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
+//   '3': 10
+// };
+// retrieveNewMessages(4, friends);
 
 module.exports = {
-  retrieveNewMessages
+  retrieveNewMessages,
+  handleNewMessage
 };
