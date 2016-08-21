@@ -26,7 +26,7 @@ class AddFriendViewController: UIViewController {
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
         
-        print("friendObj", notification.userInfo)
+        //print("friendObj", notification.userInfo)
         
         if let userObj = notification.userInfo {
             
@@ -46,12 +46,12 @@ class AddFriendViewController: UIViewController {
             // friendToAdd was NOT found in redis db
             let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "no friend of that username exists", preferredStyle: UIAlertControllerStyle.Alert)
             let action:UIAlertAction = UIAlertAction(title: "bummer", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-                print("bummer button selected")
+               // print("bummer button selected")
             }
             alert.addAction(action)
             
             self.presentViewController(alert, animated:true) { () -> Void in
-                print("alert presented for unsuccessful addNewFriend")
+                //print("alert presented for unsuccessful addNewFriend")
             }
         }
         

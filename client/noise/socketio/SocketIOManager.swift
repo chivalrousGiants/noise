@@ -26,12 +26,12 @@ class SocketIOManager: NSObject {
         
         // Listener for AddFriend endpoint
         socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
-            print("redis response checkUser", userArray)
+           // print("redis response checkUser", userArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
-            print("redis response checkMessages", messageArray)
+           // print("redis response checkMessages", messageArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
         
@@ -47,6 +47,10 @@ class SocketIOManager: NSObject {
         socket.on("redis response KeyExchange dropped") { (userArray, socketAck) -> Void in
             print("keyExchange dropped")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
+        }
+        socket.on("Retreived dhxInfo from redis") { (dhxInfo, socketAck) -> Void in
+            print("retreived stage1 dhxInfo is \(dhxInfo)")
+             NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }
     

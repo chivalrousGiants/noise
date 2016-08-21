@@ -26,6 +26,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(computeBob),
+            name: "computeBob",
+            object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -70,18 +76,35 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
+    /////////////////////////////////////////
+    ////// NOTIFICATION CTR FUNCTIONS
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
         print("segue user info \(userInfo)")
         keyExchangeComplete = false
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
         //sender: self
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         
         keyExchangeComplete = true
         self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
         //sender: self
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    @objc func computeBob(dhxObj:Dictionary<String, AnyObject>) -> Int {
+        print(dhxObj)
+        //666.bobify(dhxObj.userID, dhxObj.friendID, dhxObj.eAlice, dhxObj.p,dhxObj.g)
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        return 5
+        //TODO: pass computed value directly into
+        //1) keychain
+        //2) encryption
+        //3)
     }
     
     // pass selected friend's object to ChatViewController on select.
