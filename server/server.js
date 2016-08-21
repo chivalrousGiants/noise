@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 }); 
 
 http.listen(HTTP_PORT, () => {
-  console.log(`Listening on port ${HTTP_PORT}`);
+  //console.log(`Listening on port ${HTTP_PORT}`);
 });
 
 // Socket.io
@@ -79,14 +79,14 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Differential Privacy-related socket routes
   clientSocket.on('getDPParams', function() {
-    console.log('getDPParams requested by user', user);
+    //console.log('getDPParams requested by user', user);
 
     clientSocket.emit('DPParams', DPParams);
   });
       
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
-    console.log('submitIRRReports data received from: ', user);
+    //console.log('submitIRRReports data received from: ', user);
 
     dpDataIngestController.IngestIRRReports(IRRReports)
       .then((replies) => {
@@ -98,6 +98,7 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
   clientSocket.on('initial key query', (dhxObject) => {
+    console.log('hit initial key query');
     dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
 /*
@@ -109,5 +110,9 @@ if the dhxObject has a pg, AliceE > call some other function
     dh.undertakeKeyExchange(dhxObject, clientSocket);
   });
 
+  clientSocket.on('commence part 2 key exchange', (dhxObject) => {
+    console.log('hit commencepart 2 key exchange');
+    dh.performPt2BKeyExchange(dhxObject, clientSocket);
+  })
 });
 

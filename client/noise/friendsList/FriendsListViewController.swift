@@ -101,9 +101,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let dhxInfo = notification.userInfo
         print("dhx info inside of comput bob is \(dhxInfo)!")
         print(dhxInfo!["userID"])
-        666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
-        // Remove listener
+        let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
+
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
         return 5
         //TODO: pass computed value directly into
         //1) keychain

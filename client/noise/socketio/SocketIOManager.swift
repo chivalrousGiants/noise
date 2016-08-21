@@ -49,7 +49,7 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
         }
         socket.on("Retreived dhxInfo from redis") { (dhxInfo, socketAck) -> Void in
-            print("retreived stage1 dhxInfo is \(dhxInfo), \(dhxInfo[0]["userID"])!", dhxInfo[0].dynamicType)
+            print("retreived stage1 dhxInfo")
              NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }
@@ -84,6 +84,10 @@ class SocketIOManager: NSObject {
         //}
         //else, send notification: 
           //NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
+    }
+    func commencePart2KeyExchange (bob: Dictionary<String, AnyObject>) {
+        print("hit commencePt2 keyX w \(bob)")
+        socket.emit("commence part 2 key exchange", bob)
     }
     
     func closeConnection() {
