@@ -20,6 +20,13 @@ const activeSocketConnections = require('./activeSocketConnections');
         messages: Array of msgObjs [ {targetID, sourceID, createdAt, body, msgID} ]
         largestMessageID
       }
+
+
+  Edge Cases:
+    1) "friends" obj is empty -> will return []
+      it is assumed that this function will ideally be never called from the front-end if
+      there are no friends 
+    2) no new messages to fetch for a certain friend
  */
 function retrieveNewMessages(userID, friends, clientSocket) {
   
@@ -31,7 +38,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
     getMsgIDsPromiseArray = [],
     getMsgsPromiseArray = [];
   
-  
+
   Object.keys(friends).forEach(friendID => {
     
     largestMessageID = friends[friendID];
@@ -41,27 +48,42 @@ function retrieveNewMessages(userID, friends, clientSocket) {
     getMsgIDsPromiseArray.push(
       redis.client.zrangebyscoreAsync(`chat:${smallerID}:${largerID}`, (largestMessageID + 1), '+inf')
         .then(msgIDs => {
-          let getMsgsPromiseArray = [];
-          
-          msgIDs.forEach(msgID => {
-            getMsgsPromiseArray.push(
-              redis.client.hgetallAsync(`msgs:${msgID}`)
-                .then(msg => {
-                  msg.msgID = msgID;
-                  return msg;
-                })
-                .catch(console.error.bind(console))
-            );
-          });
+          if (msgIDs.length === 0) {
+            // no new messages for friendID
+            return null;
 
-          return Promise.all(getMsgsPromiseArray);
+          } else {
+
+            let getMsgsPromiseArray = [];
+            
+            msgIDs.forEach(msgID => {
+              getMsgsPromiseArray.push(
+                redis.client.hgetallAsync(`msgs:${msgID}`)
+                  .then(msg => {
+                    msg.msgID = msgID;
+                    return msg;
+                  })
+                  .catch(console.error.bind(console))
+              );
+            });
+
+            return Promise.all(getMsgsPromiseArray);
+          }
         })
         .then(arrayOfNewMessagesPerFriend => {
-          return {
-            friendID,
-            messages: arrayOfNewMessagesPerFriend,
-            latestMessageID: arrayOfNewMessagesPerFriend[arrayOfNewMessagesPerFriend.length - 1].msgID
-          };
+          if (arrayOfNewMessagesPerFriend === null) {
+            return {
+              friendID,
+              messages: null,
+              latestMessageID: null
+            };
+          } else {
+            return {
+              friendID,
+              messages: arrayOfNewMessagesPerFriend,
+              latestMessageID: arrayOfNewMessagesPerFriend[arrayOfNewMessagesPerFriend.length - 1].msgID
+            };
+          }
         })
         .catch(console.error.bind(console))
     );
@@ -70,15 +92,16 @@ function retrieveNewMessages(userID, friends, clientSocket) {
 
   Promise.all(getMsgIDsPromiseArray).then(returnValue => {
     
-    // ///////// Testing
-    // let cnt = 1;
-    // returnValue.forEach(obj => {
-    //   console.log(`returnValue for obj ${cnt}:`, obj);
-    //   cnt++;
-    // });
+    ///////// Testing
+    let cnt = 1;
+    console.log('returnValue is:', returnValue);
+    returnValue.forEach(obj => {
+      console.log(`returnValue for obj ${cnt}:`, obj);
+      cnt++;
+    });
 
     clientSocket.emit('redis response for retrieveNewMessages', returnValue);
-
+    
   })
   .catch(console.error.bind(console));
 
@@ -132,9 +155,8 @@ function handleNewMessage(message, clientSocket) {
 
 // ///////// Testing
 // let friends = {
-//   '1': 15, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
-//   '2': 30, // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
-//   '3': 10
+//   '1': 58, // [3, 10, 15, 22, 27, 34, 39, 46, 51, 58]
+//   '2': 30 // [6, 11, 18, 23, 30, 35, 42, 47, 54, 59]
 // };
 // retrieveNewMessages(4, friends);
 
