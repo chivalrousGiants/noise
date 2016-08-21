@@ -46,9 +46,8 @@ class SocketIOManager: NSObject {
         
         }
         socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
-            print("retrieve new messages", messageArray)
-            NSNotificationCenter.defaultCenter().postNotification("newMessage", object: nil, userInf: )
-            
+            //print("retrieve new messages", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" :messageArray[0]] as Dictionary)
         }
         
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in

@@ -27,6 +27,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             name: "KeyExchangeComplete",
             object: nil)
         getRecentConversation()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleRetrievedMessages), name: "retrievedNewMessages", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -85,6 +86,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
         //sender: self
     }
+    @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
+        let retrievedMsgs = notification.userInfo
+        print("printing retrievedmsg", retrievedMsgs)
+        
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     // pass selected friend's object to ChatViewController on select.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -92,7 +100,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             let chatView = segue.destinationViewController as! ChatViewController
             chatView.friend = sender as! Friend
         }
-       
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -114,11 +121,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             friendMessage["\(friend.friendID)"] = friend.largestMessageID
         }
         
-        print("dictionary", friendMessage)
-        
         SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
-        //print("getting friendslist", friendsListWithRecentMessageID)
-  
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
@@ -132,5 +135,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBAction func settingsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
+    
+    
     
 }

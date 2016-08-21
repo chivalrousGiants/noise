@@ -44,7 +44,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
-        print("printing all messages", self.messages)
         let message = self.messages[indexPath.row]
         
         if  message.sourceID == friend.friendID {
