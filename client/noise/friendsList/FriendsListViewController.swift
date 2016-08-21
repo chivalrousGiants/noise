@@ -26,6 +26,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
+        getRecentConversation()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -102,6 +103,22 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             }
             updateFriendsTable()
         }
+    }
+    func getRecentConversation() {
+        let user = realm.objects(User)[0].userID
+        let allConversation = realm.objects(Conversation)
+        
+        var friendMessage = [String: Int]()
+        
+        for friend in allConversation {
+            friendMessage["\(friend.friendID)"] = friend.largestMessageID
+        }
+        
+        print("dictionary", friendMessage)
+        
+        SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
+        //print("getting friendslist", friendsListWithRecentMessageID)
+  
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {

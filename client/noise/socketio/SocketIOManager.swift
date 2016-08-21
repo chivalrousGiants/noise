@@ -32,9 +32,23 @@ class SocketIOManager: NSObject {
             print("redis response checkMessages", messageArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
+        
         socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
             print("successfully sent new message", messageArray)
-            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: ["messageID" : messageArray[0]])
+            print("printing messsageArray", messageArray[0])
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        }
+        
+        socket.on("receive new message") {(messageArray, socketAck) -> Void in
+            print("new masage", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        
+        }
+        socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
+            print("retrieve new messages", messageArray)
+            NSNotificationCenter.defaultCenter().postNotification("newMessage", object: nil, userInf: )
+            
         }
         
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
@@ -46,6 +60,7 @@ class SocketIOManager: NSObject {
             print("pursuing keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
         }
+        
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -54,6 +69,11 @@ class SocketIOManager: NSObject {
     
     func signUp(user: Dictionary<String, String>) {
         socket.emit("signUp", user)
+    }
+    
+    func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
+        print("executing retrieveMessages", userID, friends)
+        socket.emit("initial retrieval of new messages", userID, friends)
     }
     
     // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries

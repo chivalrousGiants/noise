@@ -44,7 +44,10 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
-        if self.messages[indexPath.row].sourceID == friend.friendID {
+        print("printing all messages", self.messages)
+        let message = self.messages[indexPath.row]
+        
+        if  message.sourceID == friend.friendID {
             cell.receiveChatLabel.layer.cornerRadius = 5
             cell.receiveChatLabel.layer.masksToBounds = true
             cell.receiveChatLabel.clipsToBounds = true
@@ -59,6 +62,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             cell.receiveChatLabel.hidden = true
             return cell
         }
+
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
@@ -76,12 +80,14 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         message.sourceID = self.newMessage["sourceID"] as! Int
         message.targetID = self.newMessage["targetID"] as! Int
         message.body = self.newMessage["body"] as! String
-        message.messageID = Int(notification.userInfo!["messageID"] as! String)!
-        
+        message.messageID = Int(notification.userInfo!["msgID"] as! String)!
+        message.createdAt = notification.userInfo!["timeStamp"] as! Int
+
         try! realm.write{
             let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
             conversationHistory.largestMessageID = message.messageID
             conversationHistory.messages.append(message)
+            print("successfuly append \(message) in history", conversationHistory)
             // TODO: optimize such that only new message is loaded.
             updateChatScreen()
         }

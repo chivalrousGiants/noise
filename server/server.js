@@ -69,6 +69,7 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Message socket routes
   clientSocket.on('initial retrieval of new messages', (userID, friends) => {
+    console.log("yoooooo", userID, friends)
     // console.log('hit initial-retrieval-of-new-messages on server socket with userID', userID);
     // console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
@@ -86,7 +87,7 @@ io.on('connection', (clientSocket) => {
 
     clientSocket.emit('DPParams', DPParams);
   });
-      
+
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
     console.log('submitIRRReports data received from: ', user);
