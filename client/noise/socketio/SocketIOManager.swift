@@ -49,7 +49,7 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
         }
         socket.on("Retreived dhxInfo from redis") { (dhxInfo, socketAck) -> Void in
-            print("retreived stage1 dhxInfo is \(dhxInfo)")
+            print("retreived stage1 dhxInfo is \(dhxInfo), \(dhxInfo[0]["userID"])!", dhxInfo[0].dynamicType)
              NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }

@@ -88,8 +88,8 @@ function performPart2AKeyExchange(dhxObject, clientSocket){
 	//get info && send it to the client. 
 	redis.client.hgetallAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
 	.then(dhxObjFromStage1 =>{
-		dhxObjFromStage1['userId'] = dhxObject.userID;
-		dhxObjFromStage1['friendId'] = dhxObject.friendID;
+		dhxObjFromStage1['userID'] = dhxObject.userID;
+		dhxObjFromStage1['friendID'] = dhxObject.friendID;
 		clientSocket.emit('Retreived dhxInfo from redis', dhxObjFromStage1);
         //client side: gen secret, make E, compute secret, store. this will prbz need 2 users to test? 
 	})

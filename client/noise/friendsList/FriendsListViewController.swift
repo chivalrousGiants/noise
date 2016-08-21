@@ -26,12 +26,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
-        
+
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(computeBob),
             name: "computeBob",
             object: nil)
+
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -95,9 +96,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    @objc func computeBob(dhxObj:Dictionary<String, AnyObject>) -> Int {
-        print(dhxObj)
-        //666.bobify(dhxObj.userID, dhxObj.friendID, dhxObj.eAlice, dhxObj.p,dhxObj.g)
+
+    @objc func computeBob(notification:NSNotification) -> Int {
+        let dhxInfo = notification.userInfo
+        print("dhx info inside of comput bob is \(dhxInfo)!")
+        print(dhxInfo!["userID"])
+        666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
         return 5

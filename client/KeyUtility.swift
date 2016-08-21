@@ -48,16 +48,16 @@ extension Int {
         
         return Alice
     }
-    func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:String, p:String, g:String) -> Dictionary<String,AnyObject> {
+    func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
         let b_Bob = 666.bBobCreate()
-        let g_computational = UInt32(g)
-        let E_Alice_computational = UInt32(E_Alice)
-        let p_computational = UInt32(p)
+        let g_computational = UInt32(g as! String)
+        let E_Alice_computational = UInt32(E_Alice as! String)
+        let p_computational = UInt32(p as! String)
         
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
-        print(sharedSecret)
+        print("sharedSecret izzzzz \(sharedSecret)")
         //TODO:insert b_Bob, E_Bob, sharedSecret into keychain
         
         //create a Bob obj that we will pass through sockets to the server
