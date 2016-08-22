@@ -21,11 +21,9 @@ const sampleCandidateStrings = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 
   'v171', 'v172', 'v173', 'v174', 'v175', 'v176', 'v177', 'v178', 'v179', 'v180', 'v181', 'v182', 'v183', 'v184', 'v185', 'v186', 'v187', 'v188', 'v189', 'v190',
   'v191', 'v192', 'v193', 'v194', 'v195', 'v196', 'v197', 'v198', 'v199', 'v200'];
 
-// Given an Object of bit counts and an Array of candidate strings, 
+// Given an Array of candidate strings, using aggregated data in Redis,
 // returns a Promise that is resolved with an Array of detected strings.
-function performDPAnalysis(bitCounts, candidateStrings) {
-  
-}
+function performDPAnalysis() {}
 
 // Exports
 module.exports = {
