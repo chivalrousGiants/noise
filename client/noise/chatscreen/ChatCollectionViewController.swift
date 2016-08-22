@@ -34,7 +34,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
                 realm.add(startNewConversation)
             }
         } else {
-            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
+            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
             self.CollectionView.reloadData()
         }
     }
@@ -61,7 +61,6 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
             cell.receiveChatLabel.hidden = true
             return cell
         }
-
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
