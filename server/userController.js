@@ -104,6 +104,7 @@ function checkUser(username, clientSocket) {
       }
     })
     .then(([user, userID]) => {
+      
       // user will be null or an object
       //console.log('user is', user);
 
