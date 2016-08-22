@@ -34,7 +34,7 @@ class SocketIOManager: NSObject {
         }
         
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
-            print("KeyExchange complete", dhxInfo)
+            print("KeyExchange complete")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
