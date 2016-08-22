@@ -6,7 +6,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet var friendsTableView: UITableView!
     let realm = try! Realm()
     var friends : Results<Friend>?
-    var keyExchangeComplete = false
+    //var keyExchangeComplete = false
     var friendToChat : AnyObject!
     
     override func viewDidLoad() {
@@ -21,17 +21,17 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handlePursuingKeyExchange),
             name: "stillPursuingKeyExchange",
             object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleCompletedKeyExchange),
-            name: "KeyExchangeComplete",
-            object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(computeBob),
             name: "computeBob",
+            object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleCompletedKeyExchange),
+            name: "KeyExchangeComplete",
             object: nil)
 
     }
@@ -79,10 +79,11 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     /////////////////////////////////////////
     ////// NOTIFICATION CTR FUNCTIONS
+
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
         print("segue user info \(userInfo)")
-        keyExchangeComplete = false
+        //keyExchangeComplete = false
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
         //sender: self
         // Remove listener

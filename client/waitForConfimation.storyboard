@@ -14,10 +14,10 @@
             </objects>
             <point key="canvasLocation" x="424.5" y="-424"/>
         </scene>
-        <!--Wait For-->
+        <!--Wait For Confirmation View Controller-->
         <scene sceneID="xBy-WA-kHf">
             <objects>
-                <viewController id="qIy-Fg-1BJ" customClass="waitFor" sceneMemberID="viewController">
+                <viewController id="qIy-Fg-1BJ" customClass="WaitForConfirmationViewController" customModule="noise" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="BFj-mK-3wY"/>
                         <viewControllerLayoutGuide type="bottom" id="wLD-mQ-w1J"/>

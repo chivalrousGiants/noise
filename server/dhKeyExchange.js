@@ -44,6 +44,7 @@ function performPart2BKeyExchange(dhxObject, clientSocket){
     	.then(()=> {
 	    	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
 	    	.then(()=>{
+	    		//clientSocket.emit("redis response KeyExchange complete", dhxObject);
 		    	clientSocket.emit("redis response Bob complete, Alice still pending");
 		    	//tell Alice to retrieve. 
 		    	//tell Bob to instantiate his chat.	    		
@@ -104,17 +105,19 @@ function routeKeyExchange (dhxObject, clientSocket){
 			        })	
 		        });
     		} else {
-	    	  //func triggered by 'add friend' || routine check
+    		  //EITHER:
     		  if (dhxObject.friendname){
+		    	  //func triggered by 'add friend' 
     		  	redis.client.hgetAsync('users', `${dhxObject.friendname}`)
     		  	.then(friendID=>{
     		  		var dhxObjectMod = updateInfoWithSortedIds(dhxObject, sourceUserID, friendID);
 	                initKeyExchange(dhxObjectMod, clientSocket);
 	                clientSocket.emit("initiating keyExchange");
     		  	})
-	          }
-	          //routine query with no results 
-    		  clientSocket.emit("redis response no need to undertake KeyExchange")
+	          } else {
+		          //routine query with no results 
+	    		  clientSocket.emit("redis response no need to undertake KeyExchange")
+	    	  }
     		}
     	})
     })

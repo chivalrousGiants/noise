@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Locksmith
 
 extension Int {
     func gCreate () -> UInt32 {
@@ -42,8 +43,13 @@ extension Int {
         Alice["E"] = String(E_Alice)
         Alice["friendname"] = friendname
         
-        //TODO: pass computed value directly into
-        //1) keychain
+        //pass dhX vals that Alice needs to access later into her keychain
+        var AliceKeys : [String:AnyObject] = [:]
+        AliceKeys["a_Alice"] = String(a_Alice)
+        AliceKeys["p"] = String(p_Alice)
+        AliceKeys["E"] = String(E_Alice)
+        aliceKeyChainPt1(AliceKeys)
+        
         //2) encrypt values
         
         return Alice
@@ -58,17 +64,55 @@ extension Int {
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
         print("sharedSecret izzzzz \(sharedSecret)")
         
-        //TODO: pass computed value directly into
-        //1) keychain
-        //2) encrypt values
+        //pass values to handle encryption into keychain
+        var BobKeys : [String:AnyObject] = [:]
+        BobKeys["E"] = String(E_Bob)
+        BobKeys["sharedSecret"] = String(sharedSecret)
+        bobKeyChain(BobKeys)
+
         
-        //Bob the builder
+        //pass values to handle diffie hellman key exchange to Redis
         var Bob : [String:AnyObject] = [:]
         Bob["userID"] = userID
-        Bob["E"] = String(E_Bob)
+        Bob["E"] = String(E_Bob) //encrypt?
         Bob["friendID"] = friendID
-        Bob["p"] = p 
+        Bob["p"] = p //encrypt?
 
         return Bob
     }
+    func aliceKeyChainPt1 (alice: Dictionary<String,AnyObject>) -> Void {
+        //TODO: create alice user account i keychain
+        //store bobKeys in keychain : need privateSecret*, E, p
+        do {
+            try Locksmith.saveData(alice, forUserAccount: "Alice_noise1")
+        } catch {
+           print("could not save alice data in keychain")
+        }
+        let dictionary = Locksmith.loadDataForUserAccount("Alice_noise1")
+        print("Alice pt1 dictionary is \(dictionary)")
+        print("Alice pt1 aAlice is \(dictionary!["a_Alice"])")
+    }
+    func aliceKeyChainPt2 (alice: Dictionary<String,AnyObject>) -> Void {
+        //add or overwrite alice keys in keychain : need E, sharedSecret
+        do {
+            try Locksmith.saveData(alice, forUserAccount: "Alice_noise2")
+        } catch {
+            print("could not amend alice data in keychain")
+        }
+        let dictionary = Locksmith.loadDataForUserAccount("Alice_noise2")
+        print("Alice pt2 dictionary is \(dictionary)")
+        print("Alice pt2 sharedSecret is \(dictionary!["sharedSecret"])")
+    }
+    func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
+        //TODO: create bob user account in keychain
+        //store bobKeys in keychain : need E, sharedSecret
+        do {
+            try Locksmith.saveData(bob, forUserAccount: "Bob_noise")
+        } catch {
+            print ("could not save bob data in keychain")
+        }
+        let dictionary = Locksmith.loadDataForUserAccount("Bob_noise")
+        print("Bob dictionary is \(dictionary)")
+    }
+    
 }

@@ -1,5 +1,6 @@
 import UIKit
 import RealmSwift
+import Locksmith
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -18,8 +19,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         // Attach listeners
         NSNotificationCenter.defaultCenter().addObserver(
             self,
+            selector: #selector(handlePursuingKeyExchange),
+            name: "stillPursuingKeyExchange",
+            object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
             selector: #selector(computeBob),
             name: "computeBob",
+            object: nil)
+        
+        //KeyExchangeComplete not working yet
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleCompletedKeyExchange),
+            name: "KeyExchangeComplete",
             object: nil)
 
     }
@@ -103,19 +117,36 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
+        let userInfo = notification.userInfo
+        print("segue user info \(userInfo)")
+        //self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
+    }
+    
     @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-        print("dhx info inside of compute bob [LOGIN] is \(dhxInfo)!")
-
+        print("dhx info inside of compute bob [LOGINVCONTROLLER] is \(dhxInfo!)")
+        
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         
-        //NSNotificationCenter.defaultCenter().removeObserver(self)
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
-
-        //TODO: pass computed value directly into
-        //1) keychain
-        //2) encryption
-        //3)
+    }
+    
+    @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
+        print("in handle complete")
+         let dhxInfo = notification.userInfo
+         let eBob_computational = UInt32(dhxInfo!["eBob"] as! String)
+         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
+         var Alice :[String:AnyObject] = [:]
+         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("Alice_noise1")!["a_Alice"] as! String)
+         print(aliceSecret)
+        
+         Alice["E"] = dhxInfo!["eAlice"]
+         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+         666.aliceKeyChainPt2(Alice)
+ 
+        //self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+        
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

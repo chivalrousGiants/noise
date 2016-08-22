@@ -33,9 +33,9 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
+        socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
             print("KeyExchange complete")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
@@ -52,6 +52,7 @@ class SocketIOManager: NSObject {
         }
         socket.on("redis response Bob complete, Alice still pending") { (dhxInfo, socketAck) -> Void in
             print("user Bob complete")
+            NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }
     
@@ -78,7 +79,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        print("on load check for pending key exchange")
+        print("on login check for pending key exchange")
         //print("TEST: \(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])"))")
         //if(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])")) {
            socket.emit("check for pending key exchange", dhxInfo)
