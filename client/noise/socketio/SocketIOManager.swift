@@ -13,8 +13,6 @@ class SocketIOManager: NSObject {
     
     func establishConnection() {
         socket.connect()
-        //TODO: get below line to hit server on app init
-        //self.checkForPendingKeyExchange("Key IS \(realm.objects(User)[0].userID)")
         
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
@@ -51,6 +49,9 @@ class SocketIOManager: NSObject {
         socket.on("redis response retreived intermediary dhxInfo") { (dhxInfo, socketAck) -> Void in
             print("retreived stage1 dhxInfo")
              NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+        }
+        socket.on("redis response Bob complete, Alice still pending") { (dhxInfo, socketAck) -> Void in
+            print("user Bob complete")
         }
     }
     

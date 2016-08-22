@@ -108,19 +108,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     }
 
-    @objc func computeBob(notification:NSNotification) -> Int {
+    @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-        print("dhx info inside of compute bob [FRIENDSVIEWCONTROLLER] is \(dhxInfo)!")
-        print(dhxInfo!["userID"])
-        let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
+        print("dhx info inside of compute bob [FRIENDSVIEWCONTROLLER] is \(dhxInfo!)")
 
-       // NSNotificationCenter.defaultCenter().removeObserver(self)
+        let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
+        
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
-        return 5
-        //TODO: pass computed value directly into
-        //1) keychain
-        //2) encryption
-        //3)
     }
     
     // pass selected friend's object to ChatViewController on select.

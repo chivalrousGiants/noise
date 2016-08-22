@@ -44,7 +44,7 @@ function performPart2BKeyExchange(dhxObject, clientSocket){
     	.then(()=> {
 	    	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
 	    	.then(()=>{
-		    	clientSocket.emit("stage 2 dhx complete");
+		    	clientSocket.emit("redis response Bob complete, Alice still pending");
 		    	//tell Alice to retrieve. 
 		    	//tell Bob to instantiate his chat.	    		
 	    	})
@@ -60,14 +60,15 @@ function performPart3KeyExchange(dhxObject, clientSocket) {
 
     redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE')
     .then((bobE)=>{
-    	clientSocket.emit("bobE retreived", bobE);
+    	dhxObject["bobE"] = bobE;
+    	clientSocket.emit("bobE retreived", dhxObject);
     	//>>>>>on client, make secret & store it.
     	//>>>>>tell realm that it can instantiate chat object.
     	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
     	.then(()=>{
     		redis.client.delAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
 	    	.then(()=>{
-	    		clientSocket.emit("redis response KeyExchange complete");
+	    		clientSocket.emit("redis response KeyExchange complete", dhxObject);
 	    	})
     	})
     })
