@@ -37,7 +37,22 @@ function bigEndianEncode(value) {
 // for each cohort.
 // Returns a Promise that is resolved with the string contents of the counts file.
 function generateCountsString() {
+  const queries = [...Array(NUM_COHORTS).keys()].map(cohortNum => {
+    const commands = [];
 
+    commands.push(['HMGET', 'repTotals', `coh${cohortNum}`]);
+    
+    [...Array(BLOOM_FILTER_SIZE).keys()].forEach(bitPos => {
+      commands.push(['BITFIELD', `bitCounts:${cohortNum}`, 'GET', `u${MAX_SUM_BITS}`, `#${bitPos}`]);
+    });
+    
+    return client.batch(commands).execAsync();
+  });
+
+  return Promise.all(queries)
+    .then(rows => {
+      return rows.map(row => row.join(',')).join('\n')
+    });
 }
 
 // Given an Array of candidate strings, generate the map file containing
