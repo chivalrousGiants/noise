@@ -1,4 +1,7 @@
 const client = require('../redis').client;
+const http = require('http');
+const fs = require('fs');
+const md5 = require('md5');
 
 const {
   BLOOM_FILTER_SIZE,
