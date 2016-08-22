@@ -35,16 +35,17 @@ class SocketIOManager: NSObject {
         
         socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
             print("successfully sent new message", messageArray)
-            print("printing messsageArray", messageArray[0])
+            print("sent message", messageArray[0])
             
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
         }
         
         socket.on("receive new message") {(messageArray, socketAck) -> Void in
-            print("new masage", messageArray[0])
+            print("received message", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
         
         }
+        
         socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
             //print("retrieve new messages", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
