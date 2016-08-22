@@ -21,6 +21,18 @@ const sampleCandidateStrings = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 
   'v171', 'v172', 'v173', 'v174', 'v175', 'v176', 'v177', 'v178', 'v179', 'v180', 'v181', 'v182', 'v183', 'v184', 'v185', 'v186', 'v187', 'v188', 'v189', 'v190',
   'v191', 'v192', 'v193', 'v194', 'v195', 'v196', 'v197', 'v198', 'v199', 'v200'];
 
+// Encodes an input value to a 4-byte big-endian string.
+function bigEndianEncode(value) {
+  let result = '';
+
+  for (let i = 24; i >= 0; i -= 8) {
+    const byte = (value & (0xFF << i)) >> i;
+    result = result.concat(String.fromCharCode(byte));
+  }
+
+  return result;
+}
+
 // Generate the counts file containing the total number of reports and bit sums
 // for each cohort.
 // Returns a Promise that is resolved with the string contents of the counts file.
