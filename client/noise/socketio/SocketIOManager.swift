@@ -33,6 +33,23 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
         
+        socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
+            print("successfully sent new message", messageArray)
+            print("printing messsageArray", messageArray[0])
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        }
+        
+        socket.on("receive new message") {(messageArray, socketAck) -> Void in
+            print("new masage", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        
+        }
+        socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
+            //print("retrieve new messages", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
+        }
+        
         socket.on("redis response KeyExchange complete") { (user, socketAck) -> Void in
             print("KeyExchange complete")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil)
@@ -42,6 +59,7 @@ class SocketIOManager: NSObject {
             print("pursuing keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
         }
+        
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -52,9 +70,18 @@ class SocketIOManager: NSObject {
         socket.emit("signUp", user)
     }
     
+    func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
+        print("executing retrieveMessages", userID, friends)
+        socket.emit("initial retrieval of new messages", userID, friends)
+    }
+    
     // TODO: change this to 1) encrypted message 2) noisified message --both dictionaries
-    func sendEncryptedChat(message: String){
-        socket.emit("encryptedChatSent", message)
+    func sendEncryptedChat(message: AnyObject){
+      
+        ///let newmessage = realm.objects(Conversation).filter("friendID = \(messageID)")
+        print("newMessage", message)
+        
+        socket.emit("send new message", message)
     }
     
     //TODO: Modify as needed

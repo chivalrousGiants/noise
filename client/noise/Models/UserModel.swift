@@ -11,10 +11,10 @@ class User: Object {
     
     
     // Primary key
-    dynamic var id = 0
+    dynamic var ID = 0
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "ID"
     }
 }
 

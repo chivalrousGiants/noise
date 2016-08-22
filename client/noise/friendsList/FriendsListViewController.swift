@@ -26,6 +26,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
+        
+        getRecentConversation()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleRetrievedMessages), name: "retrievedNewMessages", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -49,9 +52,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.friendToChat = self.friends![indexPath.row]
+        //self.friendToChat = self.friends![indexPath.row]
+        let friendToChat = friends![indexPath.row]
         //TEST
-        print(self.friendToChat)
+        // print(self.friendToChat)
         
         //let convo = realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])")
         //.filter("friendID = \(self.friendToChat["friendID"])")
@@ -59,15 +63,15 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         
         //realm if there is already established friend1/friend2 conversation
-        if (0 == 0){
-            let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+       // if (2 == 1){
+           // let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
             //if not, query redis for status of the key exchange && wait for notification of keyExchangeCompletion
-            SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-        }
-        else {
+         //   SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+      //  }
+      //  else {
             //if is already established chat, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        }
+        //}
     }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
@@ -81,7 +85,35 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         keyExchangeComplete = true
         self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        //sender: self
+        // sender: self
+    }
+    
+    @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
+        let retrievedMsgs = notification.userInfo!["messages"] as? NSArray
+        
+        for messageObject in retrievedMsgs! {
+            if let messages = messageObject["messages"] as? NSArray {
+                
+                for message in messages {
+                    let message = message as? Dictionary<String, String>
+                    let newMessage = Message()
+                    newMessage.sourceID = Int(message!["sourceID"]!)!
+                    newMessage.targetID = Int(message!["targetID"]!)!
+                    newMessage.createdAt = 0 // todo: properly unwrap date. message!["createdAt"]! works but not when appending to realm
+                    newMessage.body = message!["body"]!
+                    
+                    try! realm.write{
+                        // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
+                        let friendID = Int((messageObject["friendID"] as! NSString).doubleValue)
+                        let conversationHistory = realm.objects(Conversation).filter("friendID = \(friendID)")[0]
+                        conversationHistory["largestMessageID"] = Int(message!["msgID"]!)!
+                        conversationHistory.messages.append(newMessage)
+                    }
+                }
+            }
+        }
+    
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // pass selected friend's object to ChatViewController on select.
@@ -90,7 +122,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             let chatView = segue.destinationViewController as! ChatViewController
             chatView.friend = sender as! Friend
         }
-       
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -101,6 +132,18 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             }
             updateFriendsTable()
         }
+    }
+    
+    func getRecentConversation() {
+        let user = realm.objects(User)[0].userID
+        let allConversation = realm.objects(Conversation)
+        var friendMessage = [String: Int]()
+        
+        for friend in allConversation {
+            friendMessage["\(friend.friendID)"] = friend.largestMessageID
+        }
+    
+        SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
@@ -114,5 +157,4 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBAction func settingsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
-    
 }
