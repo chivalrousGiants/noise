@@ -92,3 +92,6 @@ fastlane/test_output
 .browse.VC.db
 .browse.VC.db-shm
 .browse.VC.db-wal
+
+# Decode
+results.json
