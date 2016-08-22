@@ -77,13 +77,12 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     @objc func handleNewMessage(notification: NSNotification) -> Void {
         
         let userInfo = notification.userInfo!
-        
         let sourceID = userInfo["sourceID"] as? Int
         
         let message = Message()
         
-        // reciever
         if (sourceID != nil) {
+            // reciever
             if (sourceID == self.friend.friendID) {
                 message.sourceID = sourceID!
                 message.targetID = userInfo["targetID"] as! Int
@@ -94,6 +93,7 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
                 return
             }
         } else {
+            // sender
             message.sourceID = self.newMessage["sourceID"] as! Int
             message.targetID = self.newMessage["targetID"] as! Int
             message.body = self.newMessage["body"] as! String
