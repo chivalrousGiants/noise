@@ -6,7 +6,7 @@ class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
-    let realm = try! Realm()
+ //   let realm = try! Realm()
     override init() {
         super.init()
     }
