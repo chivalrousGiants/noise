@@ -99,8 +99,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     let newMessage = Message()
                     newMessage.sourceID = Int(message!["sourceID"]!)!
                     newMessage.targetID = Int(message!["targetID"]!)!
-                    newMessage.createdAt = 0 // todo: properly unwrap date. message!["createdAt"]! works but not when appending to realm
+                    newMessage.createdAt = Int(message!["createdAt"]!)!
+                        // todo: properly unwrap date. message!["createdAt"]! works but not when appending to realm
                     newMessage.body = message!["body"]!
+                    newMessage.messageID = Int(message!["msgID"]!)!
+                    
+                    
                     
                     try! realm.write{
                         // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
@@ -139,8 +143,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let allConversation = realm.objects(Conversation)
         var friendMessage = [String: Int]()
         
-        for friend in allConversation {
-            friendMessage["\(friend.friendID)"] = friend.largestMessageID
+        for convo in allConversation {
+            friendMessage["\(convo.friendID)"] = convo.largestMessageID
         }
     
         SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
