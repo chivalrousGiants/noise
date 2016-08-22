@@ -76,12 +76,23 @@ function generateCountsString() {
 // Each line starts with the candidate string, followed by the bit positions
 // that each string maps to in each cohort. In order to distinguish bit positions
 // in different cohorts, we multiply the cohort number by the bloom filter size
-/// and then add the bit position.
+// and then add the bit position.
+// Returns a string representing the contents of the map file.
 function generateMapFile(candidateStrings) {
   const lines = candidateStrings.map(string => {
     const positions = [string];
 
+    [...Array(NUM_COHORTS).keys()].forEach(cohortNum => {
+      [...Array(NUM_HASH_FUNCTIONS).keys()].forEach(hashNum => {
+        const bitPos = getBloomFilterBit(string, cohortNum, hashNum) + 1;
+        positions.push(cohortNum * BLOOM_FILTER_SIZE + bitPos);
+      });
+    });
+
+    return positions.join(',');
   });
+
+  return lines.join('\n');
 }
 
 // Given an Array of candidate strings, using aggregated data in Redis,
