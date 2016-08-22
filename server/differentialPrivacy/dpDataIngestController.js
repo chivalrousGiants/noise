@@ -12,7 +12,7 @@ const {
 
 // Dummy data
 const SampleIRRReports = {
-  cohortNum: 1,
+  cohortNum: 63,
   IRRs: [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -47,3 +47,8 @@ function IngestIRRReports(IRRReports) {
 module.exports = {
   IngestIRRReports,
 };
+
+
+// for (let i = 0; i < 1000; i++) {
+//   IngestIRRReports(SampleIRRReports);
+// }

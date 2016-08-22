@@ -1,4 +1,4 @@
-const redis = require('../redis');
+const client = require('../redis').client;
 
 const {
   BLOOM_FILTER_SIZE,
