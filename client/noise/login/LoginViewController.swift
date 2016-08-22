@@ -14,6 +14,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         // Override username and password events
         usernameTextField.delegate = self;
         passwordTextField.delegate = self;
+        
+        // Attach listeners
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(computeBob),
+            name: "computeBob",
+            object: nil)
+
     }
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -93,6 +101,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    @objc func computeBob(notification:NSNotification) -> Int {
+        let dhxInfo = notification.userInfo
+        print("dhx info inside of compute bob [LOGIN] is \(dhxInfo)!")
+        print(dhxInfo!["userID"])
+        let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
+        return 5
+        //TODO: pass computed value directly into
+        //1) keychain
+        //2) encryption
+        //3)
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

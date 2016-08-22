@@ -26,7 +26,7 @@ class WaitForConfirmationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func handleCompletedKeyExchange(notification:NSNotification) -> Void {
+    @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
 

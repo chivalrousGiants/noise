@@ -65,7 +65,8 @@ extension Int {
         var Bob : [String:AnyObject] = [:]
         Bob["userID"] = userID
         Bob["E"] = String(E_Bob)
-        Bob["friendname"] = friendID
+        Bob["friendID"] = friendID
+        Bob["p"] = p 
         
         return Bob
     }

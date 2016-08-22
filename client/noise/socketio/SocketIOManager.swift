@@ -41,14 +41,14 @@ class SocketIOManager: NSObject {
         }
         
         socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
-            print("pursuing keyExchange")
+            print("initiating keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
         }
-        socket.on("redis response KeyExchange dropped") { (userArray, socketAck) -> Void in
-            print("keyExchange dropped")
+        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
+            print("no need to pursue keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
         }
-        socket.on("Retreived dhxInfo from redis") { (dhxInfo, socketAck) -> Void in
+        socket.on("redis response retreived intermediary dhxInfo") { (dhxInfo, socketAck) -> Void in
             print("retreived stage1 dhxInfo")
              NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
@@ -73,7 +73,7 @@ class SocketIOManager: NSObject {
     }
     
     func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        socket.emit("initial key query", dhxInfo)
+        socket.emit("check for pending key exchange", dhxInfo)
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {

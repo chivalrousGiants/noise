@@ -1,5 +1,6 @@
 import UIKit
 import RealmSwift
+import Locksmith
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet var friendsTableView: UITableView!
@@ -57,8 +58,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.friendToChat = self.friends![indexPath.row]
-        //TEST
-        print(self.friendToChat)
+        //print(self.friendToChat)
         
         //let convo = realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])")
         //.filter("friendID = \(self.friendToChat["friendID"])")
@@ -86,24 +86,35 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
         //sender: self
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        //NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
-        
-        keyExchangeComplete = true
+        print("in handle complete")
+            /*
+        let dhxInfo = notification.userInfo
+        let eBob_computational = UInt32(dhxInfo!["eBob"] as! String)
+        let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
+        let aliceOnly = Locksmith.loadDataForUserAccount("noise")
+        let aliceSecret =  UInt32(aliceOnly!["a_Alice"] as! String)
+        let sharedSecret = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+        print(sharedSecret)
+        //try Locksmith.saveData(["sharedSecret":sharedSecret], forUserAccount:"noise")
+    */
         self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        //sender: self
+
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        //NSNotificationCenter.defaultCenter().removeObserver(self)
+
     }
 
     @objc func computeBob(notification:NSNotification) -> Int {
         let dhxInfo = notification.userInfo
-        print("dhx info inside of comput bob is \(dhxInfo)!")
+        print("dhx info inside of compute bob [FRIENDSVIEWCONTROLLER] is \(dhxInfo)!")
         print(dhxInfo!["userID"])
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
 
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+       // NSNotificationCenter.defaultCenter().removeObserver(self)
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
         return 5
         //TODO: pass computed value directly into
