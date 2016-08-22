@@ -100,11 +100,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     newMessage.sourceID = Int(message!["sourceID"]!)!
                     newMessage.targetID = Int(message!["targetID"]!)!
                     newMessage.createdAt = Int(message!["createdAt"]!)!
-                        // todo: properly unwrap date. message!["createdAt"]! works but not when appending to realm
                     newMessage.body = message!["body"]!
                     newMessage.messageID = Int(message!["msgID"]!)!
-                    
-                    
                     
                     try! realm.write{
                         // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm

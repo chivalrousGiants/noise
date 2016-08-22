@@ -75,13 +75,32 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc func handleNewMessage(notification: NSNotification) -> Void {
+        
+        let userInfo = notification.userInfo!
+        
+        let sourceID = userInfo["sourceID"] as? Int
+        
         let message = Message()
-        message.sourceID = self.newMessage["sourceID"] as! Int
-        message.targetID = self.newMessage["targetID"] as! Int
-        message.body = self.newMessage["body"] as! String
-        message.messageID = Int(notification.userInfo!["msgID"] as! String)!
-        message.createdAt = notification.userInfo!["timeStamp"] as! Int
-
+        
+        // reciever
+        if (sourceID != nil) {
+            if (sourceID == self.friend.friendID) {
+                message.sourceID = sourceID!
+                message.targetID = userInfo["targetID"] as! Int
+                message.body = userInfo["body"] as! String
+                message.messageID = Int((userInfo["messageID"] as! NSString).doubleValue)
+                message.createdAt = userInfo["createdAt"] as! Int
+            } else {
+                return
+            }
+        } else {
+            message.sourceID = self.newMessage["sourceID"] as! Int
+            message.targetID = self.newMessage["targetID"] as! Int
+            message.body = self.newMessage["body"] as! String
+            message.messageID = Int(userInfo["messageID"] as! String)!
+            message.createdAt = userInfo["createdAt"] as! Int
+        }
+        
         try! realm.write{
             let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
             conversationHistory.largestMessageID = message.messageID

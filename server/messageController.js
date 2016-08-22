@@ -136,7 +136,12 @@ function handleNewMessage(message, clientSocket) {
 
       redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
 
-      clientSocket.emit('successfully sent new message', {msgID, timeStamp});
+      clientSocket.emit('successfully sent new message', 
+        {
+          messageID: msgID, 
+          createdAt: timeStamp
+        }
+      );
 
       // check if friend (target of msg) is online
       let friendSocketID = activeSocketConnections[`${message.targetID}`];
