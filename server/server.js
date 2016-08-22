@@ -33,12 +33,6 @@ const activeSocketConnections = require('./activeSocketConnections');
 io.on('connection', (clientSocket) => {
   console.log('A user connected with socket id', clientSocket.id);
 
-  clientSocket.on('encryptedChatSent', function(message) {
-    console.log("is it getting here")
-    console.log('checking if the message obj makes it to the server', message)
-  })
-
-
   clientSocket.on('disconnect', () => {
 
     // if client was a logged-in active user, delete from activeConnections array
@@ -69,7 +63,6 @@ io.on('connection', (clientSocket) => {
   /////////////////////////////////////////////////////////
   // Message socket routes
   clientSocket.on('initial retrieval of new messages', (userID, friends) => {
-    console.log("yoooooo", userID, friends)
     // console.log('hit initial-retrieval-of-new-messages on server socket with userID', userID);
     // console.log('hit initial-retrieval-of-new-messages on server socket with friends', friends);
 
