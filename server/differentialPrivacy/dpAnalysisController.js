@@ -7,9 +7,9 @@ const {
   BLOOM_FILTER_SIZE,
   NUM_HASH_FUNCTIONS,
   NUM_COHORTS,
-  F_PARAM,
   P_PARAM,
   Q_PARAM,
+  F_PARAM,
   MAX_SUM_BITS,
 } = require('./dpParams');
 
@@ -95,9 +95,26 @@ function generateMapFile(candidateStrings) {
   return lines.join('\n');
 }
 
+// Returns a string representing the contents of the RAPPOR params file,
+// using the parameters set in dpParams.js.
+function generateParamsFile() {
+  const params = [
+    BLOOM_FILTER_SIZE,
+    NUM_HASH_FUNCTIONS,
+    NUM_COHORTS,
+    P_PARAM,
+    Q_PARAM,
+    F_PARAM,
+  ];
+
+  return `k,h,m,p,q,f\n${params.join(',')}\n`
+}
+
 // Given an Array of candidate strings, using aggregated data in Redis,
 // returns a Promise that is resolved with an Array of detected strings.
-function performDPAnalysis() {}
+function performDPAnalysis(candidateStrings) {
+  
+}
 
 // Exports
 module.exports = {
