@@ -34,13 +34,13 @@ class SocketIOManager: NSObject {
         }
         
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
-            print("KeyExchange complete")
+            print("KeyExchange complete", dhxInfo)
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response KeyExchange initiated") { (userArray, socketAck) -> Void in
+        socket.on("redis response KeyExchange initiated") { (dhxInfo, socketAck) -> Void in
             print("initiating keyExchange")
-            NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
             print("no need to pursue keyExchange")

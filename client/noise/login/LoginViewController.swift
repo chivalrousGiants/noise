@@ -29,11 +29,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             name: "computeBob",
             object: nil)
         
-        //KeyExchangeComplete not working yet
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
+            object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleBobComplete),
+            name: "bobComplete",
             object: nil)
 
     }
@@ -144,9 +148,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          Alice["E"] = dhxInfo!["eAlice"]
          Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
          666.aliceKeyChainPt2(Alice)
- 
-        //self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+
+        //instantiate Realm Chat
+        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
         
+    }
+    
+    @objc func handleBobComplete (notification:NSNotification) -> Void {
+       print("hit BobComplete function")
+        //instantiate Realm Chat
+        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

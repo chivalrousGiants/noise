@@ -33,6 +33,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleBobComplete),
+            name: "bobComplete",
+            object: nil)
 
     }
     
@@ -58,18 +64,28 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.friendToChat = self.friends![indexPath.row]
-        //print(self.friendToChat)
-        
-        //let convo = realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])")
-        //.filter("friendID = \(self.friendToChat["friendID"])")
-        //print(convo)
-        
-        
-        //realm if there is already established friend1/friend2 conversation
-        if (0 == 0){
-            let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
-            //if not, query redis for status of the key exchange && wait for notification of keyExchangeCompletion
-            SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+
+        //set-up to determine if chatInstance w/ specific friendID
+        let stringfriendID = Int((self.friendToChat["friendID"])!!.doubleValue)
+        let convo = realm.objects(Conversation.self).filter("friendID = \(stringfriendID)")
+
+        //if no convo (already) exists, && KEYCHAIN NOT WRITTEN YET if && if ARE FRIENDS begin Diffie Hellman Key Exchange
+        if (convo.isEmpty){
+            var aliceKeychain : [String:AnyObject]
+            do {
+                aliceKeychain = Locksmith.loadDataForUserAccount("Alice_noise1")!
+                print("aliceKeyChain is \(aliceKeychain)")
+                print("a_Alice is \(aliceKeychain["a_Alice"])")
+            } catch {
+                print("could not retreive Alice keychain")
+            }
+            
+            if (aliceKeychain["a_Alice"]  == nil){
+                SocketIOManager.sharedInstance.undertakeKeyExchange(["username": realm.objects(User)[0]["username"]!, "friendname": self.friendToChat.username!])
+            } else {
+                let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+                SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+            }
         }
         else {
             //if is already established chat, segue to chatScreen
@@ -83,31 +99,35 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
         print("segue user info \(userInfo)")
-        //keyExchangeComplete = false
+         /*
+         //pass dhX vals that Alice needs to access later into her keychain
+         var AliceKeys : [String:AnyObject] = [:]
+         AliceKeys["a_Alice"] = String(a_Alice)
+         AliceKeys["p"] = String(p_Alice)
+         AliceKeys["E"] = String(E_Alice)
+         aliceKeyChainPt1(AliceKeys)
+         */
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
-        //sender: self
-        // Remove listener
-        //NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         print("in handle complete")
-            /*
         let dhxInfo = notification.userInfo
-        let eBob_computational = UInt32(dhxInfo!["eBob"] as! String)
+        let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
-        let aliceOnly = Locksmith.loadDataForUserAccount("noise")
-        let aliceSecret =  UInt32(aliceOnly!["a_Alice"] as! String)
-        let sharedSecret = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
-        print(sharedSecret)
-        //try Locksmith.saveData(["sharedSecret":sharedSecret], forUserAccount:"noise")
-    */
-        self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-
-        // Remove listener
-        //NSNotificationCenter.defaultCenter().removeObserver(self)
-
+        var Alice :[String:AnyObject] = [:]
+        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("Alice_noise1")!["a_Alice"] as! String)
+        print(aliceSecret)
+        
+        Alice["E"] = dhxInfo!["eAlice"]
+        Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+        666.aliceKeyChainPt2(Alice)
+        
+        //instantiate Realm Chat
+        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
+
+
 
     @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
@@ -116,6 +136,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
+    }
+    
+    @objc func handleBobComplete (notification:NSNotification) -> Void {
+        print("hit BobComplete function")
+        //instantiate Realm Chat
+        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
     }
     
     // pass selected friend's object to ChatViewController on select.

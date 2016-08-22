@@ -42,13 +42,15 @@ extension Int {
         Alice["p"] = String(p_Alice)
         Alice["E"] = String(E_Alice)
         Alice["friendname"] = friendname
-        
+    
+    
         //pass dhX vals that Alice needs to access later into her keychain
         var AliceKeys : [String:AnyObject] = [:]
         AliceKeys["a_Alice"] = String(a_Alice)
         AliceKeys["p"] = String(p_Alice)
         AliceKeys["E"] = String(E_Alice)
         aliceKeyChainPt1(AliceKeys)
+ 
         
         //2) encrypt values
         
