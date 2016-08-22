@@ -24,9 +24,12 @@ const sampleCandidateStrings = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 
   'v171', 'v172', 'v173', 'v174', 'v175', 'v176', 'v177', 'v178', 'v179', 'v180', 'v181', 'v182', 'v183', 'v184', 'v185', 'v186', 'v187', 'v188', 'v189', 'v190',
   'v191', 'v192', 'v193', 'v194', 'v195', 'v196', 'v197', 'v198', 'v199', 'v200'];
 
-// Encodes an input value to a 4-byte big-endian string.
+// Encodes an input integer to a 4-byte big-endian string.
 function bigEndianEncode(value) {
   let result = '';
+
+  // Value must be an integer (cohort number)
+  value = parseInt(value);
 
   for (let i = 24; i >= 0; i -= 8) {
     const byte = (value & (0xFF << i)) >> i;
@@ -36,15 +39,25 @@ function bigEndianEncode(value) {
   return result;
 }
 
+function getBloomFilterBit(inputString, cohortNum, hashNum) {
+  const toEncode = bigEndianEncode(cohortNum) + inputString;
+  const hash = md5(toEncode);
+
+  return parseInt(hash.slice(hashNum * 2, hashNum * 2 + 2), 16) % BLOOM_FILTER_SIZE;
+}
+
 // Generate the counts file containing the total number of reports and bit sums
 // for each cohort.
 // Returns a Promise that is resolved with the string contents of the counts file.
 function generateCountsString() {
+  // Perform one batch query for each cohort
   const queries = [...Array(NUM_COHORTS).keys()].map(cohortNum => {
     const commands = [];
 
+    // Get this cohort's total number of reports
     commands.push(['HMGET', 'repTotals', `coh${cohortNum}`]);
     
+    // Get this cohort's sums for each bit position
     [...Array(BLOOM_FILTER_SIZE).keys()].forEach(bitPos => {
       commands.push(['BITFIELD', `bitCounts:${cohortNum}`, 'GET', `u${MAX_SUM_BITS}`, `#${bitPos}`]);
     });
@@ -59,9 +72,16 @@ function generateCountsString() {
 }
 
 // Given an Array of candidate strings, generate the map file containing
-// each candidate string and the bits that it maps to in each cohort.
+// each candidate string and the bits that they map to in each cohort.
+// Each line starts with the candidate string, followed by the bit positions
+// that each string maps to in each cohort. In order to distinguish bit positions
+// in different cohorts, we multiply the cohort number by the bloom filter size
+/// and then add the bit position.
 function generateMapFile(candidateStrings) {
-  
+  const lines = candidateStrings.map(string => {
+    const positions = [string];
+
+  });
 }
 
 // Given an Array of candidate strings, using aggregated data in Redis,
