@@ -43,7 +43,6 @@ class SocketIOManager: NSObject {
         socket.on("receive new message") {(messageArray, socketAck) -> Void in
             print("received message", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
-        
         }
         
         socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
@@ -75,7 +74,11 @@ class SocketIOManager: NSObject {
         }
         socket.on("redis response client has ongoing exchange") { (socketAck) -> Void in
             print("have ongoing exchange with this user: do not alicify")
-            NSNotificationCenter.defaultCenter().postNotificationName("drop pursuit of KeyExchange", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
+        }
+        socket.on("redis response client must inite") { (dhxInfo, socketAck) -> Void in
+            print("no exchange initiated: commence & alicify")
+            NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }
     

@@ -17,8 +17,12 @@ function quickInitCheck (dhxObject){
 		redis.client.hgetAsync('users', `${dhxObject.friendname}`)
 		.then((friendID)=>{
 			redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
-			.then(()=>{
-				clientSocket.emit('redis response client has ongoing exchange', friendID);	
+			.then((dhxObj)=>{
+				if (dhxObject) {
+					clientSocket.emit('redis response client has ongoing exchange', friendID);						
+				} else {
+					clientSocket.emit('redis response client must init', friendID);
+				}
 			})
 		})
 	})
