@@ -13,13 +13,13 @@ function updateInfoWithSortedIds (dhxObject, sourceUserID, pendingID){
 //gets IDs from usernames, then checks if dh:user1ID:user2ID already exists. Used client-side to vet keychain generation.
 function quickInitCheck (dhxObject, clientSocket){
 	var dhxObjectAugmented = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
-	console.log('hit quickInitCheck with ', dhxObject)
+	console.log('hit quickInitCheck with ', dhxObjectAugmented)
 
-	redis.client.hgetallAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
+	redis.client.hgetallAsync(`dh:${dhxObjectAugmented.lesserUserID}:${dhxObjectAugmented.greaterUserID}`)
 	.then((dhDataStructure)=>{
 		if (dhDataStructure) {
 			console.log('resume from middle', dhDataStructure)
-			clientSocket.emit('redis response client has ongoing exchange', dhxObject);						
+			clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
 		} else {
 			console.log('init', dhDataStructure)
 			clientSocket.emit('redis response client must init', dhxObjectAugmented);

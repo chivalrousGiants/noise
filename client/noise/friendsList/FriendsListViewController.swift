@@ -106,18 +106,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     /////////////////////////////////////////
     ////// NOTIFICATION CTR FUNCTIONS
-
-    @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
-        print("hit func target for alice1")
-        let userInfo = notification.userInfo
-        print("initiating keyExchange with dhxInfo: \(userInfo)")
-        //alicify and call pursue key exchange.
-        
-        let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
-        print("asAlice \(Alice)")
-
-        SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-    }
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
@@ -136,6 +124,20 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         Bob["friendname"] = userInfo!["friendname"]
         
         SocketIOManager.sharedInstance.undertakeKeyExchange(Bob)
+        
+    }
+    
+    @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
+        print("hit func target for alice1")
+        
+         let userInfo = notification.userInfo
+         print("initiating keyExchange with dhxInfo: \(userInfo)")
+         //alicify and call pursue key exchange.
+         
+         let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
+         print("asAlice \(Alice)")
+         
+         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
         
     }
 
@@ -202,7 +204,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             }
         }
 
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"retrievedNewMessages", object:nil)
     }
     
     

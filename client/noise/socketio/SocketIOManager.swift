@@ -51,7 +51,6 @@ class SocketIOManager: NSObject {
             //print("retrieve new messages", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
         }
-        
 
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
             print("KeyExchange complete")
@@ -62,9 +61,9 @@ class SocketIOManager: NSObject {
             print("initiating keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
-            print("no need to pursue keyExchange")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
+        socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+            print("keyExchange uninitiated: next step: alicify \(dhxInfo)")
         }
         socket.on("redis response retreived intermediary dhxInfo") { (dhxInfo, socketAck) -> Void in
             print("retreived stage1 dhxInfo")
@@ -78,9 +77,9 @@ class SocketIOManager: NSObject {
             print("have ongoing exchange with this user: do not alicify")
             NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
         }
-        socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
-            print("no exchange initiated yet: commence & alicify \(dhxInfo)")
-            NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
+            print("no need to pursue keyExchange")
+            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
         }
     }
     
@@ -107,7 +106,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkNeedToInitKeyExchange (dhxInfo: Dictionary<String, AnyObject>){
-        print("hit checkNeedtoInitKeyExchanged")
+        print("hit checkNeedtoInitKeyExchanged on way to server")
         socket.emit("check need to init key exchange", dhxInfo)
     }
     
