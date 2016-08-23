@@ -55,7 +55,7 @@ extension Int {
  
         
         //2) encrypt values
-        
+        print("Alice in alicify \(Alice)")
         return Alice
     }
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {

@@ -106,6 +106,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     ////// NOTIFICATION CTR FUNCTIONS
 
     @objc func handleKeyExchangeInit (notification:NSNotification) ->Void  {
+        print("hit func target for alice1")
         let userInfo = notification.userInfo
         print("initiating keyExchange with dhxInfo: \(userInfo)")
         //alicify and call pursue key exchange.
