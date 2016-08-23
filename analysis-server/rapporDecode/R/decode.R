@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-# This library implements the RAPPOR marginal decoding algorithms using LASSO.
-
-library(glmnet)
-
 # So we don't have to change pwd
 source.rappor <- function(rel_path)  {
   abs_path <- paste0(Sys.getenv("RAPPOR_REPO", ""), rel_path)
@@ -354,10 +349,15 @@ CheckDecodeInputs <- function(counts, map, params) {
 Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                    correction = c("Bonferroni"), quiet = FALSE, ...) {
 
+  library(limSolve)
+  library(glmnet)
+  library(RJSONIO)
+
   library(Matrix)
 
   ######## Read params file ########
   params <- as.list(read.csv(params_file))
+
   if (length(params) != 6) {
     stop("There should be exactly 6 columns in the parameter file.")
   }
@@ -546,11 +546,15 @@ Decode <- function(counts_file, map_file, params_file, alpha = 0.05,
                   explained_var = explained_var,
                   missing_var = missing_var)
 
-  list(fit = fit, summary = res_summary, privacy = privacy, params = params,
+  results <- list(fit = fit, summary = res_summary, privacy = privacy, params = params,
        lasso = NULL, residual = as.vector(residual),
        counts = counts[, -1], resid = NULL, metrics = metrics,
        ests = es$estimates  # ests needed by Shiny rappor-sim app
   )
+
+  write(toJSON(results), "results.json")
+
+  return()
 }
 
 ComputeCounts <- function(reports, cohorts, params) {

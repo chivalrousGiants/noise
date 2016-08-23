@@ -91,7 +91,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         else {
             //if is already established chat, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        }
+        //}
     }
     
     /////////////////////////////////////////
@@ -145,7 +145,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             let chatView = segue.destinationViewController as! ChatViewController
             chatView.friend = sender as! Friend
         }
-       
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -156,6 +155,18 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             }
             updateFriendsTable()
         }
+    }
+    
+    func getRecentConversation() {
+        let user = realm.objects(User)[0].userID
+        let allConversation = realm.objects(Conversation)
+        var friendMessage = [String: Int]()
+        
+        for convo in allConversation {
+            friendMessage["\(convo.friendID)"] = convo.largestMessageID
+        }
+    
+        SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
@@ -169,5 +180,4 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @IBAction func settingsButtonClicked(sender: AnyObject) {
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
-    
 }

@@ -77,7 +77,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             newUser.lastname = signUpObj["lastname"] as! String
             newUser.username = signUpObj["username"] as! String
             newUser.userID = Int(signUpObj["userID"] as! String)!
-            newUser.id = 0
+            newUser.ID = 0
             
             try! realm.write {
                 realm.add(newUser, update:true)

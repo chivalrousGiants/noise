@@ -28,7 +28,7 @@ http.listen(HTTP_PORT, () => {
 
 // Socket.io
 
-// activeSocketConnections object that keep track of logged-in & active users 
+// activeSocketConnections object that keep track of logged-in & active users
 const activeSocketConnections = require('./activeSocketConnections');
 
 io.on('connection', (clientSocket) => {
@@ -83,7 +83,7 @@ io.on('connection', (clientSocket) => {
 
     clientSocket.emit('DPParams', DPParams);
   });
-      
+
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
     //console.log('submitIRRReports data received from: ', user);

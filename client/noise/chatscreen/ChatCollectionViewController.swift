@@ -9,57 +9,109 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     let realm = try! Realm()
     var friend = Friend()
-    var messages : Results<Message>?
-    var user: Results<User>?
+    var messages = List<Message>()
+    var newMessage = [String: AnyObject]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // configure states
         self.CollectionView.dataSource = self
         self.CollectionView.delegate = self
-        self.NavigationLabel.title =  friend.firstname
-        self.user = realm.objects(User)
-        print("user", self.user)
-        print(friend)
-        //updateChatScreen()
+        self.title = friend.firstname
+        updateChatScreen()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
     }
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-       return (self.messages?.count)! + 1
+        return self.messages.count
     }
- /*
+ 
     func updateChatScreen() {
-        self.messages = realm.objects(Message.self).filter("targetID = \(self.friend.targetID)")
-        self.CollectionView.reloadData()
+        if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
+            try! realm.write{
+                let startNewConversation = Conversation()
+                startNewConversation.friendID = friend.friendID
+                realm.add(startNewConversation)
+            }
+        } else {
+            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
+            self.CollectionView.reloadData()
+        }
     }
-    */
+
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        // telling the controller to use the reusuable 'receivecell' from chatCollectionViewCell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SendCell",
+        // tell the controller to use the reusuable 'receivecell' controlled by chatCollectionViewCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
             forIndexPath: indexPath) as! ChatCollectionViewCell
         
-        // use this cell for all received chats
-        // cell.receiveChatLabel.layer.cornerRadius = 5
-        // cell.receiveChatLabel.layer.masksToBounds = true
+        let message = self.messages[indexPath.row]
         
-        // use this cell for chats user sends
-        cell.sendChatLabel.layer.cornerRadius = 5
-        cell.sendChatLabel.layer.masksToBounds = true
-        cell.sendChatLabel.clipsToBounds = true
-        //cell.sendChatLabel.text = self.messages![indexPath.row].text
-        return cell
+        if  message.sourceID == friend.friendID {
+            cell.receiveChatLabel.layer.cornerRadius = 5
+            cell.receiveChatLabel.layer.masksToBounds = true
+            cell.receiveChatLabel.clipsToBounds = true
+            cell.receiveChatLabel.text = self.messages[indexPath.row].body
+            cell.sendChatLabel.hidden = true
+            return cell
+        } else {
+            cell.sendChatLabel.layer.cornerRadius = 5
+            cell.sendChatLabel.layer.masksToBounds = true
+            cell.sendChatLabel.clipsToBounds = true
+            cell.sendChatLabel.text = self.messages[indexPath.row].body
+            cell.receiveChatLabel.hidden = true
+            return cell
+        }
+
     }
  
     @IBAction func sendButtonTapped(sender: AnyObject) {
-        print("my friend", friend)
-        let message = Message()
-        // message.text = self.MessageTextFieldLabel.text!
-        // message.receiver = friend.username
-        // message.sender = realm.objects(User)[0].username
+        self.newMessage = [
+            "sourceID" : realm.objects(User)[0].userID,
+            "targetID" : self.friend.friendID,
+            "body"     : self.SendChatTextField.text!
+        ]
+        // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
+        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+    }
+    
+    @objc func handleNewMessage(notification: NSNotification) -> Void {
         
-        try! realm.write {
-            realm.add(message)
-            //updateChatScreen()
+        let userInfo = notification.userInfo!
+        let sourceID = userInfo["sourceID"] as? Int
+        
+        let message = Message()
+        
+        if (sourceID != nil) {
+            // reciever
+            if (sourceID == self.friend.friendID) {
+                message.sourceID = sourceID!
+                message.targetID = userInfo["targetID"] as! Int
+                message.body = userInfo["body"] as! String
+                message.messageID = Int((userInfo["messageID"] as! NSString).doubleValue)
+                message.createdAt = userInfo["createdAt"] as! Int
+            } else {
+                return
+            }
+        } else {
+            // sender
+            message.sourceID = self.newMessage["sourceID"] as! Int
+            message.targetID = self.newMessage["targetID"] as! Int
+            message.body = self.newMessage["body"] as! String
+            message.messageID = Int(userInfo["messageID"] as! String)!
+            message.createdAt = userInfo["createdAt"] as! Int
         }
+        
+        try! realm.write{
+            let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
+            conversationHistory.largestMessageID = message.messageID
+            conversationHistory.messages.append(message)
+            print("successfuly append \(message) in history", conversationHistory)
+            // TODO: optimize such that only new message is loaded.
+            updateChatScreen()
+        }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
   }
+
