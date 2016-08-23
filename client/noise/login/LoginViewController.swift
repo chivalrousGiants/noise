@@ -150,6 +150,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          666.aliceKeyChainPt2(Alice)
 
         //instantiate Realm Chat
+        let convo = Conversation()
         self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
         
     }
@@ -157,6 +158,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @objc func handleBobComplete (notification:NSNotification) -> Void {
        print("hit BobComplete function")
         //instantiate Realm Chat
+        let convo = Conversation()
         self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
     }
     

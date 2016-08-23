@@ -33,6 +33,25 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
         }
         
+        socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
+            print("successfully sent new message", messageArray)
+            print("sent message", messageArray[0])
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        }
+        
+        socket.on("receive new message") {(messageArray, socketAck) -> Void in
+            print("received message", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
+        
+        }
+        
+        socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
+            //print("retrieve new messages", messageArray[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
+        }
+        
+
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
             print("KeyExchange complete")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
@@ -54,7 +73,6 @@ class SocketIOManager: NSObject {
             print("user Bob complete")
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -66,8 +84,12 @@ class SocketIOManager: NSObject {
     }
     
     // TODO: send encrypted message
-    func sendEncryptedChat(message: String){
+    func sendEncryptedChat(message: Dictionary<String, AnyObject>){
         socket.emit("encryptedChatSent", message)
+    }
+    func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
+        print("executing retrieveMessages", userID, friends)
+        socket.emit("initial retrieval of new messages", userID, friends)
     }
     
     // newFriend is the username

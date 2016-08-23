@@ -40,8 +40,15 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             name: "bobComplete",
             object: nil)
 
+        getRecentConversation()
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector (handleRetrievedMessages),
+            name: "retrievedNewMessages",
+            object: nil)
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         updateFriendsTable()
     }
@@ -91,7 +98,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         else {
             //if is already established chat, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
-        //}
+        }
     }
     
     /////////////////////////////////////////
@@ -119,6 +126,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         666.aliceKeyChainPt2(Alice)
         
         //instantiate Realm Chat
+        let convo = Conversation()
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
 
@@ -136,7 +144,37 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleBobComplete (notification:NSNotification) -> Void {
         print("hit BobComplete function")
         //instantiate Realm Chat
+        let convo = Conversation()
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+    }
+        
+    @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
+        let retrievedMsgs = notification.userInfo!["messages"] as? NSArray
+        
+        for messageObject in retrievedMsgs! {
+            if let messages = messageObject["messages"] as? NSArray {
+                
+                for message in messages {
+                    let message = message as? Dictionary<String, String>
+                    let newMessage = Message()
+                    newMessage.sourceID = Int(message!["sourceID"]!)!
+                    newMessage.targetID = Int(message!["targetID"]!)!
+                    newMessage.createdAt = Int(message!["createdAt"]!)!
+                    newMessage.body = message!["body"]!
+                    newMessage.messageID = Int(message!["msgID"]!)!
+                    
+                    try! realm.write{
+                        // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
+                        let friendID = Int((messageObject["friendID"] as! NSString).doubleValue)
+                        let conversationHistory = realm.objects(Conversation).filter("friendID = \(friendID)")[0]
+                        conversationHistory["largestMessageID"] = Int(message!["msgID"]!)!
+                        conversationHistory.messages.append(newMessage)
+                    }
+                }
+            }
+        }
+
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // pass selected friend's object to ChatViewController on select.
