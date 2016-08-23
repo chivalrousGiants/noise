@@ -20,10 +20,10 @@ function quickInitCheck (dhxObject, clientSocket){
 			redis.client.hgetallAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
 			.then((dhDataStructure)=>{
 				if (dhDataStructure) {
-					console.log('resume from middle')
+					console.log('resume from middle', dhDataStructure)
 					clientSocket.emit('redis response client has ongoing exchange', dhxObject);						
 				} else {
-					console.log('init')
+					console.log('init', dhDataStructure)
 					clientSocket.emit('redis response client must init', dhxObject);
 				}
 			})

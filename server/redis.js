@@ -29,13 +29,13 @@ Messages
 PendingKeyExchange
 
   Hash   DH:lesser_user_ID:greater_user_ID
-    lesser_user_p: 
-    lesser_user_g:
-    lesser_user_E:
-    greater_user_p: 
-    greater_user_g:
-    greater_user_E:
-    chatEstablished: 0/1/2
+    pAlice:
+    gAlice:
+    eAlice:
+    bobE:
+    userID: source
+    friendID: target
+    chatEstablished = nonexistent/0/1
 
   Set   pending:user_ID
       targetUserID1

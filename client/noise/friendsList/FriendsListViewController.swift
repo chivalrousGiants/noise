@@ -89,12 +89,14 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let userID = realm.objects(User)[0]["userID"]!
         let username = realm.objects(User)[0]["username"]!
         let friendname = self.friendToChat["username"]!
+        
         let checkInitObj :[String:AnyObject] = ["friendID":friendID, "userID":userID, "username":username, "friendname":friendname!]
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
         
         if (convoWithThisFriend.isEmpty){
             //check to see if if dhX process already initiated, handle results asynchronously
+            print("friendClick -> checking to see if dhx initNeeded")
             SocketIOManager.sharedInstance.checkNeedToInitKeyExchange(checkInitObj)
         } else {
             //if is already established chat, segue to chatScreen
@@ -124,6 +126,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     @objc func handleResumeKeyExchangeCheck (notification:NSNotification) -> Void {
+        
+        //could just remove this and rely on socket communication to tell this to you.
+        
         let userInfo = notification.userInfo
         print("resuming as Bob or in later stage with \(userInfo)")
         var Bob : [String:AnyObject] = [:]
