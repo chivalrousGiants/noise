@@ -74,6 +74,7 @@ DP statistics
 // Requires
 const redis = require('redis');
 const bluebird = require('bluebird');
+const bcrypt = require('bcrypt-nodejs');
 const utils = require('./utils');
 
 // Generates random sentences (used for initializing message data)
@@ -98,6 +99,7 @@ const {
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
+const bcryptHashAsync = bluebird.promisify(bcrypt.hash);
 
 /*
   Creates new Redis Client
@@ -124,26 +126,41 @@ client.on('connect', function() {
   // Initialize User data
   client.getAsync('global_userID')
     .then(userID => {
-
       // Users have not been initialized
       if (userID === null) {
-        client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', 'hannah']);
-        client.hset('users', ['hannah', 1]);
-
-        client.hmset('user:2', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', 'mikey']);
-        client.hset('users', ['mikey', 2]);
-
-        client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', 'ryan']);
-        client.hset('users', ['ryan', 3]);
-
-        client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', 'jae']);
-        client.hset('users', ['jae', 4]);
+        let userHash = [
+          bcryptHashAsync('hannah', null, null)
+            .then(hashedPW => {
+              client.hmset('user:1', ['firstname', 'Hannah', 'lastname', 'Brannan', 'username', 'hannah', 'password', hashedPW]);
+              client.hset('users', ['hannah', 1]);
+            }),
+          bcryptHashAsync('mikey', null, null)
+            .then(hashedPW => {
+              client.hmset('user:2', ['firstname', 'Michael', 'lastname', 'De La Cruz', 'username', 'mikey', 'password', hashedPW]);
+              client.hset('users', ['mikey', 2]);
+            }),
+          bcryptHashAsync('ryan', null, null)
+            .then(hashedPW => {
+              client.hmset('user:3', ['firstname', 'Ryan', 'lastname', 'Hanzawa', 'username', 'ryan', 'password', hashedPW]);
+              client.hset('users', ['ryan', 3]);
+            }),
+          bcryptHashAsync('jae', null, null)
+            .then(hashedPW => {
+              client.hmset('user:4', ['firstname', 'Jae', 'lastname', 'Shin', 'username', 'jae', 'password', hashedPW]);
+              client.hset('users', ['jae', 4]);
+            })
+        ];
 
         // global_userID = # of users so far
         // global_userID increments when a new user signs up
         client.set('global_userID', 4, redis.print);
-      } 
 
+        return Promise.all(userHash);
+      } else {
+        return null;
+      }
+    })
+    .then(() => {
       // Initialize Message data
       return client.getAsync('global_msgID');
     })

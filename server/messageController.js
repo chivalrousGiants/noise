@@ -24,9 +24,8 @@ const activeSocketConnections = require('./activeSocketConnections');
 
   Edge Cases:
     1) "friends" obj is empty -> will return []
-      it is assumed that this function will ideally be never called from the front-end if
-      there are no friends 
-    2) no new messages to fetch for a certain friend
+    2) no new messages to fetch for a certain friend: 
+      the "messages" and "largestMessageID" fields will be null for that friend
  */
 function retrieveNewMessages(userID, friends, clientSocket) {
   
