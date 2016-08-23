@@ -79,7 +79,7 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
         }
         socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
-            print("no exchange initiated: commence & alicify")
+            print("no exchange initiated yet: commence & alicify")
             NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
     }
@@ -107,6 +107,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkNeedToInitKeyExchange (dhxInfo: Dictionary<String, AnyObject>){
+        print("hit checkNeedtoInitKeyExchange")
         socket.emit("check need to init key exchange", dhxInfo)
     }
     

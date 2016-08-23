@@ -51,15 +51,7 @@ class AddFriendViewController: UIViewController {
             performSegueWithIdentifier("backToFriendsListSegue", sender: self)
         } else {
             // friendToAdd was NOT found in redis db
-            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "no friend of that username exists", preferredStyle: UIAlertControllerStyle.Alert)
-            let action:UIAlertAction = UIAlertAction(title: "bummer", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-               // print("bummer button selected")
-            }
-            alert.addAction(action)
-            
-            self.presentViewController(alert, animated:true) { () -> Void in
-                //print("alert presented for unsuccessful addNewFriend")
-            }
+            displayAlertMessage("no friend of that username exists")
         }
         
         // Remove listener
