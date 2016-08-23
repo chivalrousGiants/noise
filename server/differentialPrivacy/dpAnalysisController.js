@@ -1,8 +1,7 @@
 const bluebird = require('bluebird');
 const client = require('../redis').client;
-const http = bluebird.promisifyAll(require('http'));
+const request = require('request');
 const fs = bluebird.promisifyAll(require('fs'));
-const md5 = require('md5');
 
 const { bigEndianEncode, getBloomFilterBit } = require('./dpUtility');
 
@@ -16,17 +15,8 @@ const {
   MAX_SUM_BITS,
 } = require('./dpParams');
 
-// Options for POST to OpenCPU server
-const postOptions = {
-  host: 'localhost',
-  path: '/ocpu/library/rappor/R/Decode',
-  port: 8004,
-  timeout: 120000,
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
-};
+// Config
+const ANALYSIS_SERVER = 'http://localhost:8004';
 
 const sampleCandidateStrings = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'v11', 'v12', 'v13', 'v14', 'v15', 'v16', 'v17', 'v18', 'v19', 'v20',
   'v21', 'v22', 'v23', 'v24', 'v25', 'v26', 'v27', 'v28', 'v29', 'v30', 'v31', 'v32', 'v33', 'v34', 'v35', 'v36', 'v37', 'v38', 'v39', 'v40', 'v41', 'v42', 'v43',
@@ -71,7 +61,7 @@ function generateCountsString() {
 // in different cohorts, we multiply the cohort number by the bloom filter size
 // and then add the bit position.
 // Returns a string representing the contents of the map file.
-function generateMapFile(candidateStrings) {
+function generateMapString(candidateStrings) {
   const lines = candidateStrings.map(string => {
     const positions = [string];
 
@@ -90,7 +80,7 @@ function generateMapFile(candidateStrings) {
 
 // Returns a string representing the contents of the RAPPOR params file,
 // using the parameters set in dpParams.js.
-function generateParamsFile() {
+function generateParamsString() {
   const params = [
     BLOOM_FILTER_SIZE,
     NUM_HASH_FUNCTIONS,
@@ -104,12 +94,66 @@ function generateParamsFile() {
 }
 
 // Given an Array of candidate strings, using aggregated data in Redis,
-// returns a Promise that is resolved with an Array of detected strings.
+// returns a Promise that is resolved with an object describing the results
+// of the analysis.
 function performDPAnalysis(candidateStrings) {
-  generateCountsString
+  // Generate file bodies
+  return Promise.all([
+      generateCountsString(),
+      generateMapString(candidateStrings),
+      generateParamsString(),
+    ])
+    .then(([countsString, mapString, paramsString]) => {
+      // Write files
+      return Promise.all([
+        fs.writeFileAsync('./analysis-server/tmp/counts.csv', countsString),
+        fs.writeFileAsync('./analysis-server/tmp/map.csv', mapString),
+        fs.writeFileAsync('./analysis-server/tmp/params.csv', paramsString),        
+      ]);
+    })
+    .then(() => {
+      // Submit POST request
+      const formData = {};
+
+      ['counts', 'map', 'params'].forEach(fileName => {
+        formData[fileName] = {
+          value: fs.createReadStream(`./analysis-server/tmp/case_${fileName}.csv`),
+          options: {
+            filename: `case_${fileName}.csv`,
+            contentType: 'text/csv',
+          },
+        };
+      });
+
+      return new Promise((resolve, reject) => {
+        request.post({ url: `${ANALYSIS_SERVER}/ocpu/library/rappor/R/Decode`, formData }, (err, res, body) => {
+          if (err) reject(err);
+          resolve(body);
+        });
+      });
+    })
+    .then(body => {
+      // Retrieve JSON results
+      const bodyLines = body.split('\n');
+      const resultsJSONPath = bodyLines.find(line => line.includes('results.json'));
+
+      return new Promise((resolve, reject) => {
+        request(`${ANALYSIS_SERVER}${resultsJSONPath}`, (err, res, body) => {
+          if (err) reject(err);
+          resolve(body);
+        });
+      });
+    })
+    .then(json => {
+      // Return parsed JSON
+      return JSON.parse(json);
+    })
+    .catch(console.error.bind.console);
 }
 
 // Exports
 module.exports = {
   performDPAnalysis,
 };
+
+// performDPAnalysis(sampleCandidateStrings);
