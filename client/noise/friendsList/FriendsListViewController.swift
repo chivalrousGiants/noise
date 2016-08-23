@@ -107,7 +107,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     /////////////////////////////////////////
     ////// NOTIFICATION CTR FUNCTIONS
 
-    @objc func handleKeyExchangeInit (notification:NSNotification) ->Void  {
+    @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
         print("hit func target for alice1")
         let userInfo = notification.userInfo
         print("initiating keyExchange with dhxInfo: \(userInfo)")
@@ -155,7 +155,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         666.aliceKeyChainPt2(Alice)
         
         //instantiate Realm Chat
-        Conversation()
+        //Conversation()
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
 
@@ -171,7 +171,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleBobComplete (notification:NSNotification) -> Void {
         print("hit BobComplete function")
         //instantiate Realm Chat
-        Conversation()
+        //Conversation()
         self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
     
