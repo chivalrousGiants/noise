@@ -66,25 +66,26 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.friendToChat = self.friends![indexPath.row]
 
         //set-up to determine if chatInstance w/ specific friendID
-        let stringfriendID = Int((self.friendToChat["friendID"])!!.doubleValue)
-        let convo = realm.objects(Conversation.self).filter("friendID = \(stringfriendID)")
+        let friendID = Int((self.friendToChat["friendID"])!!.doubleValue)
+        let convo = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
-        //if no convo (already) exists, && KEYCHAIN NOT WRITTEN YET if && if ARE FRIENDS begin Diffie Hellman Key Exchange
+        //if no convo (already) exists, && if KEYCHAIN NOT WRITTEN YET && if ARE FRIENDS begin Diffie Hellman Key Exchange
         if (convo.isEmpty){
-            var aliceKeychain : [String:AnyObject]
-            do {
-                aliceKeychain = Locksmith.loadDataForUserAccount("Alice_noise1")!
+            //var aliceKeychain : [String:AnyObject]
+                let aliceKeychain = Locksmith.loadDataForUserAccount("Alice_noise1:\(friendID)")
                 print("aliceKeyChain is \(aliceKeychain)")
-                print("a_Alice is \(aliceKeychain["a_Alice"])")
-            } catch {
-                print("could not retreive Alice keychain")
-            }
-            
-            if (aliceKeychain["a_Alice"]  == nil){
-                SocketIOManager.sharedInstance.undertakeKeyExchange(["username": realm.objects(User)[0]["username"]!, "friendname": self.friendToChat.username!])
-            } else {
-                let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!)
+                //print("a_Alice is \(aliceKeychain["a_Alice"])")
+
+               //if there is no value for a_alice, generate keychaing
+            if (aliceKeychain == nil){
+                let Alice = 666.alicify(realm.objects(User)[0]["username"]!, friendname: self.friendToChat.username!, friendID:friendID)
                 SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+            } else {
+                var alicePkg = Locksmith.loadDataForUserAccount("Alice_noise1:\(friendID)")!
+                alicePkg["username"] = realm.objects(User)[0]["username"]!
+                alicePkg["friendname"] = self.friendToChat.username!   //////MAY NEED TO RETREIVE FRIEND ID
+                
+                SocketIOManager.sharedInstance.undertakeKeyExchange(alicePkg)
             }
         }
         else {
@@ -99,14 +100,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
         print("segue user info \(userInfo)")
-         /*
-         //pass dhX vals that Alice needs to access later into her keychain
-         var AliceKeys : [String:AnyObject] = [:]
-         AliceKeys["a_Alice"] = String(a_Alice)
-         AliceKeys["p"] = String(p_Alice)
-         AliceKeys["E"] = String(E_Alice)
-         aliceKeyChainPt1(AliceKeys)
-         */
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
     }
 
@@ -115,12 +108,14 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let dhxInfo = notification.userInfo
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
+        let friendID = dhxInfo!["friendID"]
         var Alice :[String:AnyObject] = [:]
-        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("Alice_noise1")!["a_Alice"] as! String)
+        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("Alice_noise1:\(friendID)")!["a_Alice"] as! String)
         print(aliceSecret)
         
         Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+        Alice["friendID"] = friendID
         666.aliceKeyChainPt2(Alice)
         
         //instantiate Realm Chat
@@ -141,7 +136,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleBobComplete (notification:NSNotification) -> Void {
         print("hit BobComplete function")
         //instantiate Realm Chat
-        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
     }
     
     // pass selected friend's object to ChatViewController on select.
