@@ -108,15 +108,10 @@ io.on('connection', (clientSocket) => {
     dh.performPart2BKeyExchange(dhxObject, clientSocket);
   });
 
-  //CLEANSE
-  // clientSocket.on('execute part 3 key exchange', (dhxObject) => {
-  //   // console.log('hit commencepart 2 key exchange with ', dhxObject);
-  //   dh.performPart3KeyExchange(dhxObject, clientSocket);
-  // });
-  // clientSocket.on('initial key query', (dhxObject) => {
-  //   // console.log('hit initial key query', dhxObject);
-  //   dh.undertakeKeyExchange(dhxObject, clientSocket);
-  // });
+  clientSocket.on('check need to init key exchange', (dhxObject) => {
+    dh.quickInitCheck(dhxObject, clientSocket);
+  });
+
 });
 
 //TODO: export clientsocket

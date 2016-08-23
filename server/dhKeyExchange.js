@@ -10,6 +10,21 @@ function updateInfoWithSortedIds (dhxObject, sourceUserID, pendingID){
     return dhxObject;
 };
 
+//gets IDs from usernames, then checks if dh:user1ID:user2ID already exists. Used client-side to vet keychain generation.
+function quickInitCheck (dhxObject){
+	redis.client.hgetAsync('users', `${dhxObject.username}`)
+	.then((userID)=>{
+		redis.client.hgetAsync('users', `${dhxObject.friendname}`)
+		.then((friendID)=>{
+			redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
+			.then(()=>{
+				clientSocket.emit('redis response client has ongoing exchange', friendID);	
+			})
+		})
+	})
+	.catch(err => console.log('Error in quickInitCheck', err))
+}
+
 //initiates mutual hash with Alice_info. Informs Bob. Places Alice in Bob's pending (to trigger response/ enable lookup of mutual hash)
 function initKeyExchange (dhxObject, clientSocket){
     console.log('in initKeyExchange', dhxObject);
@@ -66,7 +81,7 @@ function performPart3KeyExchange(dhxObject, clientSocket) {
     	redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'pAlice')
     	.then((pAlice)=>{
 	    	dhxObject["pAlice"] = pAlice;
-	    	clientSocket.emit("bobE retreived", dhxObject);
+	    	clientSocket.emit("redis response bobE retreived", dhxObject);
 	    	//>>>>>on client, make secret & store it.
 	    	//>>>>>tell realm that it can instantiate chat object.
 	    	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
@@ -102,6 +117,11 @@ function routeKeyExchange (dhxObject, clientSocket){
 			        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
 			        .then ((chatEstablishedVal) => {
 			        	console.log('chatEstablishedVal:' + chatEstablishedVal + 'to pending id' + pendingID)
+
+			        	///
+			        	//Need a way to enter at this exact point
+			        	///
+
 			            if (chatEstablishedVal === '0'){
 				            performPart2AKeyExchange(dhxObject, clientSocket);
 			            } else if (chatEstablishedVal === '1') {
@@ -131,7 +151,8 @@ function routeKeyExchange (dhxObject, clientSocket){
 
 
 module.exports = {
-  initKeyExchange,
-  routeKeyExchange,
-  performPart2BKeyExchange 
+	quickInitCheck,
+    initKeyExchange,
+    routeKeyExchange,
+    performPart2BKeyExchange
 };

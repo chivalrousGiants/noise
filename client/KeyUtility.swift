@@ -50,6 +50,7 @@ extension Int {
         AliceKeys["p"] = String(p_Alice)
         AliceKeys["E"] = String(E_Alice)
         AliceKeys["friendID"] = friendID
+        
         aliceKeyChainPt1(AliceKeys)
  
         
@@ -88,11 +89,11 @@ extension Int {
         //TODO: create alice user account i keychain
         //store bobKeys in keychain : need privateSecret*, E, p
         do {
-            try Locksmith.updateData(alice, forUserAccount: "Alice_noise1:\(alice["friendID"])")
+            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
         } catch {
            print("could not save alice data in keychain")
         }
-        let dictionary = Locksmith.loadDataForUserAccount("Alice_noise1:\(alice["friendID"])")
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
         print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
@@ -100,22 +101,22 @@ extension Int {
     func aliceKeyChainPt2 (alice: Dictionary<String,AnyObject>) -> Void {
         //add or overwrite alice keys in keychain : need E, sharedSecret
         do {
-            try Locksmith.updateData(alice, forUserAccount: "Alice_noise1:\(alice["friendID"])")
+            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
         } catch {
             print("could not amend alice data in keychain")
         }
-        let dictionary = Locksmith.loadDataForUserAccount("Alice_noise1:\(alice["friendID"])")
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
         print("Alice pt22222222:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
         //store bobKeys in keychain : need E, sharedSecret
         do {
-            try Locksmith.updateData(bob, forUserAccount: "Bob_noise:\(bob["friendID"])")
+            try Locksmith.updateData(bob, forUserAccount: "noise:\(bob["friendID"])")
         } catch {
             print ("could not save bob data in keychain")
         }
-        let dictionary = Locksmith.loadDataForUserAccount("Bob_noise:\(bob["friendID"])")
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
         print("Bob dictionary is \(dictionary)")
     }
     

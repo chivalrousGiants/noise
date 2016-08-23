@@ -73,6 +73,10 @@ class SocketIOManager: NSObject {
             print("user Bob complete")
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
+        socket.on("redis response client has ongoing exchange") { (socketAck) -> Void in
+            print("have ongoing exchange with this user: do not alicify")
+            NSNotificationCenter.defaultCenter().postNotificationName("drop pursuit of KeyExchange", object: nil)
+        }
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -97,18 +101,17 @@ class SocketIOManager: NSObject {
         socket.emit("find new friend", newFriend)
     }
     
+    func checkNeedToInitKeyExchange (dhxInfo: Dictionary<String, AnyObject>){
+        socket.emit("check need to init key exchange")
+    }
+    
     func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
         socket.emit("check for pending key exchange", dhxInfo)
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
         print("on login check for pending key exchange")
-        //print("TEST: \(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])"))")
-        //if(realm.objects(Conversation.self).filter("friendID = \(self.friendToChat["friendID"])").filter("friendID = \(self.friendToChat["friendID"])")) {
            socket.emit("check for pending key exchange", dhxInfo)
-        //}
-        //else, send notification: 
-          //NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil)
     }
     func commencePart2KeyExchange (bob: Dictionary<String, AnyObject>) {
         print("hit commencePt2 keyX w \(bob)")

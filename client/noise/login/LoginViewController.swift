@@ -101,7 +101,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             var dhxObj : [String:AnyObject] = [:]
             dhxObj["userID"] = user.userID
             dhxObj["username"] = user.username
-            //what else?!
             
             SocketIOManager.sharedInstance.checkForPendingKeyExchange(dhxObj)
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
@@ -142,7 +141,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          let eBob_computational = UInt32(dhxInfo!["eBob"] as! String)
          let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
          var Alice :[String:AnyObject] = [:]
-         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("Alice_noise1")!["a_Alice"] as! String)
+         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise")!["a_Alice"] as! String)
          print(aliceSecret)
         
          Alice["E"] = dhxInfo!["eAlice"]
@@ -150,7 +149,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          666.aliceKeyChainPt2(Alice)
 
         //instantiate Realm Chat
-        let convo = Conversation()
+         Conversation()
         self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
         
     }
@@ -158,7 +157,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @objc func handleBobComplete (notification:NSNotification) -> Void {
        print("hit BobComplete function")
         //instantiate Realm Chat
-        let convo = Conversation()
+        Conversation()
         self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
     }
     
