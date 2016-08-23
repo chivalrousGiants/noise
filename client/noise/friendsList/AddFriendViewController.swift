@@ -20,8 +20,15 @@ class AddFriendViewController: UIViewController {
 
         let friendToAdd = addFriendTextField.text
         
-        // SEND: friendToAdd to server
-        SocketIOManager.sharedInstance.addFriend(friendToAdd!)
+        // check if friendToAdd is already a friend
+        if realm.objects(Friend).filter("username = '\(friendToAdd!)'").count != 0 {
+            displayAlertMessage("you are already friends with \(friendToAdd!)")
+        } else if friendToAdd! == "" {
+            displayAlertMessage("please enter a username")
+        } else {
+            // SEND: friendToAdd to server
+            SocketIOManager.sharedInstance.addFriend(friendToAdd!)
+        }
     }
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
@@ -44,15 +51,7 @@ class AddFriendViewController: UIViewController {
             performSegueWithIdentifier("backToFriendsListSegue", sender: self)
         } else {
             // friendToAdd was NOT found in redis db
-            let alert:UIAlertController = UIAlertController(title: "Ooftah!", message: "no friend of that username exists", preferredStyle: UIAlertControllerStyle.Alert)
-            let action:UIAlertAction = UIAlertAction(title: "bummer", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
-                print("bummer button selected")
-            }
-            alert.addAction(action)
-            
-            self.presentViewController(alert, animated:true) { () -> Void in
-                print("alert presented for unsuccessful addNewFriend")
-            }
+            displayAlertMessage("no friend of that username exists")
         }
         
         // Remove listener
@@ -62,10 +61,16 @@ class AddFriendViewController: UIViewController {
         // print("Friends list:", realm.objects(Friend))
         
     }
+    
     func displayAlertMessage(message: String) {
-        let myAlert = UIAlertController(title:"Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler:  nil)
-        myAlert.addAction(okAction)
-        self.presentViewController(myAlert, animated: true, completion: nil)
+        let alert = UIAlertController(title:"Ooftah!", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        let action:UIAlertAction = UIAlertAction(title: "oops", style: UIAlertActionStyle.Default) { (a: UIAlertAction) -> Void in
+            // print("oops button selected")
+        }
+        alert.addAction(action)
+        
+        self.presentViewController(alert, animated:true) { () -> Void in
+            // print("alert presented for \(message)")
+        }
     }
 }
