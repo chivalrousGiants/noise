@@ -19,7 +19,10 @@ function quickInitCheck (dhxObject, clientSocket){
 	.then((dhDataStructure)=>{
 		if (dhDataStructure) {
 			console.log('resume from middle', dhDataStructure)
-			clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
+      if (dhDataStructure.chatEstablished === 1) {
+        performPart3KeyExchange(dhxObject, clientSocket);
+      }
+			// clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
 		} else {
 			console.log('init', dhDataStructure)
 			clientSocket.emit('redis response client must init', dhxObjectAugmented);
@@ -36,39 +39,37 @@ function initKeyExchange (dhxObject, clientSocket){
     clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
 };
 
-//starts at stage 0. sends Alice_info to Bob_client.
-        //client side: BOB: gen secret, make E, compute secret, store appropriately.
+//chatEstablished is 0. sends Alice_info from redis to Bob_client.
+//client side: BOB: gen secret b, make E, compute shared-secret S, store appropriately.
 function performPart2AKeyExchange(dhxObject, clientSocket){
-	console.log('pt2A dhxObj', dhxObject) //
+	console.log('pt2A dhxObj', dhxObject)
 	redis.client.hgetallAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
-	.then(dhxObjFromStage1 =>{
-		console.log(dhxObjFromStage1);
-		dhxObjFromStage1['userID'] = dhxObject.userID;
-		dhxObjFromStage1['friendID'] = dhxObject.friendID;
-		clientSocket.emit('redis response retreived intermediary dhxInfo', dhxObjFromStage1);
-	})
-	.catch(err => console.log('Error in dhxPt2A', err));
-
+  	.then(dhxObjFromStage1 =>{
+  		console.log('dhxObj from stage1', dhxObjFromStage1);
+  		dhxObjFromStage1['userID'] = dhxObject.userID;
+  		dhxObjFromStage1['friendID'] = dhxObject.friendID;
+  		clientSocket.emit('redis response retreived intermediary dhxInfo', dhxObjFromStage1);
+  	})
+  	.catch(err => console.log('Error in dhxPt2A', err));
 };
-//Bob shares his E, toggles 0>1 for Alice to hit retrieval process, unsubscribes from pending, adds self to Alice's pending notificaitons
-       //client side: Bob initiates his chat.
-function performPart2BKeyExchange(dhxObject, clientSocket){
-    dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
-    console.log('pt2B dhxObj', dhxObject);
 
-    redis.client.hmsetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE', `${dhxObject.E}`, 'chatEstablished', '1')
-    .then(()=>{
-    	redis.client.saddAsync(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`)
-    	.then(()=> {
-	    	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
-	    	.then(()=>{
-	    		//clientSocket.emit("redis response KeyExchange complete", dhxObject);
-		    	clientSocket.emit("redis response Bob complete, Alice still pending", dhxObject);
-		    	//tell Alice to retrieve. 
-		    	//tell Bob to instantiate his chat.	    		
-	    	})
-    	})
+//Bob shares his E, toggles 0>1 for Alice to hit retrieval process, unsubscribes from pending, adds self to Alice's pending notificaitons
+//client side: Bob initiates his chat.
+function performPart2BKeyExchange(dhxObject, clientSocket){
+  dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
+  console.log('pt2B dhxObj', dhxObject);
+
+  redis.client.hmsetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE', `${dhxObject.E}`, 'chatEstablished', '1')
+    .then(() => {
+    	return redis.client.saddAsync(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
     })
+  	.then(() => {
+    	return redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`);
+    })
+  	.then(() => {
+    	clientSocket.emit("redis response Bob complete, Alice still pending", dhxObject);
+    	// TODO (socket emission): tell Alice to retrieve. 	    		
+  	})
     .catch(err => console.log('Error in dhxPt2B', err));
 };
 
@@ -78,24 +79,24 @@ function performPart3KeyExchange(dhxObject, clientSocket) {
     console.log('Pt3 dhx obj', dhxObject);
 
     redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE')
-    .then((bobE)=>{
+    .then((bobE) => {
     	dhxObject["bobE"] = bobE;
 
-    	redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'pAlice')
-    	.then((pAlice)=>{
-	    	dhxObject["pAlice"] = pAlice;
-	    	clientSocket.emit("redis response bobE retreived", dhxObject);
-	    	//>>>>>on client, make secret & store it.
-	    	//>>>>>tell realm that it can instantiate chat object.
-	    	redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`)
-	    	.then(()=>{
-	    		redis.client.delAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
-		    	.then(()=>{
-		    		clientSocket.emit("redis response KeyExchange complete", dhxObject);
-		    	})
-	    	})
-    	})
+    	return redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'pAlice');
     })
+  	.then((pAlice) => {
+    	dhxObject["pAlice"] = pAlice;
+    	// clientSocket.emit("redis response bobE retreived", dhxObject);
+    	//>>>>>on client, make secret & store it.
+    	//>>>>>tell realm that it can instantiate chat object.
+    	return redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`);
+    })
+  	.then(()=>{
+  		return redis.client.delAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`);
+    })
+  	.then(()=>{
+  		clientSocket.emit("redis response KeyExchange complete", dhxObject);
+  	})
     .catch(err => console.log('Error in dhxPt3', err));
 };
 
@@ -120,11 +121,6 @@ function routeKeyExchange (dhxObject, clientSocket){
 			        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
 			        .then ((chatEstablishedVal) => {
 			        	console.log('chatEstablishedVal:' + chatEstablishedVal + 'to pending id' + pendingID)
-
-			        	///
-			        	//Need a way to enter at this exact point
-			        	///
-
 			            if (chatEstablishedVal === '0'){
 				            performPart2AKeyExchange(dhxObject, clientSocket);
 			            } else if (chatEstablishedVal === '1') {

@@ -81,7 +81,7 @@ extension Int {
         Bob["userID"] = userID
         Bob["E"] = String(E_Bob) //encrypt?
         Bob["friendID"] = friendID
-        Bob["p"] = p //encrypt?
+        //Bob["p"] = p //encrypt?
 
         return Bob
     }
@@ -106,7 +106,7 @@ extension Int {
             print("could not amend alice data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice pt22222222:\(alice["friendID"]) dictionary is \(dictionary)")
+        print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -117,7 +117,7 @@ extension Int {
             print ("could not save bob data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        print("Bob dictionary is \(dictionary)")
+        print("BobKeyChain dictionary is \(dictionary)")
     }
     
 }

@@ -40,11 +40,11 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             name: "bobComplete",
             object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleResumeKeyExchangeCheck),
-            name: "resume KeyExchange",
-            object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(
+//            self,
+//            selector: #selector(handleResumeKeyExchangeCheck),
+//            name: "resume KeyExchange",
+//            object: nil)
 
         getRecentConversation()
         
@@ -111,19 +111,19 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
     }
     
-    @objc func handleResumeKeyExchangeCheck (notification:NSNotification) -> Void {
-        
-        //could just remove this and rely on socket communication to tell this to you.
-        
-        let userInfo = notification.userInfo
-        print("resuming as Bob or in later stage with \(userInfo)")
-        var Bob : [String:AnyObject] = [:]
-        Bob["username"] = userInfo!["username"]
-        Bob["friendname"] = userInfo!["friendname"]
-        
-        SocketIOManager.sharedInstance.undertakeKeyExchange(Bob)
-        
-    }
+//    @objc func handleResumeKeyExchangeCheck (notification:NSNotification) -> Void {
+//        
+//        //could just remove this and rely on socket communication to tell this to you.
+//        
+//        let userInfo = notification.userInfo
+//        print("resuming as Bob or in later stage with \(userInfo)")
+//        var Bob : [String:AnyObject] = [:]
+//        Bob["username"] = userInfo!["username"]
+//        Bob["friendname"] = userInfo!["friendname"]
+//        
+//        SocketIOManager.sharedInstance.undertakeKeyExchange(Bob)
+//        
+//    }
     
     @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
         print("hit func target for alice1")
@@ -143,21 +143,23 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         print("in handle complete")
         let dhxInfo = notification.userInfo
+        
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
-        var Alice :[String:AnyObject] = [:]
-        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"] as! String)
-        print(aliceSecret)
         
+        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"] as! String)
+        
+        print("aliceSecret read from locksmith:", aliceSecret)
+        
+        var Alice :[String:AnyObject] = [:]
         Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
         Alice["friendID"] = friendID
         666.aliceKeyChainPt2(Alice)
         
-        //instantiate Realm Chat
-        //Conversation()
-        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+        // initialize convo object
+        initializeConvoObj(friendID as! Int)
     }
 
     @objc func computeBob(notification:NSNotification) -> Void {
@@ -171,9 +173,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     
     @objc func handleBobComplete (notification:NSNotification) -> Void {
         print("hit BobComplete function")
+        
         //instantiate Realm Chat
-        //Conversation()
-        self.performSegueWithIdentifier("chatScreenSegue", sender: self)
+        initializeConvoObj(Int(notification.userInfo!["friendID"] as! String)!)
     }
     
         
@@ -241,6 +243,22 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             object: nil)
         
         SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
+    }
+    
+    func initializeConvoObj(friendID: Int) {
+        //instantiate Realm Chat
+        let convo = Conversation()
+        convo.friendID = friendID
+        
+        try! realm.write {
+            realm.add(convo)
+            // grab any messages that Bob already sent Alice
+            getRecentConversation()
+            // ideally chat screen should populate with messages grabbed from getRecentConversation()
+            
+            // segue to chatScreen if a boolean flag is true
+        }
+
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
