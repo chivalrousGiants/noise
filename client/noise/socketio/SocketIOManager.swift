@@ -77,10 +77,12 @@ class SocketIOManager: NSObject {
             print("have ongoing exchange with this user: do not alicify")
             NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
         }
+        /*
         socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
             print("no need to pursue keyExchange")
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
         }
+        */
     }
     
     func signIn(user: Dictionary<String, String>) {

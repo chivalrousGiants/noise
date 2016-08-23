@@ -45,20 +45,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             selector: #selector(handleResumeKeyExchangeCheck),
             name: "resume KeyExchange",
             object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleKeyExchangeInit),
-            name: "init KeyExchange",
-            object: nil)
 
         getRecentConversation()
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector (handleRetrievedMessages),
-            name: "retrievedNewMessages",
-            object: nil)
     
     }
 
@@ -97,7 +86,16 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         if (convoWithThisFriend.isEmpty){
             //check to see if if dhX process already initiated, handle results asynchronously
             print("friendClick -> checking to see if dhx initNeeded")
+            
+            //add listener
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(handleKeyExchangeInit),
+                name: "init KeyExchange",
+                object: nil)
+            
             SocketIOManager.sharedInstance.checkNeedToInitKeyExchange(checkInitObj)
+            
         } else {
             //if is already established chat, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
@@ -136,9 +134,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
          
          let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
          print("asAlice \(Alice)")
-         
-         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+         //add listener
         
+         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
+         NSNotificationCenter.defaultCenter().removeObserver(self, name:"init KeyExchange", object:nil)
     }
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
@@ -234,7 +233,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         for convo in allConversation {
             friendMessage["\(convo.friendID)"] = convo.largestMessageID
         }
-    
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector (handleRetrievedMessages),
+            name: "retrievedNewMessages",
+            object: nil)
+        
         SocketIOManager.sharedInstance.retrieveMessages(user, friends: friendMessage)
     }
     
