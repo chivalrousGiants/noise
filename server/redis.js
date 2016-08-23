@@ -105,11 +105,16 @@ const bcryptHashAsync = bluebird.promisify(bcrypt.hash);
   Creates new Redis Client
   redis.createClient(port, host)
   by default
-    port: 127.0.0.1
-    host: 6379
+    host: 127.0.0.1
+    port: 6379
  */
-client = redis.createClient();
-
+client = redis.createClient(17090, 
+  "redis-17090.c8.us-east-1-3.ec2.cloud.redislabs.com");
+client.auth('chivalry aint dead', (err) => {
+  if (err) {
+    throw err;
+  }
+});
 
 ////////////////////////////////////////////////////
 //////// Initialization of Users 1, 2, 3, 4 ////////
