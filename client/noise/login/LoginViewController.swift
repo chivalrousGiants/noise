@@ -123,7 +123,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
-        print("segue user info \(userInfo)")
+        print("segue user info from login \(userInfo)")
         //self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
     }
     
