@@ -148,7 +148,11 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
+        print("Alice", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
+        print("Alice", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"])
+        
         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"] as! String)
+        
         
         print("aliceSecret read from locksmith:", aliceSecret)
         
@@ -159,7 +163,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         666.aliceKeyChainPt2(Alice)
         
         // initialize convo object
-        initializeConvoObj(friendID as! Int)
+        initializeConvoObj(Int(friendID as! String)!)
     }
 
     @objc func computeBob(notification:NSNotification) -> Void {
