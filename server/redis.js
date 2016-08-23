@@ -29,13 +29,13 @@ Messages
 PendingKeyExchange
 
   Hash   DH:lesser_user_ID:greater_user_ID
-    lesser_user_p: 
-    lesser_user_g:
-    lesser_user_E:
-    greater_user_p: 
-    greater_user_g:
-    greater_user_E:
-    can_chat: 0/1
+    pAlice:
+    gAlice:
+    eAlice:
+    bobE:
+    userID: source
+    friendID: target
+    chatEstablished = nonexistent/0/1
 
   Set   pendingChats:user_ID
       targetUserID1
@@ -105,11 +105,16 @@ const bcryptHashAsync = bluebird.promisify(bcrypt.hash);
   Creates new Redis Client
   redis.createClient(port, host)
   by default
-    port: 127.0.0.1
-    host: 6379
+    host: 127.0.0.1
+    port: 6379
  */
-client = redis.createClient();
-
+client = redis.createClient(17090, 
+  "redis-17090.c8.us-east-1-3.ec2.cloud.redislabs.com");
+client.auth('chivalry aint dead', (err) => {
+  if (err) {
+    throw err;
+  }
+});
 
 ////////////////////////////////////////////////////
 //////// Initialization of Users 1, 2, 3, 4 ////////
