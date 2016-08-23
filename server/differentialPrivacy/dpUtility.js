@@ -1,3 +1,5 @@
+const md5 = require('md5');
+
 const {
   BLOOM_FILTER_SIZE,
   NUM_HASH_FUNCTIONS,
