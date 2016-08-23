@@ -88,7 +88,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let friendID = Int((self.friendToChat["friendID"])!!.doubleValue)
         let userID = realm.objects(User)[0]["userID"]!
         let username = realm.objects(User)[0]["username"]!
-        let friendname = self.friendToChat["friendname"]!
+        let friendname = self.friendToChat["username"]!
         let checkInitObj :[String:AnyObject] = ["friendID":friendID, "userID":userID, "username":username, "friendname":friendname!]
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 

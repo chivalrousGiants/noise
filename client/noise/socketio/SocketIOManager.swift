@@ -76,7 +76,7 @@ class SocketIOManager: NSObject {
             print("have ongoing exchange with this user: do not alicify")
             NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
         }
-        socket.on("redis response client must inite") { (dhxInfo, socketAck) -> Void in
+        socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
             print("no exchange initiated: commence & alicify")
             NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
@@ -105,7 +105,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkNeedToInitKeyExchange (dhxInfo: Dictionary<String, AnyObject>){
-        socket.emit("check need to init key exchange")
+        socket.emit("check need to init key exchange", dhxInfo)
     }
     
     func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
