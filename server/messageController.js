@@ -134,7 +134,8 @@ function handleNewMessage(message, clientSocket) {
         'createdAt', `${timeStamp}`
       ]);
 
-      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
+      [smallerID, largerID] = message.sourceID < message.targetID ? [message.sourceID, message.targetID] : [message.targetID, message.sourceID];
+      redis.client.zadd(`chat:${smallerID}:${largerID}`, `${msgID}`, `${msgID}`);
 
       clientSocket.emit('successfully sent new message', 
         {
