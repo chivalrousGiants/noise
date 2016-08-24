@@ -7,6 +7,12 @@ class ChildNode extends Node {
     this.linkCount = null;
     this.children = null;
   }
+
+  addParentLinkIfPastXLimit(xLimit, addGlobalLink, updateLinks) {
+    if (this.x > xLimit) {
+      addGlobalLink(this.parent.id, this.id);
+    }
+  }
 }
 
 export default ChildNode;

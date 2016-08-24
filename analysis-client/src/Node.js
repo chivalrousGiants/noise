@@ -13,14 +13,8 @@ class Node {
     this.children.push(child);
   }
 
-  addRandomChildLink() {
-    if (this.linkCount < this.children.length) {
-      this.links.push({ "source": `${this.id}`, "target": `${this.children[this.linkCount].id}`, value: 1 });
-      this.linkCount++;
-
-    } else {
-      console.log(`All children of node ${this.id} are already linked.`);
-    }
+  addParentLinkIfPastXLimit() {
+    
   }
 }
 
