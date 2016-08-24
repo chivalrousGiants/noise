@@ -113,7 +113,7 @@ io.on('connection', (clientSocket) => {
   });
 
   clientSocket.on('initiate key exchange', (dhxObject) => {
-    dh.initKeyExchnge(dhxObject, clientSocket);
+    dh.initKeyExchange(dhxObject, clientSocket);
   });
 
 });
