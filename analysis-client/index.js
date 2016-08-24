@@ -18,8 +18,7 @@ var simulation = d3.forceSimulation()
 
 
 // Fake data
-graph = {};
-graph.nodes = [...Array(30)].map((_, i) => {
+const rootNodes = [...Array(30)].map((_, i) => {
   const obj = {};
   obj.id = String(i);
   obj.str = `v${i}`;
@@ -28,6 +27,8 @@ graph.nodes = [...Array(30)].map((_, i) => {
 
   obj.children = [...Array(30)].map((_, j) => {
     const childObj = {};
+    childObj.isLinked = false;
+    childObj.parent = obj;
     childObj.id = `${obj.id}_${j}`;
     childObj.str = chance.string().slice(0, 5);
     // childObj.x = Math.random() * width;
@@ -37,42 +38,42 @@ graph.nodes = [...Array(30)].map((_, i) => {
   return obj;
 });
 
-graph.links = [
+const links = [];
 
-];
 
-// console.dir(graph);
-// debugger;
-
-let currentNode = 0;
-let currentChild = 0;
+// let currentNode = 0;
+// let currentChild = 0;
 const interval = setInterval(() => {
-  if (currentChild === 30) {
-    currentChild = 0;
-    currentNode++;
-  }
-  if (currentNode === 30) {
-    clearInterval(interval);
-    return;
-  }
+  // if (currentChild === 30) {
+  //   currentChild = 0;
+  //   currentNode++;
+  // }
+  // if (currentNode === 30) {
+  //   clearInterval(interval);
+  //   return;
+  // }
+  allNodes.forEach(node => {
+    if (!node.isLinked && node.parent && node.x > 400) {
+      links.push({"source": `${node.parent.id}`, "target": `${node.id}`, value: 1});
+      node.isLinked = true;
+    }
+  });
   
-  graph.links.push({"source": `${currentNode}`, "target": `${currentNode}_${currentChild}`, value: 1});
-
   simulation.force("link")
-    .links(graph.links);
+    .links(links);
 
-  currentChild++;
-}, 0);
+  // currentChild++;
+}, 100);
 
-const allNodes = graph.nodes.slice();
-graph.nodes.forEach(node => node.children.forEach(child => allNodes.push(child)));
+const allNodes = rootNodes.slice();
+rootNodes.forEach(node => node.children.forEach(child => allNodes.push(child)));
 
 simulation
   .nodes(allNodes)
   .on("tick", ticked);
 
 simulation.force("link")
-  .links(graph.links);
+  .links(links);
 
 d3.select(canvas)
   .call(d3.drag()
@@ -87,7 +88,7 @@ function ticked() {
   context.clearRect(0, 0, width * 2, height * 2);
 
   context.beginPath();
-  graph.links.forEach(drawLink);
+  links.forEach(drawLink);
   context.strokeStyle = "#555";
   context.stroke();
 
