@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/server.js"
+    "start": "nodemon server/server.js",
+    "analysis-build": "docker build -t chivalrous/noise-analysis ./analysis-server",
+    "analysis-run": "docker run -t -i -p 80:80 -p 8004:8004 chivalrous/noise-analysis"
   },
   "repository": {
     "type": "git",
@@ -22,8 +24,10 @@
     "bluebird": "^3.4.1",
     "chance": "^1.0.4",
     "express": "^4.10.2",
+    "md5": "^2.1.0",
     "nodemon": "^1.10.0",
     "redis": "^2.6.2",
+    "request": "^2.74.0",
     "socket.io": "^1.4.8"
   }
 }
