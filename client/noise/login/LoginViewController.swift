@@ -102,6 +102,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             dhxObj["userID"] = user.userID
             dhxObj["username"] = user.username
             
+            
+            
             SocketIOManager.sharedInstance.checkForPendingKeyExchange(dhxObj)
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
             
