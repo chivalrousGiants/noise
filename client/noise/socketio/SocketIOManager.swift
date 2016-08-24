@@ -73,16 +73,6 @@ class SocketIOManager: NSObject {
             print("user Bob complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        /*
-        socket.on("redis response client has ongoing exchange") { (socketAck) -> Void in
-            print("have ongoing exchange with this user: do not alicify")
-            NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
-        }
-        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
-            print("no need to pursue keyExchange")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
-        }
-        */
     }
     
     func signIn(user: Dictionary<String, String>) {

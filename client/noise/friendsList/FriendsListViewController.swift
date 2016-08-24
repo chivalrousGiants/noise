@@ -118,6 +118,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
         print("segue user info from friendsCtrl \(userInfo)")
+        
+        
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
     }
     
