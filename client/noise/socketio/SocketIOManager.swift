@@ -78,6 +78,11 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
+        socket.on("redis response client has ongoing exchange") { (dhxInfo, socketAck) -> Void in
+            print("redis response client has ongoing exchange")
+            NSNotificationCenter.defaultCenter().postNotificationName("wait", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+        }
+        
     }
     
     func signIn(user: Dictionary<String, String>) {
