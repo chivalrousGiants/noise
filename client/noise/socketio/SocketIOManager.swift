@@ -112,7 +112,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        print("on login check for pending key exchange")
+        print("on loading of friendList check for pending key exchange")
            socket.emit("check for pending key exchange", dhxInfo)
     }
     
