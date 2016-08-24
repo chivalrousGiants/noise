@@ -16,8 +16,8 @@ context.scale(pixelRatio, pixelRatio);
 
 const simulation = d3.forceSimulation()
   .alphaTarget(1)
-  .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(150).strength(0.4))
-  .force("charge", d3.forceManyBody().strength(-0.1))
+  .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.4))
+  .force("charge", d3.forceManyBody().strength(-1))
   .force("flowX", d3.forceX(3000).strength(0.002))
 
 const graph = generateFakeData();
@@ -27,14 +27,14 @@ let allLinks = [];
 function generateFakeData() {
   const graph = {};
 
-  graph.nodes = [...Array(30)].map((_, i) => {
-    const node = new Node(String(i), `v${i}`, 0, height / 2);
+  graph.nodes = [...Array(20)].map((_, i) => {
+    const node = new Node(String(i), `v${i}`, width - (i * 600) - 600, height / 2);
 
-    [...Array(30)].forEach((_, j) => {
+    [...Array(60)].forEach((_, j) => {
       const id = `${node.id}_${j}`;
       const str = chance.string().slice(0, 5);
-      const x = width - (i * 600) - 600;
-      const y = height / 30 * j;
+      const x = width - 600 - (i * 600) + Math.random() * 600;
+      const y = height / 60 * j;
       const child = new ChildNode(id, str, x, y, node);
       node.addChild(child);
     });
@@ -60,15 +60,16 @@ function updateLinks() {
 
 function addGlobalLink(sourceID, targetID) {
   allLinks.push({ "source": `${sourceID}`, "target": `${targetID}`, value: 1 });
+  console.log(allLinks.length);
 }
 
 function updateLayout() {
   allNodes.forEach(node => {
-    node.addParentLinkIfPastXLimit(300, addGlobalLink, updateLinks);
+    node.addParentLinkIfPastXLimit(500, addGlobalLink, updateLinks);
   });
   updateLinks();
 }
-setInterval(updateLayout, 3000);
+setInterval(updateLayout, 100);
 
 
 d3.select(canvas)
@@ -110,7 +111,7 @@ function drawNode(d) {
   context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
   context.font = "16px Helvetica Neue";
   context.fillStyle = '#aaa';
-  context.fillText(d.str, d.x + 10, d.y + 5);  // TEXT
+  context.fillText(d.str, d.x - 25, d.y + 20);  // TEXT
 }
 
 function dragstarted() {
