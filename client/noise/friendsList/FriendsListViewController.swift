@@ -98,11 +98,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     /////////////////////////////////////////
     ////// NOTIFICATION CENTER FUNCTIONS
     
-    @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
-        let userInfo = notification.userInfo
-        print("segue user info from friendsCtrl \(userInfo)")
-        
-        
+    @objc func handleWait(notification: NSNotification) -> Void {
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
         
         // Remove listener
@@ -123,7 +119,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         print("initiating keyExchange with dhxInfo: \(userInfo)")
         //alicify and call pursue key exchange.
          
-        let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
+        let Alice = 666.alicify(userInfo!["userID"]!, friendID: userInfo!["friendID"]!)
         print("asAlice \(Alice)")
         
         // wait for Alice to place init info in redis

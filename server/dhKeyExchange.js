@@ -19,10 +19,12 @@ function quickInitCheck (dhxObject, clientSocket){
 	.then((dhDataStructure)=>{
 		if (dhDataStructure) {
 			console.log('resume from middle', dhDataStructure)
-		      if (dhDataStructure.chatEstablished === 1) {
-		        performPart3KeyExchange(dhxObject, clientSocket);
-		      }
-			// clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
+      // Use SISMEMBER to check pending table in addition to cE
+      // if (dhDataStructure.chatEstablished === 1) {
+      //   // need to check pending table
+      //   performPart3KeyExchange(dhxObject, clientSocket);
+      // }
+			clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
 		} else {
 			console.log('init', dhDataStructure)
 			clientSocket.emit('redis response client must init', dhxObjectAugmented);
