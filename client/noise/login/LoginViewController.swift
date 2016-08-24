@@ -15,31 +15,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         // Override username and password events
         usernameTextField.delegate = self;
         passwordTextField.delegate = self;
-        
-        // Attach listeners
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handlePursuingKeyExchange),
-            name: "stillPursuingKeyExchange",
-            object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(computeBob),
-            name: "computeBob",
-            object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleCompletedKeyExchange),
-            name: "KeyExchangeComplete",
-            object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleBobComplete),
-            name: "bobComplete",
-            object: nil)
-
     }
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -98,11 +73,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             try! realm.write {
                 realm.add(user, update:true)
             }
-            var dhxObj : [String:AnyObject] = [:]
-            dhxObj["userID"] = user.userID
-            dhxObj["username"] = user.username
             
-            SocketIOManager.sharedInstance.checkForPendingKeyExchange(dhxObj)
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
             
         } else {
@@ -117,48 +88,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
-        let userInfo = notification.userInfo
-        print("segue user info from login \(userInfo)")
-        //self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
-    }
-    
-    @objc func computeBob(notification:NSNotification) -> Void {
-        let dhxInfo = notification.userInfo
-        print("dhx info inside of compute bob [LOGINVCONTROLLER] is \(dhxInfo!)")
-        
-        let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
-        
-        SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
-    }
-    
-    @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
-        print("in handle complete")
-         let dhxInfo = notification.userInfo
-         let eBob_computational = UInt32(dhxInfo!["eBob"] as! String)
-         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
-         var Alice :[String:AnyObject] = [:]
-         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise")!["a_Alice"] as! String)
-         print(aliceSecret)
-        
-         Alice["E"] = dhxInfo!["eAlice"]
-         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
-         666.aliceKeyChainPt2(Alice)
-
-        //instantiate Realm Chat
-         Conversation()
-        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
-        
-    }
-    
-    @objc func handleBobComplete (notification:NSNotification) -> Void {
-       print("hit BobComplete function")
-        //instantiate Realm Chat
-        Conversation()
-        self.performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "signin", object: nil)
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

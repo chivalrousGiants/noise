@@ -16,6 +16,16 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         friendsTableView.delegate = self
 
         // Attach listeners
+        
+        // check for pending key exchanges
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handlePursuingKeyExchange),
+            name: "stillPursuingKeyExchange",
+            object: nil)
+        
+        SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handlePursuingKeyExchange),
@@ -181,8 +191,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         //instantiate Realm Chat
         initializeConvoObj(Int(notification.userInfo!["friendID"] as! String)!)
     }
-    
-        
+
     @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
         let retrievedMsgs = notification.userInfo!["messages"] as? NSArray
         
