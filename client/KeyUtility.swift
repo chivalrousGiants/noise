@@ -48,7 +48,7 @@ extension Int {
         var AliceKeys : [String:AnyObject] = [:]
         AliceKeys["a_Alice"] = String(a_Alice)
         AliceKeys["p"] = String(p_Alice)
-        //AliceKeys["E"] = String(E_Alice)
+        AliceKeys["E"] = String(E_Alice)
         AliceKeys["friendID"] = friendID
         
         aliceKeyChainPt1(AliceKeys)

@@ -13,12 +13,15 @@ class WaitForConfirmationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Attach listeners
+        /*
+         TODO: while on "wait screen" be able to segue to chatScreen for that particular friend if key exchange completed
+         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: Selector("handleCompletedKeyExchange"),
+            selector: #selector(handleCompletedKeyExchange),
             name: "completedKeyExchange",
             object: nil)
+        */
     }
 
     override func didReceiveMemoryWarning() {

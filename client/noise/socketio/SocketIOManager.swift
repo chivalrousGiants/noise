@@ -57,32 +57,31 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response KeyExchange initiated") { (dhxInfo, socketAck) -> Void in
-            print("initiating keyExchange")
-            NSNotificationCenter.defaultCenter().postNotificationName("stillPursuingKeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
-        }
         socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
             NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
             print("keyExchange uninitiated: next step: alicify \(dhxInfo)")
         }
+        
+        socket.on("redis response KeyExchange initiated") { (dhxInfo, socketAck) -> Void in
+            print("redis response KeyExchange initiated")
+            NSNotificationCenter.defaultCenter().postNotificationName("completeKeyExchangeInitiation", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+        }
+        
         socket.on("redis response retreived intermediary dhxInfo") { (dhxInfo, socketAck) -> Void in
             print("retreived stage1 dhxInfo", dhxInfo[0])
              NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
+        
         socket.on("redis response Bob complete, Alice still pending") { (dhxInfo, socketAck) -> Void in
             print("user Bob complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        /*
+        
+        // after clicking on a friend's name dh:#:# already exists to wait until dhKeyExchange completes
         socket.on("redis response client has ongoing exchange") { (socketAck) -> Void in
             print("have ongoing exchange with this user: do not alicify")
-            NSNotificationCenter.defaultCenter().postNotificationName("resume KeyExchange", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("wait", object: nil)
         }
-        socket.on("redis response no need to undertake KeyExchange") { (userArray, socketAck) -> Void in
-            print("no need to pursue keyExchange")
-            NSNotificationCenter.defaultCenter().postNotificationName("KeyExchange dropped", object: nil)
-        }
-        */
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -112,8 +111,8 @@ class SocketIOManager: NSObject {
         socket.emit("check need to init key exchange", dhxInfo)
     }
     
-    func undertakeKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        socket.emit("check for pending key exchange", dhxInfo)
+    func initiateKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
+        socket.emit("initiate key exchange", dhxInfo)
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
