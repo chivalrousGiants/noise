@@ -77,6 +77,7 @@ class SocketIOManager: NSObject {
             print("user Bob complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
+        
     }
     
     func signIn(user: Dictionary<String, String>) {
