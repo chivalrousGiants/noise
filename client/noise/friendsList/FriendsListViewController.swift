@@ -15,7 +15,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         
-        print("FLVC viewDidLoad");
+        //print("FLVC viewDidLoad");
         
         // on each page load query redis for pending key exchanges
         SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
@@ -73,7 +73,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         if (convoWithThisFriend.isEmpty){
             // check to see if if dhX process already initiated, handle results asynchronously
-            print("friendClick -> checking to see if dhx initNeeded")
+            //print("friendClick -> checking to see if dhx initNeeded")
             
             // initiate dhKeyExchange after clicking friend's name
             NSNotificationCenter.defaultCenter().addObserver(
@@ -121,7 +121,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         //Keychain (Locksmith) store; a, p, E in for later use / secrecy.
         //Redis call: pass IDs & p,g,E to redis for Bob to identify & access.
         let Alice = 666.alicify(userInfo!["userID"]!, friendID: userInfo!["friendID"]!)
-        print("Initiate keyExchange (Alice) bringing info: \(Alice)")
+        //print("Initiate keyExchange (Alice) bringing info: \(Alice)")
         
        //Add listener:
             // wait for confirmation that Alice to placed init info in redis
@@ -139,13 +139,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-        print("KX complete for both A and B with dhxInfo", dhxInfo)
+       // print("KX complete for both A and B with dhxInfo", dhxInfo)
         
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-        print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
+        //print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
         
         let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))!
 
@@ -164,7 +164,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-        print("dhx info inside of compute bob is \(dhxInfo!)")
+       // print("dhx info inside of compute bob is \(dhxInfo!)")
 
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         
@@ -183,7 +183,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     @objc func handleBobComplete (notification:NSNotification) -> Void {
-        print("hit BobComplete function")
+        //print("hit BobComplete function")
         
         //instantiate Realm Chat
         initializeConvoObj(Int(notification.userInfo!["friendID"] as! String)!)

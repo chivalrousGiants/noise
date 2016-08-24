@@ -55,7 +55,7 @@ extension Int {
  
         
         //2) encrypt values
-        print("Alice in alicify \(Alice)")
+        //print("Alice in alicify \(Alice)")
         return Alice
     }
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
@@ -66,7 +66,7 @@ extension Int {
         let p_computational = UInt32(p as! String)
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
-        print("sharedSecret izzzzz \(sharedSecret)")
+        //print("sharedSecret izzzzz \(sharedSecret)")
         
         //pass values to handle encryption into keychain
         var BobKeys : [String:AnyObject] = [:]
@@ -91,10 +91,10 @@ extension Int {
         do {
             try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
         } catch {
-           print("could not save alice data in keychain")
+           //print("could not save alice data in keychain")
         }
-        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
+        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
+        //print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
 
@@ -103,10 +103,10 @@ extension Int {
         do {
             try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
         } catch {
-            print("could not amend alice data in keychain")
+           // print("could not amend alice data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
+        //print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -114,10 +114,10 @@ extension Int {
         do {
             try Locksmith.updateData(bob, forUserAccount: "noise:\(bob["friendID"])")
         } catch {
-            print ("could not save bob data in keychain")
+          //  print ("could not save bob data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        print("BobKeyChain dictionary is \(dictionary)")
+        //print("BobKeyChain dictionary is \(dictionary)")
     }
     
 }
