@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>Noise App Differential Privacy Visualization</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-  
-  <script src="./index.js"></script>
-</body>
+  <head>
+    <title>Noise App Differential Privacy Visualization</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        margin: 0;
+      }
+
+      canvas {
+        background-color: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
 </html>
