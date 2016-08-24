@@ -28,7 +28,7 @@ extension Int {
     func computeSecret (foreignE: UInt32, mySecret: UInt32, p:UInt32) -> UInt32 {
         return (foreignE^mySecret) % p
     }
-    func alicify (username:AnyObject, friendname:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
+    func alicify (userID:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
         let g_Alice = 666.gCreate()
         let p_Alice = 666.pCreate()
@@ -37,11 +37,11 @@ extension Int {
         
         //build Alice
         var Alice : [String:AnyObject] = [:]
-        Alice["username"] = username
+        Alice["userID"] = userID
         Alice["g"] = String(g_Alice)
         Alice["p"] = String(p_Alice)
         Alice["E"] = String(E_Alice)
-        Alice["friendname"] = friendname
+        Alice["friendID"] = friendID
     
     
         //pass dhX vals that Alice needs to access later into her keychain

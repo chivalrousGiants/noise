@@ -77,12 +77,6 @@ class SocketIOManager: NSObject {
             print("user Bob complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        
-        // after clicking on a friend's name dh:#:# already exists to wait until dhKeyExchange completes
-        socket.on("redis response client has ongoing exchange") { (socketAck) -> Void in
-            print("have ongoing exchange with this user: do not alicify")
-            NSNotificationCenter.defaultCenter().postNotificationName("wait", object: nil)
-        }
     }
     
     func signIn(user: Dictionary<String, String>) {
