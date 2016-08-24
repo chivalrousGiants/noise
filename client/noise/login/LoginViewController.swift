@@ -73,10 +73,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             try! realm.write {
                 realm.add(user, update:true)
             }
-            
-            
-            
-            //SocketIOManager.sharedInstance.checkForPendingKeyExchange(dhxObj)
+
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
             
         } else {

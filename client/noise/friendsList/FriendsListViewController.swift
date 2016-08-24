@@ -113,16 +113,16 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
-        print("hit func target for alice1")
-        
         let userInfo = notification.userInfo
-        print("initiating keyExchange with dhxInfo: \(userInfo)")
-        //alicify and call pursue key exchange.
-         
+
+        //Pass (userID&name, friendID&name) from friends_list_selection to label storage structures. Generate alice a, p, g, E.
+        //Keychain (Locksmith) store; a, p, E in for later use / secrecy.
+        //Redis call: pass IDs & p,g,E to redis for Bob to identify & access.
         let Alice = 666.alicify(userInfo!["userID"]!, friendID: userInfo!["friendID"]!)
-        print("asAlice \(Alice)")
+        print("Initiate keyExchange (Alice) bringing info: \(Alice)")
         
-        // wait for Alice to place init info in redis
+       //Add listener:
+            // wait for confirmation that Alice to placed init info in redis
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handlePursuingKeyExchange),
