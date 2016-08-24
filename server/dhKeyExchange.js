@@ -114,7 +114,7 @@ function routeKeyExchange (dhxObject, clientSocket){
 	      dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, pendingID);
         
         //determine Key Exchange stage (nil/0/1)
-        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished');
+        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
           .then ((chatEstablishedVal) => {
 	        	console.log('chatEstablishedVal:' + chatEstablishedVal + 'to pending id' + pendingID)
             if (chatEstablishedVal === '0') {

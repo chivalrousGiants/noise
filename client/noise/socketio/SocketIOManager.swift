@@ -6,7 +6,7 @@ class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://localhost:4000")!)
- //   let realm = try! Realm()
+
     override init() {
         super.init()
     }
@@ -14,6 +14,8 @@ class SocketIOManager: NSObject {
     func establishConnection() {
         socket.connect()
         
+        ///////////////////////////////////////
+        /////////// User Auth routes
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
             // print("redis response for signin", userArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
@@ -30,11 +32,8 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
-        socket.on("redis response checkMessages") {(messageArray, socketAck) -> Void in
-           // print("redis response checkMessages", messageArray)
-            NSNotificationCenter.defaultCenter().postNotificationName("checkMessage", object: nil, userInfo: messageArray[0] as? [NSObject : AnyObject])
-        }
-        
+        ///////////////////////////////////////
+        /////////// Messages Routes
         socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
             print("successfully sent new message", messageArray)
             print("sent message", messageArray[0])
@@ -52,6 +51,8 @@ class SocketIOManager: NSObject {
             NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
         }
 
+        ///////////////////////////////////////
+        /////////// DHKeyExchange routes
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
             print("KeyExchange complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
@@ -96,6 +97,7 @@ class SocketIOManager: NSObject {
     func sendEncryptedChat(message: Dictionary<String, AnyObject>){
         socket.emit("encryptedChatSent", message)
     }
+    
     func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
         print("executing retrieveMessages", userID, friends)
         socket.emit("initial retrieval of new messages", userID, friends)
@@ -119,6 +121,7 @@ class SocketIOManager: NSObject {
         print("on login check for pending key exchange")
            socket.emit("check for pending key exchange", dhxInfo)
     }
+    
     func commencePart2KeyExchange (bob: Dictionary<String, AnyObject>) {
         print("hit commencePt2 keyX w \(bob)")
         socket.emit("commence part 2 key exchange", bob)
@@ -127,6 +130,4 @@ class SocketIOManager: NSObject {
     func closeConnection() {
         socket.disconnect()
     }
-
-
 }

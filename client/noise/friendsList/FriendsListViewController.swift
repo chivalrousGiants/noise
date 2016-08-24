@@ -34,7 +34,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             object: nil)
                 
         // query redis for any new chat messages from friends
-        getRecentConversation()
+        // getRecentConversation()
     }
 
     override func viewWillAppear(animated: Bool) {
