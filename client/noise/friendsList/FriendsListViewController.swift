@@ -267,7 +267,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         try! realm.write {
             realm.add(convo)
             // grab any messages that Bob already sent Alice
-           // getRecentConversation()
+            // getRecentConversation()
             // ideally chat screen should populate with messages grabbed from getRecentConversation()
             
             // segue to chatScreen if a boolean flag is true
