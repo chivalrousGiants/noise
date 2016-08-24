@@ -147,7 +147,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
         
-        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"] as! String)
+        let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]! as! String)
 
         var Alice :[String:AnyObject] = [:]
         Alice["E"] = dhxInfo!["eAlice"]
