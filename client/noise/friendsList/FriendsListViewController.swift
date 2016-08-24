@@ -15,6 +15,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         
+        print("FLVC viewDidLoad");
+        
         // on each page load query redis for pending key exchanges
         SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
 
@@ -265,7 +267,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         try! realm.write {
             realm.add(convo)
             // grab any messages that Bob already sent Alice
-            getRecentConversation()
+            // getRecentConversation()
             // ideally chat screen should populate with messages grabbed from getRecentConversation()
             
             // segue to chatScreen if a boolean flag is true
