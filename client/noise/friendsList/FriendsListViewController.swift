@@ -14,51 +14,27 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         updateFriendsTable()
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
-
-        // Attach listeners
         
-        // check for pending key exchanges
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handlePursuingKeyExchange),
-            name: "stillPursuingKeyExchange",
-            object: nil)
-        
+        // on each page load query redis for pending key exchanges
         SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handlePursuingKeyExchange),
-            name: "stillPursuingKeyExchange",
-            object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(computeBob),
-            name: "computeBob",
-            object: nil)
-        
+        // handle completion of key exchanges (cE 1 -> NE) triggered on pageload
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handleCompletedKeyExchange),
             name: "KeyExchangeComplete",
             object: nil)
         
+        // Bob responds to Alice's initiation of key exchange (cE 0 -> cE 0)
+        // computes b_Bob, E_Bob, sharedSecret
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(handleBobComplete),
-            name: "bobComplete",
+            selector: #selector(computeBob),
+            name: "computeBob",
             object: nil)
-
-//        NSNotificationCenter.defaultCenter().addObserver(
-//            self,
-//            selector: #selector(handleResumeKeyExchangeCheck),
-//            name: "resume KeyExchange",
-//            object: nil)
-
-        getRecentConversation()
-        
-    
+                
+        // query redis for any new chat messages from friends
+        // getRecentConversation()
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -94,26 +70,33 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
         
         if (convoWithThisFriend.isEmpty){
-            //check to see if if dhX process already initiated, handle results asynchronously
+            // check to see if if dhX process already initiated, handle results asynchronously
             print("friendClick -> checking to see if dhx initNeeded")
             
-            //add listener
+            // initiate dhKeyExchange after clicking friend's name
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
                 selector: #selector(handleKeyExchangeInit),
                 name: "init KeyExchange",
                 object: nil)
             
+            // dhKeyExchange already underway, segue to wait screen
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(handleWait),
+                name: "wait",
+                object: nil)
+
             SocketIOManager.sharedInstance.checkNeedToInitKeyExchange(checkInitObj)
             
         } else {
-            //if is already established chat, segue to chatScreen
+            // if chat exists, segue to chatScreen
             self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
         }
     }
     
     /////////////////////////////////////////
-    ////// NOTIFICATION CTR FUNCTIONS
+    ////// NOTIFICATION CENTER FUNCTIONS
     
     @objc func handlePursuingKeyExchange(notification:NSNotification) -> Void {
         let userInfo = notification.userInfo
@@ -121,53 +104,53 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "wait", object: nil)
     }
     
-//    @objc func handleResumeKeyExchangeCheck (notification:NSNotification) -> Void {
-//        
-//        //could just remove this and rely on socket communication to tell this to you.
-//        
-//        let userInfo = notification.userInfo
-//        print("resuming as Bob or in later stage with \(userInfo)")
-//        var Bob : [String:AnyObject] = [:]
-//        Bob["username"] = userInfo!["username"]
-//        Bob["friendname"] = userInfo!["friendname"]
-//        
-//        SocketIOManager.sharedInstance.undertakeKeyExchange(Bob)
-//        
-//    }
+    @objc func handlePursuingKeyExchange(notification: NSNotification) -> Void {
+        self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "completeKeyExchangeInitiation", object: nil)
+    }
     
     @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
         print("hit func target for alice1")
         
-         let userInfo = notification.userInfo
-         print("initiating keyExchange with dhxInfo: \(userInfo)")
-         //alicify and call pursue key exchange.
+        let userInfo = notification.userInfo
+        print("initiating keyExchange with dhxInfo: \(userInfo)")
+        //alicify and call pursue key exchange.
          
-         let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
-         print("asAlice \(Alice)")
-         //add listener
+        let Alice = 666.alicify(userInfo!["username"]!, friendname: userInfo!["friendname"]!, friendID: userInfo!["friendID"]!)
+        print("asAlice \(Alice)")
         
-         SocketIOManager.sharedInstance.undertakeKeyExchange(Alice)
-         NSNotificationCenter.defaultCenter().removeObserver(self, name:"init KeyExchange", object:nil)
+        // wait for Alice to place init info in redis
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handlePursuingKeyExchange),
+            name: "completeKeyExchangeInitiation",
+            object: nil)
+
+        SocketIOManager.sharedInstance.initiateKeyExchange(Alice)
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"init KeyExchange", object:nil)
     }
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
-        print("in handle complete")
         let dhxInfo = notification.userInfo
+        print("KX complete for both A and B with dhxInfo", dhxInfo)
         
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-        print("Alice", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
-        print("Alice", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"])
+        print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
         
         let aliceSecret = UInt32(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"] as! String)
-        
-        
-        print("aliceSecret read from locksmith:", aliceSecret)
-        
+
         var Alice :[String:AnyObject] = [:]
         Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
@@ -176,15 +159,29 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         // initialize convo object
         initializeConvoObj(Int(friendID as! String)!)
+        
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "KeyExchangeComplete", object: nil)
     }
 
     @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-        print("dhx info inside of compute bob [FRIENDSVIEWCONTROLLER] is \(dhxInfo!)")
+        print("dhx info inside of compute bob is \(dhxInfo!)")
 
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         
+        // fired after Bob completes Part2BKeyExchange
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(handleBobComplete),
+            name: "bobComplete",
+            object: nil)
+        
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
+        
+        // Remove listener
+        // TODO (complicated because we need listener for all pending keychanges)
+
     }
     
     @objc func handleBobComplete (notification:NSNotification) -> Void {
@@ -192,6 +189,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         //instantiate Realm Chat
         initializeConvoObj(Int(notification.userInfo!["friendID"] as! String)!)
+        
+        // Remove listener
+        // TODO (complicated because we need listener for all pending keychanges)
     }
 
     @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
@@ -220,6 +220,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             }
         }
 
+        // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"retrievedNewMessages", object:nil)
     }
     

@@ -34,6 +34,7 @@ function quickInitCheck (dhxObject, clientSocket){
 //initiates mutual hash with Alice_info. Informs Bob. Places Alice in Bob's pending (to trigger response/ enable lookup of mutual hash)
 function initKeyExchange (dhxObject, clientSocket){
     console.log('in initKeyExchange', dhxObject);
+    dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
     redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {console.log(err)} });
     redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
     clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
@@ -106,38 +107,22 @@ function routeKeyExchange (dhxObject, clientSocket){
 	redis.client.smembersAsync(`pending:${dhxObject.userID}`)
   	.then(anyPendingRequests => {
   		console.log('pending request(s): ', anyPendingRequests);
-  		if (anyPendingRequests.length > 0) {
-        anyPendingRequests.forEach((pendingID) => {
-	        //sort & store the IDs of each pending relationship
-		      dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, pendingID);
-          
-          //determine Key Exchange stage (nil/0/1)
-          redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished');
-            .then ((chatEstablishedVal) => {
-  	        	console.log('chatEstablishedVal:' + chatEstablishedVal + 'to pending id' + pendingID)
-	            if (chatEstablishedVal === '0') {
-		            performPart2AKeyExchange(dhxObject, clientSocket);
-	            } else if (chatEstablishedVal === '1') {
-	            	performPart3KeyExchange(dhxObject, clientSocket);
-	            } 
-  	        })
-            .catch(console.error.bind(console));
-        });
-  		} else {
-  		  // TODO: figure out what is the purpose of this else block
-  		  if (dhxObject.friendname) {
-      	  //func triggered by 'add friend' 
-  		  	redis.client.hgetAsync('users', `${dhxObject.friendname}`)
-    		  	.then(friendID => {
-    		  		var dhxObjectMod = updateInfoWithSortedIds(dhxObject, dhxObject.userID, friendID);
-                  initKeyExchange(dhxObjectMod, clientSocket);
-                  clientSocket.emit("initiating keyExchange");
-    		  	})
-        } else {
-            //routine query with no results 
-    		  clientSocket.emit("redis response no need to undertake KeyExchange")
-    	  }
-  		}
+      anyPendingRequests.forEach((pendingID) => {
+        //sort & store the IDs of each pending relationship
+	      dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, pendingID);
+        
+        //determine Key Exchange stage (nil/0/1)
+        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
+          .then ((chatEstablishedVal) => {
+	        	console.log('chatEstablishedVal:' + chatEstablishedVal + 'to pending id' + pendingID)
+            if (chatEstablishedVal === '0') {
+	            performPart2AKeyExchange(dhxObject, clientSocket);
+            } else if (chatEstablishedVal === '1') {
+            	performPart3KeyExchange(dhxObject, clientSocket);
+            } 
+	        })
+          .catch(console.error.bind(console));
+      }); 
   	})
     .catch(err => console.log('Error in routeKeyExchange function', err));
 };

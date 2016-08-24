@@ -112,6 +112,10 @@ io.on('connection', (clientSocket) => {
     dh.quickInitCheck(dhxObject, clientSocket);
   });
 
+  clientSocket.on('initiate key exchange', (dhxObject) => {
+    dh.initKeyExchnge(dhxObject, clientSocket);
+  });
+
 });
 
 //TODO: export clientsocket
