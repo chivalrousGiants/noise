@@ -1,144 +1,129 @@
 import Node from './Node';
 import ChildNode from './ChildNode';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const pixelRatio = window.devicePixelRatio;
-  
-  const canvas = document.querySelector("#canvas");
-  canvas.width = width * 2;
-  canvas.height = height * 2;
-  canvas.style.width = `${Math.floor(width)}px`;
-  canvas.style.height = `${Math.floor(height)}px`;
-  const context = canvas.getContext("2d");
-  context.scale(pixelRatio, pixelRatio);
 
-  const simulation = d3.forceSimulation()
-    .alphaTarget(1)
-    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(150).strength(0.4))
-    .force("charge", d3.forceManyBody().strength(-1))
-    .force("flowX", d3.forceX(3000).strength(0.0002))
+const width = window.innerWidth;
+const height = window.innerHeight;
+const pixelRatio = window.devicePixelRatio;
 
-  const graph = generateFakeData();
-  let allNodes = [];
-  let allLinks = [];
+const canvas = document.querySelector("#canvas");
+canvas.width = width * 2;
+canvas.height = height * 2;
+canvas.style.width = `${Math.floor(width)}px`;
+canvas.style.height = `${Math.floor(height)}px`;
+const context = canvas.getContext("2d");
+context.scale(pixelRatio, pixelRatio);
 
-  function generateFakeData() {
-    const graph = {};
+const simulation = d3.forceSimulation()
+  .alphaTarget(1)
+  .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(150).strength(0.4))
+  .force("charge", d3.forceManyBody().strength(-0.1))
+  .force("flowX", d3.forceX(3000).strength(0.002))
 
-    graph.nodes = [...Array(30)].map((_, i) => {
+const graph = generateFakeData();
+let allNodes = [];
+let allLinks = [];
 
-      const node = new Node(String(i), `v${i}`, width / 2, height / 2);
+function generateFakeData() {
+  const graph = {};
 
-      [...Array(30)].forEach((_, j) => {
-        const id = `${node.id}_${j}`;
-        const str = chance.string().slice(0, 5);
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        const child = new ChildNode(id, str, x, y, this);
-        node.addChild(child);
-      });
+  graph.nodes = [...Array(30)].map((_, i) => {
+    const node = new Node(String(i), `v${i}`, 0, height / 2);
 
-      return node;
+    [...Array(30)].forEach((_, j) => {
+      const id = `${node.id}_${j}`;
+      const str = chance.string().slice(0, 5);
+      const x = width - (i * 600) - 600;
+      const y = height / 30 * j;
+      const child = new ChildNode(id, str, x, y, node);
+      node.addChild(child);
     });
 
-    return graph;
-  }
+    return node;
+  });
+
+  return graph;
+}
+
+function updateNodes() {
+  allNodes = graph.nodes.reduce((all, node) => all.concat(node.children), graph.nodes);
+  simulation
+    .nodes(allNodes)
+    .on("tick", ticked);
+}
+updateNodes();
+
+function updateLinks() {
+  simulation.force("link")
+    .links(allLinks);
+}
+
+function addGlobalLink(sourceID, targetID) {
+  allLinks.push({ "source": `${sourceID}`, "target": `${targetID}`, value: 1 });
+}
+
+function updateLayout() {
+  allNodes.forEach(node => {
+    node.addParentLinkIfPastXLimit(300, addGlobalLink, updateLinks);
+  });
+  updateLinks();
+}
+setInterval(updateLayout, 3000);
 
 
-  function beginAddingChildLinks(node) {
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    node.addRandomChildLink();
-    updateLinks();
-  }
+d3.select(canvas)
+  .call(d3.drag()
+    .container(canvas)
+    .subject(dragsubject)
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended));
 
-  function updateNodes() {
-    allNodes = graph.nodes.reduce((all, node) => all.concat(node.children), graph.nodes);
-    simulation
-      .nodes(allNodes)
-      .on("tick", ticked);
-  }
-  updateNodes();
+function ticked() {
+  context.clearRect(0, 0, width * 2, height * 2);
 
-  function updateLinks() {
-    allLinks = graph.nodes.reduce((all, node) => all.concat(node.links), []);
-    simulation.force("link")
-      .links(allLinks);
-  }
+  context.beginPath();
+  allLinks.forEach(drawLink);
+  context.strokeStyle = "#555";
+  context.stroke();
 
+  context.beginPath();
+  allNodes.forEach(drawNode);
+  context.fill();
+  // context.strokeStyle = "#fff";
+  // context.stroke();
+}
 
-  d3.select(canvas)
-    .call(d3.drag()
-      .container(canvas)
-      .subject(dragsubject)
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended));
+function dragsubject() {
+  return simulation.find(d3.event.x, d3.event.y, 50);
+}
 
-  beginAddingChildLinks(graph.nodes[0]);
+//////////////////////////////////////////////
 
+function drawLink(d) {
+  context.moveTo(d.source.x, d.source.y);
+  context.lineTo(d.target.x, d.target.y);
+}
 
-  function ticked() {
-    context.clearRect(0, 0, width * 2, height * 2);
+function drawNode(d) {
+  context.moveTo(d.x + 3, d.y);
+  context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+  context.font = "16px Helvetica Neue";
+  context.fillStyle = '#aaa';
+  context.fillText(d.str, d.x + 10, d.y + 5);  // TEXT
+}
 
-    context.beginPath();
-    allLinks.forEach(drawLink);
-    context.strokeStyle = "#555";
-    context.stroke();
+function dragstarted() {
+  d3.event.subject.fx = d3.event.subject.x;
+  d3.event.subject.fy = d3.event.subject.y;
+}
 
-    context.beginPath();
-    allNodes.forEach(drawNode);
-    context.fill();
-    // context.strokeStyle = "#fff";
-    // context.stroke();
-  }
+function dragged() {
+  d3.event.subject.fx = d3.event.x;
+  d3.event.subject.fy = d3.event.y;
+}
 
-  function dragsubject() {
-    return simulation.find(d3.event.x, d3.event.y, 50);
-  }
-
-  //////////////////////////////////////////////
-
-  function drawLink(d) {
-    context.moveTo(d.source.x, d.source.y);
-    context.lineTo(d.target.x, d.target.y);
-  }
-
-  function drawNode(d) {
-    context.moveTo(d.x + 3, d.y);
-    context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-    context.font = "16px Helvetica Neue";
-    context.fillStyle = '#aaa';
-    context.fillText(d.str, d.x + 10, d.y + 5);  // TEXT
-  }
-
-  function dragstarted() {
-    d3.event.subject.fx = d3.event.subject.x;
-    d3.event.subject.fy = d3.event.subject.y;
-  }
-
-  function dragged() {
-    d3.event.subject.fx = d3.event.x;
-    d3.event.subject.fy = d3.event.y;
-  }
-
-  function dragended() {
-    d3.event.subject.fx = null;
-    d3.event.subject.fy = null;
-  }
-
-});
+function dragended() {
+  d3.event.subject.fx = null;
+  d3.event.subject.fy = null;
+}
