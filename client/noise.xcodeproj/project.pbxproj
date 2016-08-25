@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33397BFE1D6E9CE10096EC20 /* cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33397BFD1D6E9CE10096EC20 /* cipher.swift */; };
 		411604F81D627C91000D5FC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411604F71D627C91000D5FC0 /* UserModel.swift */; };
 		4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD121D5A884C001EA380 /* AppDelegate.swift */; };
 		4133BD151D5A884C001EA380 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4133BD141D5A884C001EA380 /* ViewController.swift */; };
@@ -56,6 +57,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		33397BFD1D6E9CE10096EC20 /* cipher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = cipher.swift; path = noise/cipher.swift; sourceTree = "<group>"; };
 		411604F71D627C91000D5FC0 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserModel.swift; path = noise/Models/UserModel.swift; sourceTree = "<group>"; };
 		4133BD0F1D5A884C001EA380 /* noise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = noise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4133BD121D5A884C001EA380 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = noise/AppDelegate.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				4198959D1D64DFA0003240C1 /* ChatViewController.swift */,
 				BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */,
 				41E254BD1D6F890800DD04CE /* FriendInfoViewController.swift */,
+				33397BFD1D6E9CE10096EC20 /* cipher.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 				4150B4381D5BB382006B7D57 /* SocketIOManager.swift in Sources */,
 				BBFBE9F41D66B61B005A9647 /* WaitForConfirmationViewController.swift in Sources */,
 				4150B48F1D5BCE81006B7D57 /* SocketIOClient.swift in Sources */,
+				33397BFE1D6E9CE10096EC20 /* cipher.swift in Sources */,
 				4150B4871D5BCE81006B7D57 /* SocketEngine.swift in Sources */,
 				4150B4981D5BCE81006B7D57 /* WebSocket.swift in Sources */,
 				4150B4861D5BCE81006B7D57 /* SocketClientSpec.swift in Sources */,

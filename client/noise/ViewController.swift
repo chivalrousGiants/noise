@@ -9,7 +9,11 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-
+        
+        // Cipher testing
+        let cipher = Cipher()
+        cipher.encryptMessage()
+        
 //        let users = realm.objects(User)
 //        if users.count == 0 {
 //            self.performSegueWithIdentifier("authSegue", sender: self)
