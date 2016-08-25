@@ -71,7 +71,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
         
-        if (convoWithThisFriend.isEmpty){
+        if (convoWithThisFriend.count == 2){
             // check to see if if dhX process already initiated, handle results asynchronously
             //print("friendClick -> checking to see if dhx initNeeded")
             
@@ -93,7 +93,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             
         } else {
             // if chat exists, segue to chatScreen
-            self.performSegueWithIdentifier("chatScreenSegue", sender: friendToChat)
+            self.performSegueWithIdentifier("chatScreenSegue", sender: self.friendToChat)
         }
     }
     
