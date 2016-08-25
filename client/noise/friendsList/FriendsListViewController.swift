@@ -70,8 +70,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let checkInitObj :[String:AnyObject] = ["friendID":friendID, "userID":userID, "username":username, "friendname":friendname!]
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
-        // change .count == 2 to .isEmpty  to enable key exchange
-        if (convoWithThisFriend.count == 2){
+        if (convoWithThisFriend.isEmpty){
             // check to see if if dhX process already initiated, handle results asynchronously
             // print("friendClick -> checking to see if dhx initNeeded")
             

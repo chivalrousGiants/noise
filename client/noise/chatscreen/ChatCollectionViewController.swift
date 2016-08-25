@@ -42,11 +42,7 @@ extension ChatViewController {
     func updateChatScreen() {
         
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
-            try! realm.write{
-                let startNewConversation = Conversation()
-                startNewConversation.friendID = friend.friendID
-                realm.add(startNewConversation)
-            }
+            print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
         } else {
             self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
             
