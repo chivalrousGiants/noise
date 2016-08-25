@@ -4,7 +4,7 @@ import JSQMessagesViewController
 
 class ChatViewController: JSQMessagesViewController {
     
-    let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor(red: 10/255, green: 180/255, blue: 230/255, alpha: 1.0))
+    let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.greenColor())
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
 
     var messages = [JSQMessage]()
@@ -141,7 +141,7 @@ extension ChatViewController {
         
         self.finishSendingMessage()
     }
-
+    
     override func didPressAccessoryButton(sender: UIButton!) {
     }
 }

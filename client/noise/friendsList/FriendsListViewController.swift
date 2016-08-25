@@ -70,10 +70,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let checkInitObj :[String:AnyObject] = ["friendID":friendID, "userID":userID, "username":username, "friendname":friendname!]
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
-        
+        // change .count == 2 to .isEmpty  to enable key exchange
         if (convoWithThisFriend.count == 2){
             // check to see if if dhX process already initiated, handle results asynchronously
-            //print("friendClick -> checking to see if dhx initNeeded")
+            // print("friendClick -> checking to see if dhx initNeeded")
             
             // initiate dhKeyExchange after clicking friend's name
             NSNotificationCenter.defaultCenter().addObserver(
@@ -97,8 +97,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
-    /////////////////////////////////////////
-    ////// NOTIFICATION CENTER FUNCTIONS
+
+    // NOTIFICATION CENTER FUNCTIONS
     
     @objc func handleWait(notification: NSNotification) -> Void {
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
@@ -117,13 +117,13 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
         let userInfo = notification.userInfo
 
-        //Pass (userID&name, friendID&name) from friends_list_selection to label storage structures. Generate alice a, p, g, E.
-        //Keychain (Locksmith) store; a, p, E in for later use / secrecy.
-        //Redis call: pass IDs & p,g,E to redis for Bob to identify & access.
+        // Pass (userID&name, friendID&name) from friends_list_selection to label storage structures. Generate alice a, p, g, E.
+        // Keychain (Locksmith) store; a, p, E in for later use / secrecy.
+        // Redis call: pass IDs & p,g,E to redis for Bob to identify & access.
         let Alice = 666.alicify(userInfo!["userID"]!, friendID: userInfo!["friendID"]!)
-        //print("Initiate keyExchange (Alice) bringing info: \(Alice)")
+        // print("Initiate keyExchange (Alice) bringing info: \(Alice)")
         
-       //Add listener:
+       // Add listener:
             // wait for confirmation that Alice to placed init info in redis
         NSNotificationCenter.defaultCenter().addObserver(
             self,
