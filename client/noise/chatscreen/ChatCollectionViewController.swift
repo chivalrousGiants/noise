@@ -12,22 +12,20 @@ class ChatViewController: JSQMessagesViewController {
 //    @IBOutlet weak var NavigationLabel: UINavigationItem!
 //    @IBOutlet weak var MessageTextFieldLabel: UITextField!
     var messages = [JSQMessage]()
-    
-//    let realm = try! Realm()
+    var messagesFromRealm = List<Message>()
+    let realm = try! Realm()
     var friend = Friend()
-//    var messages = List<Message>()
+    
 //    var newMessage = [String: AnyObject]()
     
     override func viewDidLoad() {
-        title = self.friend.username
+        self.title = self.friend.username
         super.viewDidLoad()
         self.setup()
-        self.addDemoMessages()
+        self.updateChatScreen()
+//        self.addDemoMessages()
         print("print friend", friend)
-//        // configure states
-//        self.CollectionView.dataSource = self
-//        self.CollectionView.delegate = self
-//        self.title = friend.firstname
+        print("list of messages", messages)
 //        updateChatScreen()
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
     }
@@ -40,18 +38,7 @@ class ChatViewController: JSQMessagesViewController {
 //        return self.messages.count
 //    }
  
-//    func updateChatScreen() {
-//        if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
-//            try! realm.write{
-//                let startNewConversation = Conversation()
-//                startNewConversation.friendID = friend.friendID
-//                realm.add(startNewConversation)
-//            }
-//        } else {
-//            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
-//            self.CollectionView.reloadData()
-//        }
-//    }
+
 
 //    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 //        // tell the controller to use the reusuable 'receivecell' controlled by chatCollectionViewCell
@@ -87,13 +74,13 @@ class ChatViewController: JSQMessagesViewController {
 //        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
 //    }
     
-//    @objc func handleNewMessage(notification: NSNotification) -> Void {
-//        
+    @objc func handleNewMessage(notification: NSNotification) -> Void {
+        
 //        let userInfo = notification.userInfo!
 //        let sourceID = userInfo["sourceID"] as? Int
-//        
+        
 //        let message = Message()
-//        
+        
 //        if (sourceID != nil) {
 //            // reciever
 //            if (sourceID == self.friend.friendID) {
@@ -113,7 +100,7 @@ class ChatViewController: JSQMessagesViewController {
 //            message.messageID = Int(userInfo["messageID"] as! String)!
 //            message.createdAt = userInfo["createdAt"] as! Int
 //        }
-//        
+        
 //        try! realm.write{
 //            let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
 //            conversationHistory.largestMessageID = message.messageID
@@ -122,23 +109,32 @@ class ChatViewController: JSQMessagesViewController {
 //            // TODO: optimize such that only new message is loaded.
 // //           updateChatScreen()
 //        }
-//        
-//        NSNotificationCenter.defaultCenter().removeObserver(self)
-//    }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
   }
 
 
 extension ChatViewController {
     
-    func addDemoMessages() {
-        for i in 1...10 {
-            let sender = (i%2 == 0) ? "Server" : self.senderId
-            let messageContent = "Message nr. \(i)"
-            let message = JSQMessage(senderId: sender, displayName: sender, text: messageContent)
-            self.messages += [message]
+    func updateChatScreen() {
+        if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
+            try! realm.write{
+                let startNewConversation = Conversation()
+                startNewConversation.friendID = friend.friendID
+                realm.add(startNewConversation)
+            }
+        } else {
+            self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
+            
+            for realmMessage in self.messagesFromRealm {
+                let message = JSQMessage(senderId: String(realmMessage.sourceID), displayName: "sender display name", text: realmMessage.body)
+                self.messages += [message]
+            }
+            
+            self.reloadMessagesView()
         }
-        self.reloadMessagesView()
     }
     
     func setup() {
@@ -158,9 +154,9 @@ extension ChatViewController  {
         return data
     }
     
-//    override func collectionView(collectionView: JSQMessagesCollectionView!, didDeleteMessageAtIndexPath indexPath: NSIndexPath!) {
-//        self.messages.removeAtIndex(indexPath.row)
-//    }
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didDeleteMessageAtIndexPath indexPath: NSIndexPath!) {
+        self.messages.removeAtIndex(indexPath.row)
+    }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         let data = messages[indexPath.row]
