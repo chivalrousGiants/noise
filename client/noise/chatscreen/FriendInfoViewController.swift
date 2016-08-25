@@ -22,20 +22,18 @@ extension FriendInfoViewController {
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(backButtonTapped))
         navigationItem.leftBarButtonItem = backButton
         
-        self.title = "info"
+        self.title = self.friendInfo.username
     }
     func backButtonTapped() {
         dismissViewControllerAnimated(true, completion: nil)
     }
 }
-
 // other methods
 extension FriendInfoViewController {
     func generateWord(num: Int) -> Int {
         return num % wordsArray.count
     }
 }
-
 // UI configurations
 extension FriendInfoViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -46,6 +44,8 @@ extension FriendInfoViewController {
         switch section {
         case 0:
             return 1
+        case 1:
+            return 1
         default:
             return 0
         }
@@ -54,9 +54,9 @@ extension FriendInfoViewController {
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
-            return "Human Readable Key:"
+            return "photo/avatar"
         case 1:
-            return "Somthing else"
+            return "Human Readable Key"
         default:
             return nil
         }
@@ -64,18 +64,30 @@ extension FriendInfoViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        let cell = tableView.dequeueReusableCellWithIdentifier(reusableCell)
+        self.tableView.allowsSelection = false
         
+        let cell = tableView.dequeueReusableCellWithIdentifier(reusableCell)
+
         switch indexPath.section {
-        case 0:
-            switch indexPath.row {
+            case 0:
+                switch indexPath.row {
+                    case 0:
+                        cell!.textLabel?.text = "name: " + self.friendInfo.firstname + " " + self.friendInfo.lastname
+                    case 1:
+                        break
+                        //cell!.textLabel?.text = "Added " +  String(self.friendInfo.friendedAt)
+                    default:
+                        break
+                }
+            case 1:
+                switch indexPath.row {
             case 0:
                 let getUserID = realm.objects(User)[0]["userID"]
                 let dummySharedKey = 1194310654 // to be deleted when getUserKeyWorks
                 _ = Locksmith.loadDataForUserAccount("noise:'\(getUserID!["sharedKey"])")
                 
                 cell!.textLabel?.text = wordsArray[generateWord(dummySharedKey)]
-                
+                cell!.textLabel?.textAlignment = .Center
             default:
                 break
             }
@@ -85,7 +97,6 @@ extension FriendInfoViewController {
         return cell!
     }
 }
-
 
 private let wordsArray  = [ "nil",
                     "academy",  "acrobat",  "active",   "actor",    "adam",     "admiral",
