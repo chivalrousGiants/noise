@@ -99,7 +99,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     let newMessage = Message()
                     newMessage.sourceID = Int(message!["sourceID"]!)!
                     newMessage.targetID = Int(message!["targetID"]!)!
-                    newMessage.createdAt = Iny(message!["createdAt"]!)!
+                    newMessage.createdAt = Int(message!["createdAt"]!)!
                     newMessage.messageID = Int(message!["msgID"]!)!
                     newMessage.body = message!["body"]!
                   
