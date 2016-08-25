@@ -1,80 +1,63 @@
 import UIKit
 import RealmSwift
+import JSQMessagesViewController
 
-class ChatViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegate {
-    @IBOutlet weak var CollectionView: UICollectionView!
-    @IBOutlet weak var SendChatTextField: UITextField!
-    @IBOutlet weak var NavigationLabel: UINavigationItem!
-    @IBOutlet weak var MessageTextFieldLabel: UITextField!
+class ChatViewController: JSQMessagesViewController {
+    
+    let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.greenColor())
+    let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
     
     let realm = try! Realm()
-    var friend = Friend()
-    var messages = List<Message>()
+    var messagesFromRealm = List<Message>()
+    var messages = [JSQMessage]()
     var newMessage = [String: AnyObject]()
-    
+    var friend = Friend()
+   
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        // configure states
-        self.CollectionView.dataSource = self
-        self.CollectionView.delegate = self
-        self.title = friend.firstname
-        updateChatScreen()
+        self.setup()
+        self.updateChatScreen()
+        
+        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
+        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
     }
-
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.messages.count
+    
+    func reloadMessagesView() {
+        self.collectionView?.reloadData()
     }
- 
+}
+
+//methods
+extension ChatViewController {
+    
+    func setup() {
+        self.title = self.friend.username
+        self.senderId = UIDevice.currentDevice().identifierForVendor?.UUIDString
+        self.senderDisplayName = UIDevice.currentDevice().identifierForVendor?.UUIDString
+    }
+    
     func updateChatScreen() {
+        
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
-       } else {
-            self.messages = realm.objects(Conversation).filter("friendID = \(friend.friendID) ")[0].messages
-            self.CollectionView.reloadData()
-        }
-    }
-
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        // tell the controller to use the reusuable 'receivecell' controlled by chatCollectionViewCell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ChatCell",
-            forIndexPath: indexPath) as! ChatCollectionViewCell
-        
-        let message = self.messages[indexPath.row]
-        
-        if  message.sourceID == friend.friendID {
-            cell.receiveChatLabel.layer.cornerRadius = 5
-            cell.receiveChatLabel.layer.masksToBounds = true
-            cell.receiveChatLabel.clipsToBounds = true
-            cell.receiveChatLabel.text = self.messages[indexPath.row].body
-            cell.sendChatLabel.hidden = true
-            return cell
         } else {
-            cell.sendChatLabel.layer.cornerRadius = 5
-            cell.sendChatLabel.layer.masksToBounds = true
-            cell.sendChatLabel.clipsToBounds = true
-            cell.sendChatLabel.text = self.messages[indexPath.row].body
-            cell.receiveChatLabel.hidden = true
-            return cell
+            self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
+            
+            for realmMessage in self.messagesFromRealm {
+                let message = JSQMessage(senderId: String(realmMessage.sourceID), displayName: "sender display name", text: realmMessage.body)
+                self.messages += [message]
+            }
+            self.reloadMessagesView()
         }
-
-    }
- 
-    @IBAction func sendButtonTapped(sender: AnyObject) {
-        self.newMessage = [
-            "sourceID" : realm.objects(User)[0].userID,
-            "targetID" : self.friend.friendID,
-            "body"     : self.SendChatTextField.text!
-        ]
-        // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
-        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
     }
     
     @objc func handleNewMessage(notification: NSNotification) -> Void {
         
         let userInfo = notification.userInfo!
         let sourceID = userInfo["sourceID"] as? Int
-        
         let message = Message()
         
         if (sourceID != nil) {
@@ -108,6 +91,57 @@ class ChatViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+}
+
+//UI Methods
+extension ChatViewController  {
     
-  }
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.messages.count
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+        let data = self.messages[indexPath.row]
+        return data
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didDeleteMessageAtIndexPath indexPath: NSIndexPath!) {
+        self.messages.removeAtIndex(indexPath.row)
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
+        let data = self.messages[indexPath.row]
+        
+        if Int(data.senderId) == self.friend.friendID {
+            return self.incomingBubble
+        } else {
+            return self.outgoingBubble
+        }
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+        return nil
+    }
+}
+
+extension ChatViewController {
+    
+    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        self.newMessage = [
+            "sourceID" : realm.objects(User)[0].userID,
+            "targetID" : self.friend.friendID,
+            "body"     : text
+        ]
+        // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
+        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+
+        //let message = JSQMessage(senderId: senderId, senderDisplayName: senderDisplayName, date: date, text: text)
+        //self.messages += [message]
+        
+        self.finishSendingMessage()
+    }
+    
+    override func didPressAccessoryButton(sender: UIButton!) {
+    }
+}
 
