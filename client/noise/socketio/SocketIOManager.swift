@@ -94,8 +94,9 @@ class SocketIOManager: NSObject {
     }
     
     // TODO: send encrypted message
-    func sendEncryptedChat(message: Dictionary<String, AnyObject>){
-        socket.emit("encryptedChatSent", message)
+    func sendEncryptedChat(message: AnyObject){
+        //print("newMessage", message)
+        socket.emit("send new message", message)
     }
     
     func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
