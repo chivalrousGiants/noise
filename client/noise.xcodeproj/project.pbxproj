@@ -98,6 +98,7 @@
 		4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewController.swift; path = noise/chatscreen/ChatCollectionViewController.swift; sourceTree = "<group>"; };
 		419895A11D65513E003240C1 /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageModel.swift; path = noise/chatscreen/MessageModel.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
+		BBDDBF441D6F6BD50087855A /* noise-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "noise-Bridging-Header.h"; sourceTree = "<group>"; };
 		BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = waitForConfimation.storyboard; sourceTree = "<group>"; };
 		BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyUtility.swift; sourceTree = "<group>"; };
 		BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitForConfirmationViewController.swift; sourceTree = "<group>"; };
@@ -186,6 +187,7 @@
 				635F377F1D61B43600FC4EC4 /* Controllers */,
 				635F37801D61B43B00FC4EC4 /* Models */,
 				635F37811D61B44300FC4EC4 /* Views */,
+				BBDDBF441D6F6BD50087855A /* noise-Bridging-Header.h */,
 			);
 			name = Noise;
 			sourceTree = "<group>";
@@ -559,12 +561,16 @@
 			baseConfigurationReference = EC55034E9BE5841B9462767A /* Pods-noise.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = noise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chivalrousgiants.noise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "noise-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -574,12 +580,15 @@
 			baseConfigurationReference = CDA99FFDD7F7E7F392F1770E /* Pods-noise.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = noise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chivalrousgiants.noise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "noise-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

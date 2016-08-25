@@ -8,5 +8,6 @@ target 'noise' do
   pod ‘CryptoSwift’
   pod 'Locksmith'
   pod 'JSQMessagesViewController'
+  pod 'OpenSSL', '~> 1.0'
 
 end
