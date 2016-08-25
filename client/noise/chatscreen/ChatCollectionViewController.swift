@@ -6,20 +6,22 @@ class ChatViewController: JSQMessagesViewController {
     
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.greenColor())
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
-
-    var messages = [JSQMessage]()
-    var messagesFromRealm = List<Message>()
-    let realm = try! Realm()
-    var friend = Friend()
-    var newMessage = [String: AnyObject]()
     
+    let realm = try! Realm()
+    var messagesFromRealm = List<Message>()
+    var messages = [JSQMessage]()
+    var newMessage = [String: AnyObject]()
+    var friend = Friend()
+   
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         self.setup()
         self.updateChatScreen()
-        // No avatars
+        
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
     }
     
@@ -38,6 +40,7 @@ extension ChatViewController {
     }
     
     func updateChatScreen() {
+        
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             try! realm.write{
                 let startNewConversation = Conversation()
@@ -59,7 +62,6 @@ extension ChatViewController {
         
         let userInfo = notification.userInfo!
         let sourceID = userInfo["sourceID"] as? Int
-        
         let message = Message()
         
         if (sourceID != nil) {
@@ -127,6 +129,7 @@ extension ChatViewController  {
 }
 
 extension ChatViewController {
+    
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         self.newMessage = [
             "sourceID" : realm.objects(User)[0].userID,
