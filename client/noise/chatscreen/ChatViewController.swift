@@ -43,21 +43,12 @@ extension ChatViewController {
     }
     
     func friendInfoButtonTapped() -> Void {
-        //self.performSegueWithIdentifier( sender: self)
         let friendInfoViewController = FriendInfoViewController()
         friendInfoViewController.friendInfo = self.friend
-        
-//        self.presentViewController(friendInfoViewController, animated: true, completion: nil)
-        
         self.presentViewController(UINavigationController(rootViewController: friendInfoViewController), animated: true, completion: nil)
     }
     
-    
-    
-    
-    
     func updateChatScreen() {
-        
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
         } else {
@@ -71,7 +62,6 @@ extension ChatViewController {
     }
     
     @objc func handleNewMessage(notification: NSNotification) -> Void {
-        
         let userInfo = notification.userInfo!
         let sourceID = userInfo["sourceID"] as? Int
         let message = Message()
@@ -141,7 +131,7 @@ extension ChatViewController  {
 }
 
 extension ChatViewController {
-    
+
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         self.newMessage = [
             "sourceID" : realm.objects(User)[0].userID,
@@ -159,7 +149,5 @@ extension ChatViewController {
     
     override func didPressAccessoryButton(sender: UIButton!) {
     }
-    
-    
 }
 

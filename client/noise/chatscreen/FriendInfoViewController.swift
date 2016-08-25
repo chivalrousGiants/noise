@@ -16,7 +16,7 @@ class FriendInfoViewController: UITableViewController{
     }
 }
 
-//navigation
+// navigation
 extension FriendInfoViewController {
     func setUp() {
         let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(backButtonTapped))
@@ -29,7 +29,7 @@ extension FriendInfoViewController {
     }
 }
 
-//otherfunc
+// other methods
 extension FriendInfoViewController {
     func generateWord(num: Int) -> Int {
         return num % wordsArray.count
@@ -63,6 +63,7 @@ extension FriendInfoViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         let cell = tableView.dequeueReusableCellWithIdentifier(reusableCell)
         
         switch indexPath.section {
