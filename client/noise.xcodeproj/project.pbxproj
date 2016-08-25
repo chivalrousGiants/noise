@@ -51,6 +51,7 @@
 		419895A21D65513E003240C1 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419895A11D65513E003240C1 /* MessageModel.swift */; };
 		41F2A25E1D602D97006FACDF /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F2A25D1D602D97006FACDF /* FriendModel.swift */; };
 		B8246B072F00D5F9694C8A7B /* Pods_noise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C66C01929DB7A3E1A3AC0FDD /* Pods_noise.framework */; };
+		BB72F7721D6E964500FFA820 /* testFileAGAIN.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB72F7711D6E964500FFA820 /* testFileAGAIN.swift */; };
 		BBFBE9EE1D651F48005A9647 /* waitForConfimation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */; };
 		BBFBE9F01D652C5C005A9647 /* KeyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */; };
 		BBFBE9F41D66B61B005A9647 /* WaitForConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */; };
@@ -102,6 +103,7 @@
 		4198959D1D64DFA0003240C1 /* ChatCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCollectionViewController.swift; path = noise/chatscreen/ChatCollectionViewController.swift; sourceTree = "<group>"; };
 		419895A11D65513E003240C1 /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageModel.swift; path = noise/chatscreen/MessageModel.swift; sourceTree = "<group>"; };
 		41F2A25D1D602D97006FACDF /* FriendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendModel.swift; path = noise/friendsList/FriendModel.swift; sourceTree = "<group>"; };
+		BB72F7711D6E964500FFA820 /* testFileAGAIN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testFileAGAIN.swift; sourceTree = "<group>"; };
 		BBFBE9ED1D651F48005A9647 /* waitForConfimation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = waitForConfimation.storyboard; sourceTree = "<group>"; };
 		BBFBE9EF1D652C5C005A9647 /* KeyUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyUtility.swift; sourceTree = "<group>"; };
 		BBFBE9F31D66B61B005A9647 /* WaitForConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitForConfirmationViewController.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 				635F377F1D61B43600FC4EC4 /* Controllers */,
 				635F37801D61B43B00FC4EC4 /* Models */,
 				635F37811D61B44300FC4EC4 /* Views */,
+				BB72F7711D6E964500FFA820 /* testFileAGAIN.swift */,
 			);
 			name = Noise;
 			sourceTree = "<group>";
@@ -419,6 +422,7 @@
 				4133BD281D5A9539001EA380 /* SignUpViewController.swift in Sources */,
 				4133BD131D5A884C001EA380 /* AppDelegate.swift in Sources */,
 				4150B48D1D5BCE81006B7D57 /* SocketEventHandler.swift in Sources */,
+				BB72F7721D6E964500FFA820 /* testFileAGAIN.swift in Sources */,
 				4150B4831D5BCE81006B7D57 /* SocketAckEmitter.swift in Sources */,
 				419895A21D65513E003240C1 /* MessageModel.swift in Sources */,
 				4150B4971D5BCE81006B7D57 /* SwiftRegex.swift in Sources */,
