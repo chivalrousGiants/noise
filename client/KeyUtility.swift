@@ -14,7 +14,7 @@ extension Int {
     func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
         let bigNum = BN_new()
         let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
-       //print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+       print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
         return prime
     }
     
@@ -107,8 +107,8 @@ extension Int {
         } catch {
            //print("could not save alice data in keychain")
         }
-        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        //print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
+        print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
 
@@ -120,7 +120,7 @@ extension Int {
            // print("could not amend alice data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        //print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
+        print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -131,7 +131,7 @@ extension Int {
           //  print ("could not save bob data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        //print("BobKeyChain dictionary is \(dictionary)")
+        print("BobKeyChain dictionary is \(dictionary)")
     }
     
 }
