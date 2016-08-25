@@ -10,17 +10,30 @@ import Foundation
 import Locksmith
 
 extension Int {
-    func gCreate () -> UInt32 {
-        return arc4random()
+    
+    func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
+        let bigNum = BN_new()
+        let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
+       print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+        return prime
     }
+    
     func pCreate () -> UInt32 {
-        return arc4random()
+        return UnsafePointer<UInt32>(generateRandomPrime()).memory
     }
-    func aAliceCreate ( ) -> UInt32{
-        return arc4random()
+    
+    func gCreate (p: UInt32) -> UInt32 {
+        let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
+       // print("g is", g)
+        return  g % p
     }
-    func bBobCreate () -> UInt32 {
-        return arc4random()
+    func aAliceCreate (p: UInt32) -> UInt32 {
+        let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
+        return (randomPrime % (p-1))
+    }
+    func bBobCreate (p: UInt32) -> UInt32 {
+        let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
+        return (randomPrime % (p-1))
     }
     func eCreate (g: UInt32, mySecret: UInt32, p: UInt32) -> UInt32 {
         return (g^mySecret) % p
@@ -28,11 +41,12 @@ extension Int {
     func computeSecret (foreignE: UInt32, mySecret: UInt32, p:UInt32) -> UInt32 {
         return (foreignE^mySecret) % p
     }
+    
     func alicify (userID:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
-        let g_Alice = 666.gCreate()
         let p_Alice = 666.pCreate()
-        let a_Alice = 666.aAliceCreate()
+        let g_Alice = 666.gCreate(p_Alice)
+        let a_Alice = 666.aAliceCreate(p_Alice)
         let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
         
         //build Alice
@@ -55,15 +69,15 @@ extension Int {
  
         
         //2) encrypt values
-        //print("Alice in alicify \(Alice)")
+        print("Alice in alicify \(Alice)")
         return Alice
     }
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
-        let b_Bob = 666.bBobCreate()
+        let p_computational = UInt32(p as! String)
+        let b_Bob = 666.bBobCreate(p_computational!)
         let g_computational = UInt32(g as! String)
         let E_Alice_computational = UInt32(E_Alice as! String)
-        let p_computational = UInt32(p as! String)
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
         //print("sharedSecret izzzzz \(sharedSecret)")
@@ -93,8 +107,8 @@ extension Int {
         } catch {
            //print("could not save alice data in keychain")
         }
-        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        //print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
+        print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
 
@@ -106,7 +120,7 @@ extension Int {
            // print("could not amend alice data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        //print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
+        print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -117,7 +131,7 @@ extension Int {
           //  print ("could not save bob data in keychain")
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        //print("BobKeyChain dictionary is \(dictionary)")
+        print("BobKeyChain dictionary is \(dictionary)")
     }
     
 }
