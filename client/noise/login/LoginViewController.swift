@@ -1,5 +1,6 @@
 import UIKit
 import RealmSwift
+import Locksmith
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -48,7 +49,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 "username": userName!,
                 "password": userPassword!
             ]
-            
+
             SocketIOManager.sharedInstance.signIn(user)
         }
         
@@ -72,7 +73,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             try! realm.write {
                 realm.add(user, update:true)
             }
-            
+
             performSegueWithIdentifier("loginToFriendsListSegue", sender: self)
             
         } else {
@@ -87,7 +88,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "signin", object: nil)
     }
     
     @IBAction func signUpButtonClicked(sender: AnyObject) {

@@ -37,7 +37,7 @@ PendingKeyExchange
     friendID: target
     chatEstablished = nonexistent/0/1
 
-  Set   pendingChats:user_ID
+  Set   pending:user_ID
       targetUserID1
       targetUserID2
       targetUserID3
