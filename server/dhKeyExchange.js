@@ -31,13 +31,13 @@ function quickInitCheck (dhxObject, clientSocket){
 		}
 	})
 	.catch(err => console.log('Error in quickInitCheck', err))
-}
+};
 
 //initiates mutual hash with Alice_info. Informs Bob. Places Alice in Bob's pending (to trigger response/ enable lookup of mutual hash)
 function initKeyExchange (dhxObject, clientSocket) {
   //console.log('in initKeyExchange', dhxObject);
   dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
-  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {//console.log(err)} });
+  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {console.log(err)} });
   redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
   clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
 };

@@ -9,15 +9,13 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-      /*
+
         let users = realm.objects(User)
         if users.count == 0 {
             self.performSegueWithIdentifier("authSegue", sender: self)
         } else {
             self.performSegueWithIdentifier("friendsListSegue", sender: self)
-        }*/
-        //TODO: remove this when uncomment above code: 
-        self.performSegueWithIdentifier("authSegue", sender: self)
+        }
     }
     
 }
