@@ -7,5 +7,6 @@ target 'noise' do
   pod 'RealmSwift'
   pod ‘CryptoSwift’
   pod 'Locksmith'
+  pod 'OpenSSL', '~> 1.0'
 
 end

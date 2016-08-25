@@ -6,6 +6,11 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        let bigNum = BN_new()
+//        let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
+//        print("PRIME INFO", prime, prime.dynamicType)
+//        return UInt32(5)
     }
     
     override func viewDidAppear(animated: Bool) {

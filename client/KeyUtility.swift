@@ -10,17 +10,27 @@ import Foundation
 import Locksmith
 
 extension Int {
+    
+    func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
+        let bigNum = BN_new()
+        let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
+       print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+        return prime
+    }
+    
     func gCreate () -> UInt32 {
-        return arc4random()
+        let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
+        print("g is", g)
+        return g
     }
     func pCreate () -> UInt32 {
-        return arc4random()
+        return UnsafePointer<UInt32>(generateRandomPrime()).memory
     }
-    func aAliceCreate ( ) -> UInt32{
-        return arc4random()
+    func aAliceCreate ( ) -> UInt32 {
+        return UnsafePointer<UInt32>(generateRandomPrime()).memory
     }
     func bBobCreate () -> UInt32 {
-        return arc4random()
+        return UnsafePointer<UInt32>(generateRandomPrime()).memory
     }
     func eCreate (g: UInt32, mySecret: UInt32, p: UInt32) -> UInt32 {
         return (g^mySecret) % p
@@ -28,6 +38,7 @@ extension Int {
     func computeSecret (foreignE: UInt32, mySecret: UInt32, p:UInt32) -> UInt32 {
         return (foreignE^mySecret) % p
     }
+    
     func alicify (userID:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
         let g_Alice = 666.gCreate()
@@ -55,7 +66,7 @@ extension Int {
  
         
         //2) encrypt values
-        //print("Alice in alicify \(Alice)")
+        print("Alice in alicify \(Alice)")
         return Alice
     }
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
