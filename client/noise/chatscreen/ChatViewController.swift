@@ -1,11 +1,16 @@
 import UIKit
 import RealmSwift
 import JSQMessagesViewController
+import Locksmith
+import CryptoSwift
 
 class ChatViewController: JSQMessagesViewController {
     
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.greenColor())
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
+    
+    // Must be 8 or 16 bytes (TODO: randomize)
+    let iv: Array<UInt8> = [0, 1, 2, 3, 4, 5, 6, 7]
     
     let realm = try! Realm()
     var messagesFromRealm = List<Message>()
@@ -133,11 +138,26 @@ extension ChatViewController  {
 extension ChatViewController {
 
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        // Encrypt message
+        let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
+        print("In CCVC sharedSecret for encryption of new message:", key)
+        
+        var keyToUInt8Array = [UInt8](key.utf8)
+
+        // pad keyToUInt8Array to 32 bytes
+        let initialLength = 32 - keyToUInt8Array.count
+        for _ in 1...initialLength {
+            keyToUInt8Array.append(0)
+        }
+        
+        let encryptedText: Array<UInt8> = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.encrypt([UInt8](text.utf8))
+        
         self.newMessage = [
             "sourceID" : realm.objects(User)[0].userID,
             "targetID" : self.friend.friendID,
-            "body"     : text
+            "body"     : encryptedText as! AnyObject
         ]
+        
         // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
         SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
 

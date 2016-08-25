@@ -11,8 +11,8 @@ class ViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         
         // Cipher testing
-        let cipher = Cipher()
-        cipher.encryptMessage()
+        //let cipher = Cipher()
+        //cipher.encryptMessage()
         
 //        let users = realm.objects(User)
 //        if users.count == 0 {
@@ -23,6 +23,4 @@ class ViewController: UIViewController {
         //DELETE THIS WHEN UNCOMMENT ^^^^^^^
         self.performSegueWithIdentifier("authSegue", sender: self)
     }
-
-    
 }

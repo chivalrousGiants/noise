@@ -110,7 +110,7 @@ class SocketIOManager: NSObject {
     
     // TODO: send encrypted message
     func sendEncryptedChat(message: AnyObject){
-        //print("newMessage", message)
+        print("sendEncryptedChat", message)
         socket.emit("send new message", message)
     }
     
