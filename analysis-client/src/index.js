@@ -7,10 +7,11 @@ const width = PRESENTATION_MODE ? 1280 : window.innerWidth;
 const height = PRESENTATION_MODE ? 720 : window.innerHeight;
 const pixelRatio = PRESENTATION_MODE ? 1 : window.devicePixelRatio;
 
-const ROOT_SPACING = 200;
-const NODE_SPREAD = 800;
-const ATTRACTOR_START_BOUND = 0.05 * width;
-const ATTRACTOR_FINISH_BOUND = 0.4 * width;
+const ROOT_SPACING = 800;
+const NODE_SPREAD = 1000;
+const CHILDREN_CONNECT_BOUND = 0.05 * width;
+const ATTRACTOR_START_BOUND = 0.4 * width;
+const ATTRACTOR_FINISH_BOUND = 0.7 * width;
 
 
 const canvas = document.querySelector("#canvas");
@@ -21,22 +22,12 @@ canvas.style.height = `${Math.floor(height)}px`;
 const context = canvas.getContext("2d");
 context.scale(pixelRatio, pixelRatio);
 
-// const simulation = d3.forceSimulation()
-//   .alphaTarget(1)
-//   .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.4))
-//   .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.001))
-//   .force("charge", d3.forceManyBody().strength(-1))
-//   .force("flowX", d3.forceX(3000).strength(0.0001))
-//   .force("keepInside", d3.forceY(width / 4).strength(0.0007))
 
 const rootNodes = generateFakeData();
-let allNodes = [];
-const allChildLinks = [];
-const allSiblingLinks = [];
 
 function generateFakeData() {
-  const NUM_ROOTS = 10;
-  const NUM_CHILDREN = 30;
+  const NUM_ROOTS = 30;
+  const NUM_CHILDREN = 80;
 
   return [...Array(NUM_ROOTS)].map((_, i) => {
     const id = String(i);
@@ -56,35 +47,36 @@ function generateFakeData() {
 
     node.simulation = d3.forceSimulation(node.children.concat(node))
       .alphaTarget(1)
-      .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.4))
-      .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.001))
-      .force("charge", d3.forceManyBody().strength(-1))
-      .force("flowX", d3.forceX(3000).strength(0.001))
-      .force("keepInside", d3.forceY(width / 4).strength(0.0007))
+      .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.04))
+      .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.0008))
+      .force("charge", d3.forceManyBody().strength(-18).distanceMax(80))
+      .force("flowX", d3.forceX(3000).strength(0.0004))
+      .force("keepInside", d3.forceY(width / 4).strength(0.0001))
     
-    node.childLinks = [];
-    node.siblingLinks = [];
-
     return node;
   });
 }
 
-function updateNodes() {
-  allNodes = rootNodes.slice();
-
-  rootNodes.forEach(node => {
-    node.simulation
-      .nodes(node.children.concat(node));
-    allNodes.push(node);
-  });
-}
-updateNodes();
+// function updateNodes() {
+//   Add/remove nodes as needed here
+// }
+// updateNodes();
 
 function updateLinks() {
   rootNodes.forEach(node => {
-    node.simulation
-      .force('childLink')
-      .links(node.childLinks);
+    if (node.childLinks.length !== node.children.length) {
+      debugger;
+      node.simulation
+        .force('childLink')
+        .links(node.childLinks);
+    } else {
+      // All children found, contract node
+      node.simulation
+        .force('childLink')
+        .links(node.childLinks)
+        .strength(0.3)
+        .distance(60);
+    }
 
     node.simulation
       .force('siblingLink')
@@ -95,36 +87,25 @@ function updateLinks() {
 function addChildLink(sourceID, targetID) {
   const link = { "source": `${sourceID}`, "target": `${targetID}`, value: 1 };
   rootNodes[sourceID].childLinks.push(link);
-  allChildLinks.push(link);
-}
-
-function addSiblingLinks(sourceID, targetID) {
-  const parentID = sourceID.split('_')[0];
-  const link = { "source": `${sourceID}`, "target": `${targetID}`, value: 1 };
-  rootNodes[parentID].siblingLinks.push(link);
-  allSiblingLinks.push(link);  
 }
 
 function updateLayout() {
   rootNodes.forEach(node => {
-    // debugger;
-    if (node.x > ATTRACTOR_START_BOUND) {
-      if (node.linkCount < node.children.length && Math.random() < 0.5) {
-        addChildLink(node.id, node.children[node.linkCount].id);
-        node.children[node.linkCount].isLinked = true;
-        node.linkCount++;
-      } else if (node.lintCount === node.children.length) {
+    if (node.siblingLinks.length < node.children.length && node.x > CHILDREN_CONNECT_BOUND) {
+      node.addNextSiblingLink();
+    } else if (node.siblingLinks.length === node.children.length) {
+      const nextChild = node.childLinks.length;
+      if (nextChild < node.children.length && Math.random() < 0.5) {
+        node.children[nextChild].isLinked = true;
+        addChildLink(node.id, node.children[nextChild].id);
+      } else if (node.linkCount === node.children.length) {
         
       }
     }
   });
   updateLinks();
 }
-setInterval(updateLayout, 100);
-
-rootNodes.forEach(node => {
-  node.connectChildren(addSiblingLinks);
-});
+setInterval(updateLayout, 20);
 
 d3.select(canvas)
   .call(d3.drag()
@@ -138,17 +119,17 @@ function ticked() {
   context.clearRect(0, 0, width * pixelRatio, height * pixelRatio);
 
   context.beginPath();
-  allSiblingLinks.forEach(drawLink);
+  rootNodes.forEach(node => node.siblingLinks.forEach(drawLink));
   context.strokeStyle = "#333";
   context.stroke();
 
   context.beginPath();
-  allChildLinks.forEach(drawLink);
+  rootNodes.forEach(node => node.childLinks.forEach(drawLink));
   context.strokeStyle = "#aaa";
   context.stroke();
 
   context.beginPath();
-  allNodes.forEach(drawNode);
+  rootNodes.forEach(node => { drawNode(node); node.children.forEach(drawNode) });
   context.fill();
   // context.strokeStyle = "#fff";
   // context.stroke();
@@ -158,7 +139,10 @@ function ticked() {
 window.requestAnimationFrame(ticked);
 
 function dragsubject() {
-  return rootNodes[0].simulation.find(d3.event.x, d3.event.y, 50);
+  for (let node of rootNodes) {
+    const foundNode = node.simulation.find(d3.event.x, d3.event.y, 50);
+    if (foundNode) return foundNode;
+  }
 }
 
 //////////////////////////////////////////////
@@ -166,7 +150,6 @@ function dragsubject() {
 function drawLink(d) {
   context.moveTo(d.source.x, d.source.y);
   context.lineTo(d.target.x, d.target.y);
-
 }
 
 function drawNode(d) {

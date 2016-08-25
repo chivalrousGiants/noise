@@ -4,20 +4,20 @@ class Node {
     this.str = str;
     this.x = x;
     this.y = y;
-    this.linkCount = 0;
     this.children = [];
+    this.childLinks = [];
+    this.siblingLinks = [];
   }
   
   addChild(child) {
     this.children.push(child);
   }
 
-  connectChildren(addSiblingLinks) {
-    const length = this.children.length;
-    this.children.forEach((child, i) => {
-      const nextIndex = i + 1 !== length ? i + 1 : 0;
-      addSiblingLinks(this.children[i].id, this.children[nextIndex].id);
-    });
+  addNextSiblingLink() {
+    const nextIndex = this.siblingLinks.length;
+    const targetIndex = nextIndex + 1 === this.children.length ? 0 : nextIndex + 1;
+    const link = { "source": `${this.children[nextIndex].id}`, "target": `${this.children[targetIndex].id}`, value: 1 };
+    this.siblingLinks.push(link);
   }
 }
 
