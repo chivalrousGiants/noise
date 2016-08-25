@@ -110,7 +110,7 @@ function signUp (user, clientSocket) {
 function checkUser(username, clientSocket) {
   redis.client.hgetAsync('users', username)
     .then(userID => {
-
+      //console.log('userID in checkUser is:', userID);
       // NULL is returned for non-existent key
       if (userID === null) {
         // Username does not exist
@@ -122,6 +122,8 @@ function checkUser(username, clientSocket) {
     .then(([user, userID]) => {
       
       // user will be null or an object
+      //console.log('user is', user);
+
       if (user !== null) {
         user.userID = userID;
       }

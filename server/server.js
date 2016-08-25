@@ -17,13 +17,14 @@ const dpDataIngestController = require('./differentialPrivacy/dpDataIngestContro
 const dpAnalysisController = require('./differentialPrivacy/dpAnalysisController.js');
 const dh = require('./dhKeyExchange.js');
 
+
 // HTTP
 app.get('/', (req, res) => {
   res.send('Hello world');
-});
+}); 
 
 http.listen(HTTP_PORT, () => {
-  console.log(`Listening on port ${HTTP_PORT}`);
+  //console.log(`Listening on port ${HTTP_PORT}`);
 });
 
 // Socket.io
@@ -34,6 +35,8 @@ const activeSocketConnections = require('./activeSocketConnections');
 io.on('connection', (clientSocket) => {
   console.log('A user connected with socket id', clientSocket.id);
 
+  //this is the time when I need to check for the key exchange.
+
   clientSocket.on('disconnect', () => {
 
     // if client was a logged-in active user, delete from activeConnections array
@@ -42,6 +45,7 @@ io.on('connection', (clientSocket) => {
     }
     console.log('A user disconnected with socket id', clientSocket.id);
   });
+
 
   /////////////////////////////////////////////////////////
   // Auth socket routes
@@ -73,18 +77,17 @@ io.on('connection', (clientSocket) => {
   clientSocket.on('send new message', (message) => {
     messageController.handleNewMessage(message, clientSocket);
   });
-
   /////////////////////////////////////////////////////////
   // Differential Privacy-related socket routes
   clientSocket.on('getDPParams', function() {
-    console.log('getDPParams requested by user', user);
+    //console.log('getDPParams requested by user', user);
 
     clientSocket.emit('DPParams', DPParams);
   });
 
 
   clientSocket.on('submitIRRReports', function(IRRReports) {
-    console.log('submitIRRReports data received from: ', user);
+    //console.log('submitIRRReports data received from: ', user);
 
     dpDataIngestController.IngestIRRReports(IRRReports)
       .then((replies) => {
@@ -95,12 +98,25 @@ io.on('connection', (clientSocket) => {
 
   /////////////////////////////////////////////////////////
   // Diffie Hellman Key Exchange-related socket routes
-  clientSocket.on('initial key query', (dhxObject) => {
-    dh.undertakeKeyExchange(dhxObject, clientSocket);
-  });
 
   clientSocket.on('check for pending key exchange', (dhxObject) => {
-    dh.commenceKeyExchange(dhxObject, clientSocket);
+    // console.log('hit server check for pending key exchange', dhxObject)
+    dh.routeKeyExchange(dhxObject, clientSocket);
+  });
+
+  clientSocket.on('commence part 2 key exchange', (dhxObject) => {
+    // console.log('hit commencepart 2 key exchange with ', dhxObject);
+    dh.performPart2BKeyExchange(dhxObject, clientSocket);
+  });
+
+  clientSocket.on('check need to init key exchange', (dhxObject) => {
+    dh.quickInitCheck(dhxObject, clientSocket);
+  });
+
+  clientSocket.on('initiate key exchange', (dhxObject) => {
+    dh.initKeyExchange(dhxObject, clientSocket);
   });
 
 });
+
+//TODO: export clientsocket

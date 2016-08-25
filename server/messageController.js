@@ -90,15 +90,16 @@ function retrieveNewMessages(userID, friends, clientSocket) {
   });
 
   Promise.all(getMsgIDsPromiseArray).then(returnValue => {
-    
+    /*
     ///////// Testing
     let cnt = 1;
-    console.log('returnValue is:', returnValue);
+    //console.log('returnValue is:', returnValue);
     returnValue.forEach(obj => {
       console.log(`returnValue for obj ${cnt}:`, obj);
       cnt++;
     });
-
+    */
+    
     clientSocket.emit('redis response for retrieveNewMessages', returnValue);
     
   })
