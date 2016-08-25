@@ -38,11 +38,13 @@ extension ChatViewController {
         self.senderId = UIDevice.currentDevice().identifierForVendor?.UUIDString
         self.senderDisplayName = UIDevice.currentDevice().identifierForVendor?.UUIDString
         
-        let friendInfoButton = UIBarButtonItem(title: "Info", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(friendInfoButtonTapped))
+        let friendInfoButton = UIBarButtonItem(title: "info", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(friendInfoButtonTapped))
         self.navigationItem.rightBarButtonItem = friendInfoButton
     }
     
     @objc func friendInfoButtonTapped() -> Void {
+        //self.performSegueWithIdentifier( sender: self)
+       self.presentViewController(UINavigationController(rootViewController: FriendInfoViewController()), animated: true, completion: nil)
     }
     
     func updateChatScreen() {
