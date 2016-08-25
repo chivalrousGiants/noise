@@ -1,18 +1,43 @@
 import UIKit
 import Locksmith
+import RealmSwift
 
 let reusableCell = "FriendInfoCell"
 
 class FriendInfoViewController: UITableViewController{
-    //friend info passed from chatview
+    let realm = try! Realm()
+    var friendInfo = Friend()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "info"
+        setUp()
+        print("printing friendInfo on friendinfo ", self.friendInfo)
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: reusableCell)
-
     }
-    
+}
+
+//navigation
+extension FriendInfoViewController {
+    func setUp() {
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(backButtonTapped))
+        navigationItem.leftBarButtonItem = backButton
+        
+        self.title = "info"
+    }
+    func backButtonTapped() {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+}
+
+//otherfunc
+extension FriendInfoViewController {
+    func generateWord(num: Int) -> Int {
+        return num % wordsArray.count
+    }
+}
+
+// UI configurations
+extension FriendInfoViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
@@ -39,27 +64,29 @@ class FriendInfoViewController: UITableViewController{
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reusableCell)
-     
+        
         switch indexPath.section {
         case 0:
             switch indexPath.row {
             case 0:
-                //call the friendObject to get the E key and pass it to the func below to get the word
-                //Locksmith.loadDataForUserAccount(noise: "\()")
-                cell!.textLabel?.text = wordsArray[generateWord(1194310654)]
-                cell?.textLabel?.center
+                let getUserID = realm.objects(User)[0]["userID"]
+                let dummySharedKey = 1194310654 // to be deleted when getUserKeyWorks
+                _ = Locksmith.loadDataForUserAccount("noise:'\(getUserID!["sharedKey"])")
+                
+                cell!.textLabel?.text = wordsArray[generateWord(dummySharedKey)]
+                
             default:
                 break
             }
         default:
-                break
-        
+            break
         }
         return cell!
     }
 }
 
-let wordsArray  = [ "nil",
+
+private let wordsArray  = [ "nil",
                     "academy",  "acrobat",  "active",   "actor",    "adam",     "admiral",
                     "adrian",   "africa",   "agenda",   "agent",    "airline",  "airport",
                     "aladdin",  "alarm",    "alaska",   "albert",   "albino",   "album",
@@ -346,10 +373,5 @@ let wordsArray  = [ "nil",
 //    }
 //    return wordIndexDictionary["\(inputWord)"]!
 //}
-
-
-func generateWord(num: Int) -> Int {
-    return num % wordsArray.count
-}
 
 //print(wordsArray[generateWord(1194310654)])

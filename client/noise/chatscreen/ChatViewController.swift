@@ -30,7 +30,7 @@ class ChatViewController: JSQMessagesViewController {
     }
 }
 
-//methods
+//Navigation methods
 extension ChatViewController {
     
     func setup() {
@@ -42,10 +42,19 @@ extension ChatViewController {
         self.navigationItem.rightBarButtonItem = friendInfoButton
     }
     
-    @objc func friendInfoButtonTapped() -> Void {
+    func friendInfoButtonTapped() -> Void {
         //self.performSegueWithIdentifier( sender: self)
-       self.presentViewController(UINavigationController(rootViewController: FriendInfoViewController()), animated: true, completion: nil)
+        let friendInfoViewController = FriendInfoViewController()
+        friendInfoViewController.friendInfo = self.friend
+        
+//        self.presentViewController(friendInfoViewController, animated: true, completion: nil)
+        
+        self.presentViewController(UINavigationController(rootViewController: friendInfoViewController), animated: true, completion: nil)
     }
+    
+    
+    
+    
     
     func updateChatScreen() {
         
@@ -53,7 +62,6 @@ extension ChatViewController {
             print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
         } else {
             self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
-            
             for realmMessage in self.messagesFromRealm {
                 let message = JSQMessage(senderId: String(realmMessage.sourceID), displayName: "sender display name", text: realmMessage.body)
                 self.messages += [message]
@@ -101,7 +109,7 @@ extension ChatViewController {
     }
 }
 
-//UI Methods
+//UI Configurations
 extension ChatViewController  {
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
