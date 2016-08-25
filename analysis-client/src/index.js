@@ -1,7 +1,7 @@
 import Node from './Node';
 import ChildNode from './ChildNode';
 
-const PRESENTATION_MODE = false;
+const PRESENTATION_MODE = true;
 
 const width = PRESENTATION_MODE ? 1280 : window.innerWidth;
 const height = PRESENTATION_MODE ? 720 : window.innerHeight;
@@ -21,72 +21,100 @@ canvas.style.height = `${Math.floor(height)}px`;
 const context = canvas.getContext("2d");
 context.scale(pixelRatio, pixelRatio);
 
-const simulation = d3.forceSimulation()
-  .alphaTarget(1)
-  .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.4))
-  .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.001))
-  .force("charge", d3.forceManyBody().strength(-1))
-  .force("flowX", d3.forceX(3000).strength(0.0001))
-  .force("keepInside", d3.forceY(width / 4).strength(0.0007))
+// const simulation = d3.forceSimulation()
+//   .alphaTarget(1)
+//   .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.4))
+//   .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.001))
+//   .force("charge", d3.forceManyBody().strength(-1))
+//   .force("flowX", d3.forceX(3000).strength(0.0001))
+//   .force("keepInside", d3.forceY(width / 4).strength(0.0007))
 
 const rootNodes = generateFakeData();
 let allNodes = [];
-let childLinks = [];
-let siblingLinks = [];
+const allChildLinks = [];
+const allSiblingLinks = [];
 
 function generateFakeData() {
   const NUM_ROOTS = 10;
   const NUM_CHILDREN = 30;
 
   return [...Array(NUM_ROOTS)].map((_, i) => {
-    const node = new Node(String(i), `v${i}`, 0 - (i * ROOT_SPACING) - NODE_SPREAD * 0.5, height / 2);
+    const id = String(i);
+    const str = `v${i}`;
+    const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * 0.5 + 1000;
+    const y = height / 2;
+    const node = new Node(id, str, x, y);
 
     [...Array(NUM_CHILDREN)].forEach((_, j) => {
       const id = `${node.id}_${j}`;
       const str = chance.string().slice(0, 5);
-      const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * Math.random();
+      const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * Math.random() + 1000;
       const y = height * Math.random();
       const child = new ChildNode(id, str, x, y, node);
       node.addChild(child);
     });
+
+    node.simulation = d3.forceSimulation(node.children.concat(node))
+      .alphaTarget(1)
+      .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.4))
+      .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.001))
+      .force("charge", d3.forceManyBody().strength(-1))
+      .force("flowX", d3.forceX(3000).strength(0.001))
+      .force("keepInside", d3.forceY(width / 4).strength(0.0007))
+    
+    node.childLinks = [];
+    node.siblingLinks = [];
 
     return node;
   });
 }
 
 function updateNodes() {
-  allNodes = rootNodes.reduce((all, node) => all.concat(node.children), rootNodes);
-  simulation
-    .nodes(allNodes)
-    .on("tick", ticked);
+  allNodes = rootNodes.slice();
+
+  rootNodes.forEach(node => {
+    node.simulation
+      .nodes(node.children.concat(node));
+    allNodes.push(node);
+  });
 }
 updateNodes();
 
 function updateLinks() {
-  simulation.force("childLink")
-    .links(childLinks);
-  simulation.force("siblingLink")
-    .links(siblingLinks);
+  rootNodes.forEach(node => {
+    node.simulation
+      .force('childLink')
+      .links(node.childLinks);
+
+    node.simulation
+      .force('siblingLink')
+      .links(node.siblingLinks);
+  });
 }
 
 function addChildLink(sourceID, targetID) {
-  childLinks.push({ "source": `${sourceID}`, "target": `${targetID}`, value: 1 });
+  const link = { "source": `${sourceID}`, "target": `${targetID}`, value: 1 };
+  rootNodes[sourceID].childLinks.push(link);
+  allChildLinks.push(link);
 }
 
 function addSiblingLinks(sourceID, targetID) {
-  siblingLinks.push({ "source": `${sourceID}`, "target": `${targetID}`, value: 1 });
+  const parentID = sourceID.split('_')[0];
+  const link = { "source": `${sourceID}`, "target": `${targetID}`, value: 1 };
+  rootNodes[parentID].siblingLinks.push(link);
+  allSiblingLinks.push(link);  
 }
 
 function updateLayout() {
   rootNodes.forEach(node => {
+    // debugger;
     if (node.x > ATTRACTOR_START_BOUND) {
       if (node.linkCount < node.children.length && Math.random() < 0.5) {
         addChildLink(node.id, node.children[node.linkCount].id);
         node.children[node.linkCount].isLinked = true;
         node.linkCount++;
       } else if (node.lintCount === node.children.length) {
-        // collapse node
-
+        
       }
     }
   });
@@ -107,15 +135,15 @@ d3.select(canvas)
     .on("end", dragended));
 
 function ticked() {
-  context.clearRect(0, 0, width * 2, height * 2);
+  context.clearRect(0, 0, width * pixelRatio, height * pixelRatio);
 
   context.beginPath();
-  siblingLinks.forEach(drawLink);
+  allSiblingLinks.forEach(drawLink);
   context.strokeStyle = "#333";
   context.stroke();
 
   context.beginPath();
-  childLinks.forEach(drawLink);
+  allChildLinks.forEach(drawLink);
   context.strokeStyle = "#aaa";
   context.stroke();
 
@@ -124,10 +152,13 @@ function ticked() {
   context.fill();
   // context.strokeStyle = "#fff";
   // context.stroke();
+  window.requestAnimationFrame(ticked);
 }
 
+window.requestAnimationFrame(ticked);
+
 function dragsubject() {
-  return simulation.find(d3.event.x, d3.event.y, 50);
+  return rootNodes[0].simulation.find(d3.event.x, d3.event.y, 50);
 }
 
 //////////////////////////////////////////////
