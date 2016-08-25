@@ -18,19 +18,22 @@ extension Int {
         return prime
     }
     
-    func gCreate () -> UInt32 {
-        let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
-       // print("g is", g)
-        return g
-    }
     func pCreate () -> UInt32 {
         return UnsafePointer<UInt32>(generateRandomPrime()).memory
     }
-    func aAliceCreate ( ) -> UInt32 {
-        return UnsafePointer<UInt32>(generateRandomPrime()).memory
+    
+    func gCreate (p: UInt32) -> UInt32 {
+        let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
+       // print("g is", g)
+        return  g % p
     }
-    func bBobCreate () -> UInt32 {
-        return UnsafePointer<UInt32>(generateRandomPrime()).memory
+    func aAliceCreate (p: UInt32) -> UInt32 {
+        let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
+        return (randomPrime % (p-1))
+    }
+    func bBobCreate (p: UInt32) -> UInt32 {
+        let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
+        return (randomPrime % (p-1))
     }
     func eCreate (g: UInt32, mySecret: UInt32, p: UInt32) -> UInt32 {
         return (g^mySecret) % p
@@ -41,9 +44,9 @@ extension Int {
     
     func alicify (userID:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
-        let g_Alice = 666.gCreate()
         let p_Alice = 666.pCreate()
-        let a_Alice = 666.aAliceCreate()
+        let g_Alice = 666.gCreate(p_Alice)
+        let a_Alice = 666.aAliceCreate(p_Alice)
         let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
         
         //build Alice
@@ -71,10 +74,10 @@ extension Int {
     }
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
         //compute DHX numbers
-        let b_Bob = 666.bBobCreate()
+        let p_computational = UInt32(p as! String)
+        let b_Bob = 666.bBobCreate(p_computational!)
         let g_computational = UInt32(g as! String)
         let E_Alice_computational = UInt32(E_Alice as! String)
-        let p_computational = UInt32(p as! String)
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
         //print("sharedSecret izzzzz \(sharedSecret)")
