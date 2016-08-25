@@ -37,6 +37,12 @@ extension ChatViewController {
         self.title = self.friend.username
         self.senderId = UIDevice.currentDevice().identifierForVendor?.UUIDString
         self.senderDisplayName = UIDevice.currentDevice().identifierForVendor?.UUIDString
+        
+        let friendInfoButton = UIBarButtonItem(title: "Info", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(friendInfoButtonTapped))
+        self.navigationItem.rightBarButtonItem = friendInfoButton
+    }
+    
+    @objc func friendInfoButtonTapped() -> Void {
     }
     
     func updateChatScreen() {
@@ -143,5 +149,7 @@ extension ChatViewController {
     
     override func didPressAccessoryButton(sender: UIButton!) {
     }
+    
+    
 }
 
