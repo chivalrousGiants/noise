@@ -84,7 +84,6 @@ function performPart3KeyExchange(dhxObject, clientSocket) {
   redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE')
   .then((bobE) => {
   	dhxObject["bobE"] = bobE;
-
   	return redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'pAlice');
   })
 	.then((pAlice) => {

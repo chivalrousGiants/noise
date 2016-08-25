@@ -8,16 +8,19 @@
 
 import Foundation
 import CryptoSwift
+import Locksmith
 
 class Cipher: NSObject {
     
-    let key = "secret0key000000" // 16 or 32 bytes (our sharedSecret should be in UInt32
-    let iv = "0123456789012345" // 16 or 32 bytes
+    let key = "secret0key000000" // 16 (128 bit) or 32 bytes (256 bits) (our sharedSecret is in UInt32)
+    
+    var sharedSecret: String = ""
+
+    let iv = "01234567" // 8 or 16 bytes (TODO: randomize)
     
     let str = "in the jungle, the mighty jungle"
     var strToUInt8Array: Array<UInt8> = []
-    
-    //let message: Array<UInt8> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
     var encrypted: Array<UInt8> = []
     var decrypted: Array<UInt8> = []
     
@@ -26,16 +29,20 @@ class Cipher: NSObject {
     }
     
     func encryptMessage() -> Void {
-        for codeUnit in str.utf8 {
-            strToUInt8Array.append(codeUnit)
-        }
-        encrypted = try! ChaCha20(key: self.key, iv: self.iv)!.encrypt(strToUInt8Array)
+        //print("cipher locksmith", Locksmith.loadDataForUserAccount("noise:1")!)
+        //print("cipher locksmith 2", Locksmith.loadDataForUserAccount("noise:1")!["sharedSecret"]!)
+        
+        sharedSecret = String(Locksmith.loadDataForUserAccount("noise:1")!["sharedSecret"]!)
+        
+        strToUInt8Array = [UInt8](str.utf8)
+        
+        encrypted = try! ChaCha20(key: self.sharedSecret, iv: self.iv)!.encrypt(strToUInt8Array)
         print("encrypted:", encrypted)
         decryptMessage()
     }
     
     func decryptMessage() -> Void {
-        decrypted = try! ChaCha20(key: self.key, iv: self.iv)!.decrypt(encrypted)
+        decrypted = try! ChaCha20(key: self.sharedSecret, iv: self.iv)!.decrypt(encrypted)
         print("decrypted UInt8 Array:", decrypted)
         
         let data = NSData(bytes: decrypted)

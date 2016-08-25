@@ -54,7 +54,7 @@ class SocketIOManager: NSObject {
         ///////////////////////////////////////
         /////////// DHKeyExchange routes
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
-            //print("KeyExchange complete", dhxInfo[0])
+            print("redis response KeyExchange complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
@@ -69,8 +69,8 @@ class SocketIOManager: NSObject {
         }
         
         socket.on("redis response retreived intermediary dhxInfo") { (dhxInfo, socketAck) -> Void in
-           // print("retreived stage1 dhxInfo", dhxInfo[0])
-             NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
+            // print("retreived stage1 dhxInfo", dhxInfo[0])
+            NSNotificationCenter.defaultCenter().postNotificationName("computeBob", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response Bob complete, Alice still pending") { (dhxInfo, socketAck) -> Void in
@@ -125,7 +125,7 @@ class SocketIOManager: NSObject {
     }
     
     func checkNeedToInitKeyExchange (dhxInfo: Dictionary<String, AnyObject>){
-      //  print("hit checkNeedtoInitKeyExchanged on way to server")
+        // print("hit checkNeedtoInitKeyExchanged on way to server")
         socket.emit("check need to init key exchange", dhxInfo)
     }
     
@@ -134,12 +134,12 @@ class SocketIOManager: NSObject {
     }
     
     func checkForPendingKeyExchange (dhxInfo: Dictionary<String, AnyObject>) {
-        //print("on loading of friendList check for pending key exchange")
-           socket.emit("check for pending key exchange", dhxInfo)
+        // print("on loading of friendList check for pending key exchange")
+        socket.emit("check for pending key exchange", dhxInfo)
     }
     
     func commencePart2KeyExchange (bob: Dictionary<String, AnyObject>) {
-       // print("hit commencePt2 keyX w \(bob)")
+        // print("hit commencePt2 keyX w \(bob)")
         socket.emit("commence part 2 key exchange", bob)
     }
     

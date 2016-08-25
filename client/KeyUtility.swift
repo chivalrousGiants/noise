@@ -102,39 +102,43 @@ extension Int {
         //TODO: create alice user account i keychain
         //store bobKeys in keychain : need privateSecret*, E, p
         do {
-            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
+            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"]!)")
         } catch {
-           //print("could not save alice data in keychain")
+            print("could not save alice data in keychain")
         }
-        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice pt1:\(alice["friendID"]) dictionary is \(dictionary)")
+
+        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
+        print("Alice keychain for pt1, noise:\(alice["friendID"]!) is \(dictionary)")
     }
     
 
     func aliceKeyChainPt2 (alice: Dictionary<String,AnyObject>) -> Void {
         //add or overwrite alice keys in keychain : need E, sharedSecret
         do {
-            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"])")
+            try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"]!)")
         } catch {
-           // print("could not amend alice data in keychain")
+            // print("could not amend alice data in keychain")
         }
+
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
-        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
-        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
-        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Alice's keychain for pt2, noise:\(alice["friendID"]!) is \(dictionary)")
+//        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+//        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+//        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
-        //store bobKeys in keychain : need E, sharedSecret
+        // store bobKeys in keychain : need E, sharedSecret
         do {
-            try Locksmith.updateData(bob, forUserAccount: "noise:\(bob["friendID"])")
+            try Locksmith.updateData(bob, forUserAccount: "noise:\(bob["friendID"]!)")
         } catch {
-          //  print ("could not save bob data in keychain")
+            // print ("could not save bob data in keychain")
         }
+
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        print("BobKeyChain dictionary is \(dictionary)")
-        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Bob's keychain for noise:\(bob["friendID"]!) is \(dictionary)")
+//        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
+
     }
-    
+
 }

@@ -138,19 +138,26 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-       // print("KX complete for both A and B with dhxInfo", dhxInfo)
+        print("KX complete for both A and B with dhxInfo", dhxInfo)
         
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
+
         print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
-        
+
+//        print("Alice's Locksmith for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
+//        print("Alice's Locksmith 2 for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"])
+//        print("Alice's Locksmith 3 for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!)
+
         let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))
 
         var Alice :[String:AnyObject] = [:]
         Alice["E"] = dhxInfo!["eAlice"]
-        Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+        Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!,
+            mySecret: aliceSecret!,
+            p: p_computational!))
         Alice["friendID"] = friendID
         
         //TOOD: abstract this to another function call... pass in a cb, call cb on Allice.
