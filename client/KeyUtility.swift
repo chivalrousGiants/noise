@@ -14,13 +14,13 @@ extension Int {
     func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
         let bigNum = BN_new()
         let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
-       print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+       //print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
         return prime
     }
     
     func gCreate () -> UInt32 {
         let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
-        print("g is", g)
+       // print("g is", g)
         return g
     }
     func pCreate () -> UInt32 {
