@@ -19,7 +19,7 @@ canvas.width = width * pixelRatio;
 canvas.height = height * pixelRatio;
 canvas.style.width = `${Math.floor(width)}px`;
 canvas.style.height = `${Math.floor(height)}px`;
-const context = canvas.getContext("2d");
+const context = canvas.getContext("2d", {alpha: false});
 context.scale(pixelRatio, pixelRatio);
 
 
@@ -32,14 +32,14 @@ function generateFakeData() {
   return [...Array(NUM_ROOTS)].map((_, i) => {
     const id = String(i);
     const str = `v${i}`;
-    const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * 0.5 + 1000;
+    const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD;
     const y = height / 2;
     const node = new Node(id, str, x, y);
 
     [...Array(NUM_CHILDREN)].forEach((_, j) => {
       const id = `${node.id}_${j}`;
       const str = chance.string().slice(0, 5);
-      const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * Math.random() + 1000;
+      const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * Math.random();
       const y = height * Math.random();
       const child = new ChildNode(id, str, x, y, node);
       node.addChild(child);
@@ -65,7 +65,6 @@ function generateFakeData() {
 function updateLinks() {
   rootNodes.forEach(node => {
     if (node.childLinks.length !== node.children.length) {
-      debugger;
       node.simulation
         .force('childLink')
         .links(node.childLinks);
@@ -155,7 +154,7 @@ function drawLink(d) {
 function drawNode(d) {
   context.moveTo(d.x, d.y);
   context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-  context.font = "16px Helvetica Neue";
+  context.font = "16px MyriadPro-Regular";
   context.fillStyle = '#aaa';
   context.fillText(d.str, d.x - 25, d.y + 10);  // TEXT
 }
