@@ -36,7 +36,6 @@ class SocketIOManager: NSObject {
         /////////// Messages Routes
         socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
             print("successfully sent new message", messageArray)
-            print("sent message", messageArray[0])
             
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
         }

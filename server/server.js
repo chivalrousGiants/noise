@@ -75,6 +75,7 @@ io.on('connection', (clientSocket) => {
   });
 
   clientSocket.on('send new message', (message) => {
+    console.log('send new message arrived with', message)
     messageController.handleNewMessage(message, clientSocket);
   });
   /////////////////////////////////////////////////////////

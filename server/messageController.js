@@ -109,7 +109,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
 
 /*
   Input Parameters
-    message = { sourceID, targetID, body, createdAt }
+    message = { sourceID, targetID, encryptedbody(UInt8 array), createdAt }
 
   Return value
     TO: clientSocket

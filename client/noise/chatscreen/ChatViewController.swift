@@ -68,6 +68,9 @@ extension ChatViewController {
     
     @objc func handleNewMessage(notification: NSNotification) -> Void {
         let userInfo = notification.userInfo!
+        
+        print("userInfo in handleNewMessage", userInfo)
+        
         let sourceID = userInfo["sourceID"] as? Int
         let message = Message()
         
@@ -76,6 +79,9 @@ extension ChatViewController {
             if (sourceID == self.friend.friendID) {
                 message.sourceID = sourceID!
                 message.targetID = userInfo["targetID"] as! Int
+                
+                // userInfo["body"] is of type '_NSInlineData'
+                
                 message.body = userInfo["body"] as! String
                 message.messageID = Int((userInfo["messageID"] as! NSString).doubleValue)
                 message.createdAt = userInfo["createdAt"] as! Int
@@ -150,16 +156,23 @@ extension ChatViewController {
             keyToUInt8Array.append(0)
         }
         
-        let encryptedText: Array<UInt8> = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.encrypt([UInt8](text.utf8))
+        let encryptedUInt8Array: Array<UInt8> = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.encrypt([UInt8](text.utf8))
         
+        // TODO: account for sending serveral messages in rapid succession (newMessage will be overwritten for now)
         self.newMessage = [
             "sourceID" : realm.objects(User)[0].userID,
             "targetID" : self.friend.friendID,
-            "body"     : encryptedText as! AnyObject
+            "body"     : text
+        ]
+        
+        let encryptedMessage = [
+            "sourceID" : realm.objects(User)[0].userID,
+            "targetID" : self.friend.friendID,
+            "body"     : NSData(bytes: encryptedUInt8Array)
         ]
         
         // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
-        SocketIOManager.sharedInstance.sendEncryptedChat(newMessage)
+        SocketIOManager.sharedInstance.sendEncryptedChat(encryptedMessage)
 
         //let message = JSQMessage(senderId: senderId, senderDisplayName: senderDisplayName, date: date, text: text)
         //self.messages += [message]
