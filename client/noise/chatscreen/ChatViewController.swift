@@ -101,7 +101,7 @@ extension ChatViewController {
             let conversationHistory = realm.objects(Conversation).filter("friendID = \(self.friend.friendID)")[0]
             conversationHistory.largestMessageID = message.messageID
             conversationHistory.messages.append(message)
-            print("successfuly append \(message) in history", conversationHistory)
+            
             // TODO: optimize such that only new message is loaded.
             updateChatScreen()
         }
@@ -145,7 +145,8 @@ extension ChatViewController {
 
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         // Encrypt message
-        let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
+        //let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
+        let key = "3438466385"
         print("In CCVC sharedSecret for encryption of new message:", key)
         
         var keyToUInt8Array = [UInt8](key.utf8)
@@ -157,6 +158,7 @@ extension ChatViewController {
         }
         
         let encryptedUInt8Array: Array<UInt8> = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.encrypt([UInt8](text.utf8))
+        print("encryptedUInt8Array", encryptedUInt8Array)
         
         // TODO: account for sending serveral messages in rapid succession (newMessage will be overwritten for now)
         self.newMessage = [
@@ -165,7 +167,7 @@ extension ChatViewController {
             "body"     : text
         ]
         
-        let encryptedMessage = [
+        let encryptedMessage: [String:AnyObject] = [
             "sourceID" : realm.objects(User)[0].userID,
             "targetID" : self.friend.friendID,
             "body"     : NSData(bytes: encryptedUInt8Array)

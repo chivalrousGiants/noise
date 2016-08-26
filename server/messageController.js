@@ -90,7 +90,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
   });
 
   Promise.all(getMsgIDsPromiseArray).then(returnValue => {
-    /*
+
     ///////// Testing
     let cnt = 1;
     //console.log('returnValue is:', returnValue);
@@ -98,7 +98,6 @@ function retrieveNewMessages(userID, friends, clientSocket) {
       console.log(`returnValue for obj ${cnt}:`, obj);
       cnt++;
     });
-    */
     
     clientSocket.emit('redis response for retrieveNewMessages', returnValue);
     
@@ -127,10 +126,12 @@ function handleNewMessage(message, clientSocket) {
 
       let timeStamp = Date.now();
 
+      console.log('message body to String utf8', message.body.toString('hex'));
+
       redis.client.hmset(`msgs:${msgID}`, [
         'sourceID', message.sourceID,
         'targetID', message.targetID,
-        'body', message.body,
+        'body', message.body.toString('hex'),
         'createdAt', `${timeStamp}`
       ]);
 

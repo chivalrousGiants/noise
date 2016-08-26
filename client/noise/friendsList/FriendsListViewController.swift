@@ -1,10 +1,14 @@
 import UIKit
 import RealmSwift
 import Locksmith
+import CryptoSwift
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet var friendsTableView: UITableView!
     let realm = try! Realm()
+    
+    let iv: Array<UInt8> = [0, 1, 2, 3, 4, 5, 6, 7]
+    
     var friends : Results<Friend>?
     var clientMustInitiate = false
     var friendToChat : AnyObject!
@@ -18,7 +22,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         //print("FLVC viewDidLoad");
         
         // on each page load query redis for pending key exchanges
-        SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
+        // SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
 
         // handle completion of key exchanges (cE 1 -> NE) triggered on pageload
         NSNotificationCenter.defaultCenter().addObserver(
@@ -96,7 +100,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
-
     // NOTIFICATION CENTER FUNCTIONS
     
     @objc func handleWait(notification: NSNotification) -> Void {
@@ -214,8 +217,37 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     newMessage.targetID = Int(message!["targetID"]!)!
                     newMessage.createdAt = Int(message!["createdAt"]!)!
                     newMessage.messageID = Int(message!["msgID"]!)!
-                    newMessage.body = message!["body"]!
-                  
+                    
+                    
+                    // Decrypt message
+                    let nsData = message!["body"]!.dataFromHexadecimalString()
+                    print("message body before decrypt", nsData)
+                    
+                    let count = nsData!.length / sizeof(UInt8)
+                    var nsDataToUInt8Array = [UInt8](count: count, repeatedValue: 0)
+                    nsData!.getBytes(&nsDataToUInt8Array, length: count * sizeof(UInt8))
+                    
+                    print("NSdata to UInt8Array", nsDataToUInt8Array)
+                    
+//                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"])")!["sharedSecret"]!)
+//                    print("In FLVC sharedSecret for decryption of new messages:", key)
+                    
+                    var keyToUInt8Array = [UInt8]("3438466385".utf8)
+                    
+                    // pad keyToUInt8Array to 32 bytes
+                    let initialLength = 32 - keyToUInt8Array.count
+                    for _ in 1...initialLength {
+                        keyToUInt8Array.append(0)
+                    }
+
+                    let decryptedUInt8Array = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.decrypt(nsDataToUInt8Array)
+                    print("decrypted UInt8 Array:", decryptedUInt8Array)
+
+                    let decryptedMessage = String(data: NSData(bytes: decryptedUInt8Array), encoding: NSUTF8StringEncoding)!
+                    print("decrypted message is:", decryptedMessage)
+                    
+                    newMessage.body = decryptedMessage
+
                     try! realm.write{
                         // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
                         let friendID = Int((messageObject["friendID"] as! NSString).doubleValue)
@@ -296,3 +328,28 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
 }
+
+// STRING TO NSDATA EXTENSION
+
+extension String {
+    
+    /// Create `NSData` from hexadecimal string representation
+    ///
+    /// This takes a hexadecimal representation and creates a `NSData` object. Note, if the string has any spaces or non-hex characters (e.g. starts with '<' and with a '>'), those are ignored and only hex characters are processed.
+    ///
+    /// - returns: Data represented by this hexadecimal string.
+    
+    func dataFromHexadecimalString() -> NSData? {
+        let data = NSMutableData(capacity: characters.count / 2)
+        
+        let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .CaseInsensitive)
+        regex.enumerateMatchesInString(self, options: [], range: NSMakeRange(0, characters.count)) { match, flags, stop in
+            let byteString = (self as NSString).substringWithRange(match!.range)
+            var num = UInt8(byteString, radix: 16)
+            data?.appendBytes(&num, length: 1)
+        }
+        
+        return data
+    }
+}
+
