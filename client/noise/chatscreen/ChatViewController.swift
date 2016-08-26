@@ -30,22 +30,29 @@ class ChatViewController: JSQMessagesViewController {
     }
 }
 
-//methods
+//Navigation methods
 extension ChatViewController {
     
     func setup() {
         self.title = self.friend.username
         self.senderId = UIDevice.currentDevice().identifierForVendor?.UUIDString
         self.senderDisplayName = UIDevice.currentDevice().identifierForVendor?.UUIDString
+        
+        let friendInfoButton = UIBarButtonItem(title: "info", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(friendInfoButtonTapped))
+        self.navigationItem.rightBarButtonItem = friendInfoButton
+    }
+    
+    func friendInfoButtonTapped() -> Void {
+        let friendInfoViewController = FriendInfoViewController()
+        friendInfoViewController.friendInfo = self.friend
+        self.presentViewController(UINavigationController(rootViewController: friendInfoViewController), animated: true, completion: nil)
     }
     
     func updateChatScreen() {
-        
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
         } else {
             self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
-            
             for realmMessage in self.messagesFromRealm {
                 let message = JSQMessage(senderId: String(realmMessage.sourceID), displayName: "sender display name", text: realmMessage.body)
                 self.messages += [message]
@@ -55,7 +62,6 @@ extension ChatViewController {
     }
     
     @objc func handleNewMessage(notification: NSNotification) -> Void {
-        
         let userInfo = notification.userInfo!
         let sourceID = userInfo["sourceID"] as? Int
         let message = Message()
@@ -93,7 +99,7 @@ extension ChatViewController {
     }
 }
 
-//UI Methods
+//UI Configurations
 extension ChatViewController  {
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -125,7 +131,7 @@ extension ChatViewController  {
 }
 
 extension ChatViewController {
-    
+
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         self.newMessage = [
             "sourceID" : realm.objects(User)[0].userID,

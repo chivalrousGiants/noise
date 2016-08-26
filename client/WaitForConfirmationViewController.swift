@@ -1,11 +1,3 @@
-//
-//  WaitForConfirmationViewController.swift
-//  noise
-//
-//  Created by Hannah Brannan on 8/18/16.
-//  Copyright © 2016 Chivalrous Giants. All rights reserved.
-//
-
 import UIKit
 
 class WaitForConfirmationViewController: UIViewController {
@@ -34,3 +26,4 @@ class WaitForConfirmationViewController: UIViewController {
     }
 
 }
+
