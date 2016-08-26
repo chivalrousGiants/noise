@@ -22,6 +22,27 @@ canvas.style.height = `${Math.floor(height)}px`;
 const context = canvas.getContext("2d", {alpha: false});
 context.scale(pixelRatio, pixelRatio);
 
+const topWords = [
+  'Agar.io',
+  'Paris',
+  'National Dog Day',
+  'Julius Buckley',
+  'Hillary',
+  'Trump Sucks',
+  'Aaliyah',
+  'Hack Reactor',
+  'Jae Shin',
+  'Ryan Hanzawa',
+  'MDLC',
+  'HannahB',
+  'Supreme Court',
+  'North Korea',
+  'Warriors',
+  'Triggered',
+  'Flights',
+  'Speed Test',
+  'Brexit',
+];
 
 const rootNodes = generateFakeData();
 
@@ -31,7 +52,7 @@ function generateFakeData() {
 
   return [...Array(NUM_ROOTS)].map((_, i) => {
     const id = String(i);
-    const str = `v${i}`;
+    const str = topWords[i % (topWords.length - 1)];
     const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD;
     const y = height / 2;
     const node = new Node(id, str, x, y);
@@ -153,8 +174,8 @@ function drawLink(d) {
 
 function drawNode(d) {
   context.moveTo(d.x, d.y);
-  context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-  context.font = "16px MyriadPro-Regular";
+  // context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+  context.font = "16px MyriadPro-Light";
   context.fillStyle = '#aaa';
   context.fillText(d.str, d.x - 25, d.y + 10);  // TEXT
 }
