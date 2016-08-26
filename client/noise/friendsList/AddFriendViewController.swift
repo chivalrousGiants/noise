@@ -32,8 +32,7 @@ class AddFriendViewController: UIViewController {
     }
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
-        
-        //print("friendObj", notification.userInfo)
+        // print("friendObj", notification.userInfo)
         
         if let userObj = notification.userInfo {
             
@@ -55,11 +54,9 @@ class AddFriendViewController: UIViewController {
         }
         
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        
-        // Testing
-        //print("Friends list:", realm.objects(Friend))
-        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "checkUser", object: nil)
+
+        // print("Friends list:", realm.objects(Friend))
     }
     
     func displayAlertMessage(message: String) {

@@ -1,10 +1,15 @@
 import UIKit
 import RealmSwift
 import Locksmith
+import CryptoSwift
 
 class FriendsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet var friendsTableView: UITableView!
     let realm = try! Realm()
+    
+    // Must be 8 or 16 bytes (TODO: randomize for stronger encryption)
+    let iv: Array<UInt8> = [0, 1, 2, 3, 4, 5, 6, 7]
+    
     var friends : Results<Friend>?
     var clientMustInitiate = false
     var friendToChat : AnyObject!
@@ -15,9 +20,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         
-        //print("FLVC viewDidLoad");
-        
-        // on each page load query redis for pending key exchanges
+        // on each page load query Redis for pending key exchanges
         SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
 
         // handle completion of key exchanges (cE 1 -> NE) triggered on pageload
@@ -60,7 +63,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //collect informatino about user & friend
+        // collect information about user & friend
         self.friendToChat = self.friends![indexPath.row]
         let friendID = Int((self.friendToChat["friendID"])!!.doubleValue)
         let userID = realm.objects(User)[0]["userID"]!
@@ -71,9 +74,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let convoWithThisFriend = realm.objects(Conversation.self).filter("friendID = \(friendID)")
 
         if (convoWithThisFriend.isEmpty){
-            // check to see if if dhX process already initiated, handle results asynchronously
-            // print("friendClick -> checking to see if dhx initNeeded")
-            
             // initiate dhKeyExchange after clicking friend's name
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
@@ -96,8 +96,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
-
-    // NOTIFICATION CENTER FUNCTIONS
+    ////// NOTIFICATION CENTER FUNCTIONS
     
     @objc func handleWait(notification: NSNotification) -> Void {
         self.performSegueWithIdentifier("friendsListToWaitSegue", sender: self)
@@ -116,14 +115,12 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     @objc func handleKeyExchangeInit (notification:NSNotification) -> Void  {
         let userInfo = notification.userInfo
 
-        // Pass (userID&name, friendID&name) from friends_list_selection to label storage structures. Generate alice a, p, g, E.
+        // Pass (userID, friendID) from friends_list_selection to label storage structures. Generate alice a, p, g, E.
         // Keychain (Locksmith) store; a, p, E in for later use / secrecy.
         // Redis call: pass IDs & p,g,E to redis for Bob to identify & access.
         let Alice = 666.alicify(userInfo!["userID"]!, friendID: userInfo!["friendID"]!)
-        // print("Initiate keyExchange (Alice) bringing info: \(Alice)")
         
-       // Add listener:
-            // wait for confirmation that Alice to placed init info in redis
+        // wait for confirmation that Alice placed init info in redis
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handlePursuingKeyExchange),
@@ -138,26 +135,25 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @objc func handleCompletedKeyExchange(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-       // print("KX complete for both A and B with dhxInfo", dhxInfo)
+        print("KX complete for both A and B with dhxInfo", dhxInfo)
         
         let eBob_computational = UInt32(dhxInfo!["bobE"] as! String)
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-        print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
-        
-        let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))
+        let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID!)")!["a_Alice"]!))
 
-        var Alice :[String:AnyObject] = [:]
-        Alice["E"] = dhxInfo!["eAlice"]
-        Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
+        var Alice :[String : AnyObject] = [:]
         Alice["friendID"] = friendID
+        Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!,
+            mySecret: aliceSecret!,
+            p: p_computational!))
         
-        //TOOD: abstract this to another function call... pass in a cb, call cb on Allice.
+        // print("Alice's sharedSecret is", Alice["sharedSecret"]!)
+        
+        // Update Alice's KeyChain with newly computed sharedSecret
         666.aliceKeyChainPt2(Alice)
-        
-        print(Alice)
-        // initialize convo object
+
         initializeConvoObj(Int(friendID as! String)!)
         
         // Remove listener
@@ -166,8 +162,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
     @objc func computeBob(notification:NSNotification) -> Void {
         let dhxInfo = notification.userInfo
-       // print("dhx info inside of compute bob is \(dhxInfo!)")
-
         let Bob = 666.bobify(dhxInfo!["userID"]!, friendID: dhxInfo!["friendID"]!, E_Alice: dhxInfo!["eAlice"]!, p: dhxInfo!["pAlice"]!, g: dhxInfo!["gAlice"]!)
         
         // fired after Bob completes Part2BKeyExchange
@@ -179,19 +173,14 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         SocketIOManager.sharedInstance.commencePart2KeyExchange(Bob)
         
-        // Remove listener
-        // TODO (complicated because we need listener for all pending keychanges)
-
+        // TODO: Remove NS listener (complicated because we need listener for all pending keychanges)
     }
     
     @objc func handleBobComplete (notification:NSNotification) -> Void {
-        //print("hit BobComplete function")
-        
-        //instantiate Realm Chat
+        // initialize Realm Conversation
         initializeConvoObj(Int(notification.userInfo!["friendID"] as! String)!)
         
-        // Remove listener
-        // TODO (complicated because we need listener for all pending keychanges)
+        // TODO: Remove NS listener (complicated because we need listener for all pending keychanges)
     }
 
     @objc func handleRetrievedMessages(notification: NSNotification) -> Void {
@@ -199,7 +188,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         
         for messageObject in retrievedMsgs! {
             if let messages = messageObject["messages"] as? NSArray {
-                
                 for message in messages {
                     let message = message as? Dictionary<String, String>
                     let newMessage = Message()
@@ -207,8 +195,36 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     newMessage.targetID = Int(message!["targetID"]!)!
                     newMessage.createdAt = Int(message!["createdAt"]!)!
                     newMessage.messageID = Int(message!["msgID"]!)!
-                    newMessage.body = message!["body"]!
-                  
+                    
+                    ////// Decrypt message
+                    
+                    // Convert NSData to Array<UInt8>
+                    let nsData = message!["body"]!.dataFromHexadecimalString()
+                    let count = nsData!.length / sizeof(UInt8)
+                    var nsDataToUInt8Array = [UInt8](count: count, repeatedValue: 0)
+                    nsData!.getBytes(&nsDataToUInt8Array, length: count * sizeof(UInt8))
+                    // print("NSdata to UInt8Array", nsDataToUInt8Array)
+                    
+                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"] as! String)")!["sharedSecret"]!)
+                    // print("In FLVC sharedSecret for decryption of new messages:", key)
+                    
+                    var keyToUInt8Array = [UInt8](key.utf8)
+                    
+                    // pad keyToUInt8Array to 32 bytes
+                    let initialLength = 32 - keyToUInt8Array.count
+                    for _ in 1...initialLength {
+                        keyToUInt8Array.append(0)
+                    }
+
+                    let decryptedUInt8Array = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.decrypt(nsDataToUInt8Array)
+                    print("decrypted UInt8 Array:", decryptedUInt8Array)
+
+                    let decryptedMessage = String(data: NSData(bytes: decryptedUInt8Array), encoding: NSUTF8StringEncoding)!
+                    print("decrypted message is:", decryptedMessage)
+                    
+                    newMessage.body = decryptedMessage
+                    print("newMessage.body", newMessage.body)
+
                     try! realm.write{
                         // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
                         let friendID = Int((messageObject["friendID"] as! NSString).doubleValue)
@@ -223,7 +239,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"retrievedNewMessages", object:nil)
     }
-    
     
     // pass selected friend's object to ChatViewController on select.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -262,7 +277,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func initializeConvoObj(friendID: Int) {
-        //instantiate Realm Chat
         let convo = Conversation()
         convo.friendID = friendID
         
@@ -270,11 +284,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             realm.add(convo)
             // grab any messages that Bob already sent Alice
             getRecentConversation()
-            // ideally chat screen should populate with messages grabbed from getRecentConversation()
-            
-            // segue to chatScreen if a boolean flag is true
         }
-
     }
     
     @IBAction func addFriendButtonClicked(sender: AnyObject) {
@@ -289,3 +299,26 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("settingsSegue", sender: self)
     }
 }
+
+// STRING TO NSDATA EXTENSION
+extension String {
+    /// Create `NSData` from hexadecimal string representation
+    ///
+    /// This takes a hexadecimal representation and creates a `NSData` object. Note, if the string has any spaces or non-hex characters (e.g. starts with '<' and with a '>'), those are ignored and only hex characters are processed.
+    ///
+    /// - returns: Data represented by this hexadecimal string.
+    
+    func dataFromHexadecimalString() -> NSData? {
+        let data = NSMutableData(capacity: characters.count / 2)
+        
+        let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .CaseInsensitive)
+        regex.enumerateMatchesInString(self, options: [], range: NSMakeRange(0, characters.count)) { match, flags, stop in
+            let byteString = (self as NSString).substringWithRange(match!.range)
+            var num = UInt8(byteString, radix: 16)
+            data?.appendBytes(&num, length: 1)
+        }
+        
+        return data
+    }
+}
+

@@ -75,7 +75,6 @@ DP statistics
 const redis = require('redis');
 const bluebird = require('bluebird');
 const bcrypt = require('bcrypt-nodejs');
-const utils = require('./utils');
 
 // Generates random sentences (used for initializing message data)
 const chance = new require('chance')();
@@ -108,14 +107,17 @@ const bcryptHashAsync = bluebird.promisify(bcrypt.hash);
     host: 127.0.0.1
     port: 6379
  */
- client = redis.createClient();
-// client = redis.createClient(17090, 
-//   "redis-17090.c8.us-east-1-3.ec2.cloud.redislabs.com");
-// client.auth('chivalry aint dead', (err) => {
-//   if (err) {
-//     throw err;
-//   }
-// });
+// Local redis server
+// client = redis.createClient();
+
+// RedisLabs
+client = redis.createClient(17090, 
+  'redis-17090.c8.us-east-1-3.ec2.cloud.redislabs.com');
+client.auth('chivalry aint dead', (err) => {
+  if (err) {
+    throw err;
+  }
+});
 
 ////////////////////////////////////////////////////
 //////// Initialization of Users 1, 2, 3, 4 ////////
@@ -126,7 +128,6 @@ const bcryptHashAsync = bluebird.promisify(bcrypt.hash);
   Need to make sure your local Redis server is up and running
  */
 client.on('connect', function() {
-  
   console.log('Successfully connected to redis client!');
 
   // Initialize User data
@@ -166,51 +167,56 @@ client.on('connect', function() {
         return null;
       }
     })
+    // Initialization of unencrypted messages
+    // .then(() => {
+    //   // Initialize Message data
+    //   return client.getAsync('global_msgID');
+    // })
+    // .then(msgID => {
+    //   // Initialize message data for users 1, 2, 3, 4
+    //   //    Each user sends 5 messages each to other users
+    //   //    A pair of two users has ten messages between them
+    //   //    Each message is prefixed by 'num1:num2:num3'
+    //   //        num1 = messageID
+    //   //        num2 = sourceID
+    //   //        num3 = targetID
+    //   if (msgID === null) {
+    //     let newMsgID = 0;
+
+    //     for (let cnt = 1; cnt <= 5; cnt++) {
+    //       for (let sourceID = 1; sourceID <= 4; sourceID++) {
+    //         for (let targetID = 1; targetID <= 4; targetID++) {
+    //           if (!(sourceID === targetID)) {
+    //             newMsgID++;
+    //             client.hmset(`msgs:${newMsgID}`, [
+    //               'sourceID', `${sourceID}`,
+    //               'targetID', `${targetID}`,
+    //               'body', `${newMsgID}:${sourceID}:${targetID} ${chance.sentence()}`,
+    //               'createdAt', Date.now()
+    //             ]);
+
+    //             if (sourceID < targetID) {
+    //               client.zadd(`chat:${sourceID}:${targetID}`, `${newMsgID}`, `${newMsgID}`);
+    //             } else {
+    //               client.zadd(`chat:${targetID}:${sourceID}`, `${newMsgID}`, `${newMsgID}`);
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+
+    //     // global_msgID = # of total msgs so far
+    //     // global_msgID is incremented before adding new message
+    //     client.set('global_msgID', newMsgID, redis.print);
+
+    //   } else {
+    //     // message data has been already initialized
+    //     return null;
+    //   }
+    // })
+    // Initialization for encrypted messages
     .then(() => {
-      // Initialize Message data
-      return client.getAsync('global_msgID');
-    })
-    .then(msgID => {
-      // Initialize message data for users 1, 2, 3, 4
-      //    Each user sends 5 messages each to other users
-      //    A pair of two users has ten messages between them
-      //    Each message is prefixed by 'num1:num2:num3'
-      //        num1 = messageID
-      //        num2 = sourceID
-      //        num3 = targetID
-      if (msgID === null) {
-        let newMsgID = 0;
-
-        for (let cnt = 1; cnt <= 5; cnt++) {
-          for (let sourceID = 1; sourceID <= 4; sourceID++) {
-            for (let targetID = 1; targetID <= 4; targetID++) {
-              if (!(sourceID === targetID)) {
-                newMsgID++;
-                client.hmset(`msgs:${newMsgID}`, [
-                  'sourceID', `${sourceID}`,
-                  'targetID', `${targetID}`,
-                  'body', `${newMsgID}:${sourceID}:${targetID} ${chance.sentence()}`,
-                  'createdAt', Date.now()
-                ]);
-
-                if (sourceID < targetID) {
-                  client.zadd(`chat:${sourceID}:${targetID}`, `${newMsgID}`, `${newMsgID}`);
-                } else {
-                  client.zadd(`chat:${targetID}:${sourceID}`, `${newMsgID}`, `${newMsgID}`);
-                }
-              }
-            }
-          }
-        }
-
-        // global_msgID = # of total msgs so far
-        // global_msgID is incremented before adding new message
-        client.set('global_msgID', newMsgID, redis.print);
-
-      } else {
-        // message data has been already initialized
-        return null;
-      }
+      client.set('global_msgID', 0, redis.print);
     })
     .catch(console.error.bind(console));
 

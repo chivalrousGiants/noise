@@ -16,9 +16,8 @@ class ViewController: UIViewController {
 //        } else {
 //            self.performSegueWithIdentifier("friendsListSegue", sender: self)
 //        }
+        
         //DELETE THIS WHEN UNCOMMENT ^^^^^^^
         self.performSegueWithIdentifier("authSegue", sender: self)
     }
-
-    
 }

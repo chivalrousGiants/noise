@@ -6,7 +6,7 @@ class WaitForConfirmationViewController: UIViewController {
         super.viewDidLoad()
 
         /*
-         TODO: while on "wait screen" be able to segue to chatScreen for that particular friend if key exchange completed
+        TODO: while on "wait screen" be able to segue to chatScreen for that particular friend if key exchange completed
          
         NSNotificationCenter.defaultCenter().addObserver(
             self,
