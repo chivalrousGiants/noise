@@ -7,39 +7,40 @@ const width = PRESENTATION_MODE ? 1280 : window.innerWidth;
 const height = PRESENTATION_MODE ? 720 : window.innerHeight;
 const pixelRatio = PRESENTATION_MODE ? 1 : window.devicePixelRatio;
 
-const ROOT_SPACING = 800;
-const NODE_SPREAD = 1000;
+const ROOT_SPACING = 600;
+const NODE_SPREAD = 1500;
 const CHILDREN_CONNECT_BOUND = 0.05 * width;
-const ATTRACTOR_START_BOUND = 0.4 * width;
+const ATTRACTOR_START_BOUND = 0.2 * width;
 const ATTRACTOR_FINISH_BOUND = 0.7 * width;
 
 
-const canvas = document.querySelector("#canvas");
+const canvas = document.querySelector('#canvas');
 canvas.width = width * pixelRatio;
 canvas.height = height * pixelRatio;
 canvas.style.width = `${Math.floor(width)}px`;
 canvas.style.height = `${Math.floor(height)}px`;
-const context = canvas.getContext("2d", {alpha: false});
+const context = canvas.getContext('2d');
 context.scale(pixelRatio, pixelRatio);
+context.textAlign = 'center'; 
 
 const topWords = [
-  'Agar.io',
-  'Paris',
   'National Dog Day',
-  'Julius Buckley',
+  'Paris',
   'Hillary',
-  'Trump Sucks',
-  'Aaliyah',
   'Hack Reactor',
-  'Jae Shin',
-  'Ryan Hanzawa',
-  'MDLC',
   'HannahB',
   'Supreme Court',
+  'Trump',
+  'Ryan',
   'North Korea',
+  'Aaliyah',
+  'MDLC',
   'Warriors',
   'Triggered',
+  'Julius Buckley',
+  'Agar.io',
   'Flights',
+  'Jae',
   'Speed Test',
   'Brexit',
 ];
@@ -48,7 +49,7 @@ const rootNodes = generateFakeData();
 
 function generateFakeData() {
   const NUM_ROOTS = 30;
-  const NUM_CHILDREN = 80;
+  const NUM_CHILDREN = 60;
 
   return [...Array(NUM_ROOTS)].map((_, i) => {
     const id = String(i);
@@ -68,11 +69,11 @@ function generateFakeData() {
 
     node.simulation = d3.forceSimulation(node.children.concat(node))
       .alphaTarget(1)
-      .force("childLink", d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.04))
-      .force("siblingLink", d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.0008))
-      .force("charge", d3.forceManyBody().strength(-18).distanceMax(80))
-      .force("flowX", d3.forceX(3000).strength(0.0004))
-      .force("keepInside", d3.forceY(width / 4).strength(0.0001))
+      .force('childLink', d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.04))
+      .force('siblingLink', d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.0008))
+      .force('charge', d3.forceManyBody().strength(-18).distanceMax(80))
+      .force('flowX', d3.forceX(3000).strength(0.0002))
+      .force('keepInside', d3.forceY(height / 2).strength(0.0001))
     
     return node;
   });
@@ -105,7 +106,7 @@ function updateLinks() {
 }
 
 function addChildLink(sourceID, targetID) {
-  const link = { "source": `${sourceID}`, "target": `${targetID}`, value: 1 };
+  const link = { 'source': `${sourceID}`, 'target': `${targetID}`, value: 1 };
   rootNodes[sourceID].childLinks.push(link);
 }
 
@@ -118,8 +119,9 @@ function updateLayout() {
       if (nextChild < node.children.length && Math.random() < 0.5) {
         node.children[nextChild].isLinked = true;
         addChildLink(node.id, node.children[nextChild].id);
-      } else if (node.linkCount === node.children.length) {
-        
+      }
+      if (node.childLinks.length === node.children.length) {
+        node.collapsed = true;
       }
     }
   });
@@ -131,28 +133,20 @@ d3.select(canvas)
   .call(d3.drag()
     .container(canvas)
     .subject(dragsubject)
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended));
+    .on('start', dragstarted)
+    .on('drag', dragged)
+    .on('end', dragended));
 
 function ticked() {
   context.clearRect(0, 0, width * pixelRatio, height * pixelRatio);
 
-  context.beginPath();
-  rootNodes.forEach(node => node.siblingLinks.forEach(drawLink));
-  context.strokeStyle = "#333";
-  context.stroke();
+  rootNodes.forEach(node => node.siblingLinks.forEach(drawSiblingLink));
 
-  context.beginPath();
-  rootNodes.forEach(node => node.childLinks.forEach(drawLink));
-  context.strokeStyle = "#aaa";
-  context.stroke();
+  rootNodes.forEach(node => node.childLinks.forEach(drawChildLink));
 
-  context.beginPath();
   rootNodes.forEach(node => { drawNode(node); node.children.forEach(drawNode) });
   context.fill();
-  // context.strokeStyle = "#fff";
-  // context.stroke();
+
   window.requestAnimationFrame(ticked);
 }
 
@@ -167,17 +161,45 @@ function dragsubject() {
 
 //////////////////////////////////////////////
 
-function drawLink(d) {
+function drawSiblingLink(d) {
+  context.beginPath();
   context.moveTo(d.source.x, d.source.y);
   context.lineTo(d.target.x, d.target.y);
+  context.strokeStyle = '#373737';
+  context.stroke();
+}
+
+function drawChildLink(d) {
+  context.beginPath();
+  context.moveTo(d.source.x, d.source.y);
+  context.lineTo(d.target.x, d.target.y);
+  // if (d.source.collapsed) debugger;
+  context.strokeStyle = d.source.collapsed ? '#222' : '#aaa';
+  context.stroke();
 }
 
 function drawNode(d) {
   context.moveTo(d.x, d.y);
   // context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-  context.font = "16px MyriadPro-Light";
-  context.fillStyle = '#aaa';
-  context.fillText(d.str, d.x - 25, d.y + 10);  // TEXT
+
+  // If is child
+  if (d.parent) {
+    if (!d.parent.collapsed) {
+      context.font = '16px MyriadPro-Light';
+      context.fillStyle = '#aaa';
+      context.fillText(d.str, d.x, d.y + 10);  // TEXT
+    } else {
+      context.font = '16px MyriadPro-Light';
+      context.fillStyle = '#555';
+      context.fillText(d.str, d.x, d.y + 10);  // TEXT
+    }
+  } else { // Is parent`
+    if (d.collapsed) {
+      context.font = '24px MyriadPro-Light';
+      context.fillStyle = '#aaa';
+      context.fillText(d.str, d.x, d.y + 13);  // TEXT
+    }
+  }
 }
 
 function dragstarted() {

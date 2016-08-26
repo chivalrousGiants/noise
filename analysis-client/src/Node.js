@@ -4,6 +4,7 @@ class Node {
     this.str = str;
     this.x = x;
     this.y = y;
+    this.collapsed = false;
     this.children = [];
     this.childLinks = [];
     this.siblingLinks = [];
