@@ -45,15 +45,15 @@ class AddFriendViewController: UIViewController {
             newFriend.friendID = Int(userObj["userID"] as! String)!
             
             // Comment Out
-            let convo = Conversation()
-            convo.friendID = newFriend.friendID
+//            let convo = Conversation()
+//            convo.friendID = newFriend.friendID
             
             try! realm.write {
                 
                 realm.add(newFriend)
                 
                 // Comment out
-                realm.add(convo)
+                // realm.add(convo)
             }
             
             performSegueWithIdentifier("backToFriendsListSegue", sender: self)

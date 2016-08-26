@@ -19,10 +19,8 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         friendsTableView.dataSource = self
         friendsTableView.delegate = self
         
-        //print("FLVC viewDidLoad");
-        
-        // on each page load query redis for pending key exchanges
-        // SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
+        // on each page load query Redis for pending key exchanges
+        SocketIOManager.sharedInstance.checkForPendingKeyExchange(["userID": realm.objects(User)[0]["userID"]!]);
 
         // handle completion of key exchanges (cE 1 -> NE) triggered on pageload
         NSNotificationCenter.defaultCenter().addObserver(
@@ -147,7 +145,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-
         print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
 
 //        print("Alice's Locksmith for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
@@ -156,7 +153,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 
         let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))
 
-        var Alice :[String:AnyObject] = [:]
+        var Alice :[String : AnyObject] = [:]
         Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!,
             mySecret: aliceSecret!,
@@ -219,7 +216,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     newMessage.messageID = Int(message!["msgID"]!)!
                     
                     
-                    // Decrypt message
+                    ////// Decrypt message
+                    
+                    // Convert NSData to Array<UInt8>
                     let nsData = message!["body"]!.dataFromHexadecimalString()
                     print("message body before decrypt", nsData)
                     
@@ -229,8 +228,9 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     
                     print("NSdata to UInt8Array", nsDataToUInt8Array)
                     
-//                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"])")!["sharedSecret"]!)
-//                    print("In FLVC sharedSecret for decryption of new messages:", key)
+                    // Read sharedSecret key from KeyChain
+                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"])")!["sharedSecret"]!)
+                    print("In FLVC sharedSecret for decryption of new messages:", key)
                     
                     var keyToUInt8Array = [UInt8]("3438466385".utf8)
                     
@@ -309,9 +309,6 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
             realm.add(convo)
             // grab any messages that Bob already sent Alice
             getRecentConversation()
-            // ideally chat screen should populate with messages grabbed from getRecentConversation()
-            
-            // segue to chatScreen if a boolean flag is true
         }
 
     }
@@ -330,9 +327,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
 }
 
 // STRING TO NSDATA EXTENSION
-
 extension String {
-    
     /// Create `NSData` from hexadecimal string representation
     ///
     /// This takes a hexadecimal representation and creates a `NSData` object. Note, if the string has any spaces or non-hex characters (e.g. starts with '<' and with a '>'), those are ignored and only hex characters are processed.
