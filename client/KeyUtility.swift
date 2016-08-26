@@ -121,6 +121,9 @@ extension Int {
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
         print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
+        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -132,6 +135,7 @@ extension Int {
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
         print("BobKeyChain dictionary is \(dictionary)")
+        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
 }

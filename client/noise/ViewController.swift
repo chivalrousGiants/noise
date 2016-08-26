@@ -18,7 +18,22 @@ class ViewController: UIViewController {
 //        }
         //DELETE THIS WHEN UNCOMMENT ^^^^^^^
         self.performSegueWithIdentifier("authSegue", sender: self)
+        pCreate()
+        
+        
+        
     }
     
+    func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
+        let bigNum = BN_new()
+        let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
+        //print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+        return prime
+    }
+        func pCreate () -> bignum_st {
+          return generateRandomPrime().memory
+            //let aRandomInt = arc4random_uniform(100) + 1;
+            //return UInt32(aRandomInt)
+        }
     
 }
