@@ -14,7 +14,7 @@ extension Int {
     func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
         let bigNum = BN_new()
         let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
-       print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+       //print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
         return prime
     }
     
@@ -24,7 +24,6 @@ extension Int {
     
     func gCreate (p: UInt32) -> UInt32 {
         let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
-       // print("g is", g)
         return  g % p
     }
     func aAliceCreate (p: UInt32) -> UInt32 {
@@ -121,6 +120,9 @@ extension Int {
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
         print("Alice pt2:\(alice["friendID"]) dictionary is \(dictionary)")
+        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
+        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -132,6 +134,7 @@ extension Int {
         }
         let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
         print("BobKeyChain dictionary is \(dictionary)")
+        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
 }

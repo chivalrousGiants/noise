@@ -1,4 +1,6 @@
 const redis = require('./redis.js');
+const activeSocketConnections = require('./activeSocketConnections');
+
 
 //compares userIDs and appends sorted IDs onto the dhxObject --for generating consistent redis keys amongst users--
 function updateInfoWithSortedIds (dhxObject, sourceUserID, pendingID){
@@ -18,12 +20,6 @@ function quickInitCheck (dhxObject, clientSocket){
 	redis.client.hgetallAsync(`dh:${dhxObjectAugmented.lesserUserID}:${dhxObjectAugmented.greaterUserID}`)
 	.then((dhDataStructure)=>{
 		if (dhDataStructure) {
-			//console.log('resume from middle', dhDataStructure)
-      // Use SISMEMBER to check pending table in addition to cE
-      // if (dhDataStructure.chatEstablished === 1) {
-      //   // need to check pending table
-      //   performPart3KeyExchange(dhxObject, clientSocket);
-      // }
 			clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
 		} else {
 			//console.log('init', dhDataStructure)
@@ -40,6 +36,9 @@ function initKeyExchange (dhxObject, clientSocket) {
   redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {console.log(err)} });
   redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
   clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
+  // let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+  // clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);
+  // console.log('read them lines')
 };
 
 //chatEstablished is 0. sends Alice_info from redis to Bob_client.
@@ -71,7 +70,8 @@ function performPart2BKeyExchange(dhxObject, clientSocket){
     })
   	.then(() => {
     	clientSocket.emit("redis response Bob complete, Alice still pending", dhxObject);
-    	// TODO (socket emission): tell Alice to retrieve. 	    		
+    	// let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+     //  clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);	    		
   	})
     .catch(err => console.log('Error in dhxPt2B', err));
 };
@@ -89,9 +89,6 @@ function performPart3KeyExchange(dhxObject, clientSocket) {
   })
 	.then((pAlice) => {
   	dhxObject["pAlice"] = pAlice;
-  	// clientSocket.emit("redis response bobE retreived", dhxObject);
-  	//>>>>>on client, make secret & store it.
-  	//>>>>>tell realm that it can instantiate chat object.
   	return redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`);
   })
 	.then(()=>{
@@ -129,6 +126,9 @@ function routeKeyExchange (dhxObject, clientSocket){
     .catch(err => console.log('Error in routeKeyExchange function', err));
 };
 
+//UTILIZE client-client socket emissions!!
+//clientSocket.broadcast.to(friendSocketID).emit('receive new message', message);
+//let friendSocketID = activeSocketConnections[`${message.targetID}`];
 
 module.exports = {
 	quickInitCheck,

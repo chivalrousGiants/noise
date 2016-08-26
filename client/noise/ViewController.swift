@@ -19,6 +19,6 @@ class ViewController: UIViewController {
         //DELETE THIS WHEN UNCOMMENT ^^^^^^^
         self.performSegueWithIdentifier("authSegue", sender: self)
     }
-    
+
     
 }

@@ -144,7 +144,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-        //print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
+        print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
         
         let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))
 
@@ -152,8 +152,11 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!, mySecret: aliceSecret!, p: p_computational!))
         Alice["friendID"] = friendID
+        
+        //TOOD: abstract this to another function call... pass in a cb, call cb on Allice.
         666.aliceKeyChainPt2(Alice)
         
+        print(Alice)
         // initialize convo object
         initializeConvoObj(Int(friendID as! String)!)
         
