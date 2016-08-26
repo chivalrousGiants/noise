@@ -36,9 +36,9 @@ function initKeyExchange (dhxObject, clientSocket) {
   redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {console.log(err)} });
   redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
   clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
-  let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
-  clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);
-  console.log('read them lines')
+  // let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+  // clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);
+  // console.log('read them lines')
 };
 
 //chatEstablished is 0. sends Alice_info from redis to Bob_client.
@@ -70,8 +70,8 @@ function performPart2BKeyExchange(dhxObject, clientSocket){
     })
   	.then(() => {
     	clientSocket.emit("redis response Bob complete, Alice still pending", dhxObject);
-    	let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
-      clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);	    		
+    	// let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+     //  clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);	    		
   	})
     .catch(err => console.log('Error in dhxPt2B', err));
 };

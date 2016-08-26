@@ -82,21 +82,21 @@ class SocketIOManager: NSObject {
            // print("redis response client has ongoing exchange")
             NSNotificationCenter.defaultCenter().postNotificationName("wait", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        
+        //TODO:
         //communicated to client_Friend
-        socket.on("redis response to client_Friend should check pending") { (userArray, socketAck) -> Void in
-            print("here")
-            print("redis response for client_Friend pending", userArray[0])
-//
-//            //get ID & other info
-//            var myID = userArray[0]["friendID"]
-//            var friendID = userArray[0]["userID"]
-//            userArray["friendID"] = myID
-//            userArray.userID = friendID
-//            //just pass on DHX but mod it so id = friend id and friend id = id
-//            print("reordered dhxobj", userArray)
-            self.checkForPendingKeyExchange(userArray[0] as! Dictionary<String, AnyObject>)
-        }
+//        socket.on("redis response to client_Friend should check pending") { (userArray, socketAck) -> Void in
+//            print("here")
+//            print("redis response for client_Friend pending", userArray[0])
+////
+////            //get ID & other info
+////            var myID = userArray[0]["friendID"]
+////            var friendID = userArray[0]["userID"]
+////            userArray["friendID"] = myID
+////            userArray.userID = friendID
+////            //just pass on DHX but mod it so id = friend id and friend id = id
+////            print("reordered dhxobj", userArray)
+//            self.checkForPendingKeyExchange(userArray[0] as! Dictionary<String, AnyObject>)
+//        }
         
     }
     
