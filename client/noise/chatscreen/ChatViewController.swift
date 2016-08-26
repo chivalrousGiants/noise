@@ -144,10 +144,10 @@ extension ChatViewController  {
 extension ChatViewController {
 
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        // Encrypt message
-        //let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
-        let key = "3438466385"
-        print("In CCVC sharedSecret for encryption of new message:", key)
+        ////// Encrypt message
+        let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
+        // let key = "3438466385"
+        print("In ChatViewCtrl sharedSecret for encryption of new message:", key)
         
         var keyToUInt8Array = [UInt8](key.utf8)
 

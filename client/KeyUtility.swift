@@ -79,7 +79,7 @@ extension Int {
         let E_Alice_computational = UInt32(E_Alice as! String)
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
-        //print("sharedSecret izzzzz \(sharedSecret)")
+        print("Bob's sharedSecret is \(sharedSecret)")
         
         //pass values to handle encryption into keychain
         var BobKeys : [String:AnyObject] = [:]
@@ -107,8 +107,8 @@ extension Int {
             print("could not save alice data in keychain")
         }
 
-        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
-        print("Alice keychain for pt1, noise:\(alice["friendID"]!) is \(dictionary)")
+        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
+        //print("Alice keychain for pt1, noise:\(alice["friendID"]!) is \(dictionary)")
     }
     
 
@@ -120,8 +120,8 @@ extension Int {
             // print("could not amend alice data in keychain")
         }
 
-        let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"])")
-        print("Alice's keychain for pt2, noise:\(alice["friendID"]!) is \(dictionary)")
+        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
+        //print("Alice's keychain for pt2, noise:\(alice["friendID"]!) is \(dictionary)")
 //        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
 //        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
 //        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
@@ -135,8 +135,8 @@ extension Int {
             // print ("could not save bob data in keychain")
         }
 
-        let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"])")
-        print("Bob's keychain for noise:\(bob["friendID"]!) is \(dictionary)")
+        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"]!)")
+        //print("Bob's keychain for noise:\(bob["friendID"]!) is \(dictionary)")
 //        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
 
     }

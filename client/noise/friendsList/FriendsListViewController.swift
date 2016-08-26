@@ -145,25 +145,25 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
         let p_computational = UInt32(dhxInfo!["pAlice"] as! String)
         let friendID = dhxInfo!["friendID"]
         
-        print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
+        // print("Alice's Locksmith", Locksmith.loadDataForUserAccount("noise:\(friendID!)")!)
 
 //        print("Alice's Locksmith for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!)
 //        print("Alice's Locksmith 2 for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"])
 //        print("Alice's Locksmith 3 for noise:\(friendID!)", Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!)
 
-        let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID)")!["a_Alice"]!))
+        let aliceSecret = UInt32(String(Locksmith.loadDataForUserAccount("noise:\(friendID!)")!["a_Alice"]!))
 
         var Alice :[String : AnyObject] = [:]
-        Alice["E"] = dhxInfo!["eAlice"]
         Alice["sharedSecret"] = String(666.computeSecret(eBob_computational!,
             mySecret: aliceSecret!,
             p: p_computational!))
+        print("Alice's sharedSecret is", Alice["sharedSecret"]!)
+        
         Alice["friendID"] = friendID
         
-        //TOOD: abstract this to another function call... pass in a cb, call cb on Allice.
+        //TODO: abstract this to another function call... pass in a cb, call cb on Allice.
         666.aliceKeyChainPt2(Alice)
-        
-        print(Alice)
+
         // initialize convo object
         initializeConvoObj(Int(friendID as! String)!)
         
@@ -220,7 +220,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     
                     // Convert NSData to Array<UInt8>
                     let nsData = message!["body"]!.dataFromHexadecimalString()
-                    print("message body before decrypt", nsData)
+                    // print("message body before decrypt", nsData)
                     
                     let count = nsData!.length / sizeof(UInt8)
                     var nsDataToUInt8Array = [UInt8](count: count, repeatedValue: 0)
@@ -228,11 +228,10 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     
                     print("NSdata to UInt8Array", nsDataToUInt8Array)
                     
-                    // Read sharedSecret key from KeyChain
-                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"])")!["sharedSecret"]!)
+                    let key = String(Locksmith.loadDataForUserAccount("noise:\(messageObject["friendID"] as! String)")!["sharedSecret"]!)
                     print("In FLVC sharedSecret for decryption of new messages:", key)
                     
-                    var keyToUInt8Array = [UInt8]("3438466385".utf8)
+                    var keyToUInt8Array = [UInt8](key.utf8)
                     
                     // pad keyToUInt8Array to 32 bytes
                     let initialLength = 32 - keyToUInt8Array.count
@@ -247,6 +246,7 @@ class FriendsListViewController: UIViewController, UITableViewDataSource, UITabl
                     print("decrypted message is:", decryptedMessage)
                     
                     newMessage.body = decryptedMessage
+                    print("newMessage.body", newMessage.body)
 
                     try! realm.write{
                         // convert NSString to doubleValue (float) then to Int in order to query FriendID in realm
