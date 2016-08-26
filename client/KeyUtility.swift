@@ -14,7 +14,7 @@ extension Int {
     func generateRandomPrime () -> UnsafeMutablePointer<bignum_st> {
         let bigNum = BN_new()
         let prime = BN_generate_prime(bigNum,16,0,nil,nil,nil,nil)
-       //print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
+        // print("PRIME INFO as unsafeMutablePointer--16 bits", prime, prime.dynamicType)
         return prime
     }
     
@@ -26,29 +26,33 @@ extension Int {
         let g = UnsafePointer<UInt32>(generateRandomPrime()).memory
         return  g % p
     }
+    
     func aAliceCreate (p: UInt32) -> UInt32 {
         let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
         return (randomPrime % (p-1))
     }
+    
     func bBobCreate (p: UInt32) -> UInt32 {
         let randomPrime = UnsafePointer<UInt32>(generateRandomPrime()).memory
         return (randomPrime % (p-1))
     }
+    
     func eCreate (g: UInt32, mySecret: UInt32, p: UInt32) -> UInt32 {
         return (g^mySecret) % p
     }
+    
     func computeSecret (foreignE: UInt32, mySecret: UInt32, p:UInt32) -> UInt32 {
         return (foreignE^mySecret) % p
     }
     
     func alicify (userID:AnyObject, friendID:AnyObject) -> Dictionary<String,AnyObject> {
-        //compute DHX numbers
+        // compute DHX numbers
         let p_Alice = 666.pCreate()
         let g_Alice = 666.gCreate(p_Alice)
         let a_Alice = 666.aAliceCreate(p_Alice)
         let E_Alice = 666.eCreate(g_Alice, mySecret: a_Alice, p: p_Alice)
         
-        //build Alice
+        // build Alice
         var Alice : [String:AnyObject] = [:]
         Alice["userID"] = userID
         Alice["g"] = String(g_Alice)
@@ -56,8 +60,7 @@ extension Int {
         Alice["E"] = String(E_Alice)
         Alice["friendID"] = friendID
     
-    
-        //pass dhX vals that Alice needs to access later into her keychain
+        // pass dhX vals that Alice needs to access later into her keychain
         var AliceKeys : [String:AnyObject] = [:]
         AliceKeys["a_Alice"] = String(a_Alice)
         AliceKeys["p"] = String(p_Alice)
@@ -66,22 +69,22 @@ extension Int {
         
         aliceKeyChainPt1(AliceKeys)
  
-        
-        //2) encrypt values
-        print("Alice in alicify \(Alice)")
+        // 2) encrypt values
+        // print("Alice in alicify \(Alice)")
         return Alice
     }
+    
     func bobify (userID:AnyObject, friendID:AnyObject, E_Alice:AnyObject, p:AnyObject, g:AnyObject) -> Dictionary<String,AnyObject> {
-        //compute DHX numbers
+        // compute DHX numbers
         let p_computational = UInt32(p as! String)
         let b_Bob = 666.bBobCreate(p_computational!)
         let g_computational = UInt32(g as! String)
         let E_Alice_computational = UInt32(E_Alice as! String)
         let E_Bob = 666.eCreate(g_computational!, mySecret: b_Bob, p: p_computational!)
         let sharedSecret = 666.computeSecret(E_Alice_computational!, mySecret: b_Bob, p: p_computational!)
-        print("Bob's sharedSecret is \(sharedSecret)")
+        // print("Bob's sharedSecret is \(sharedSecret)")
         
-        //pass values to handle encryption into keychain
+        // pass values to handle encryption into keychain
         var BobKeys : [String:AnyObject] = [:]
         BobKeys["E"] = String(E_Bob)
         BobKeys["sharedSecret"] = String(sharedSecret)
@@ -89,42 +92,31 @@ extension Int {
         bobKeyChain(BobKeys)
 
         
-        //pass values to handle diffie hellman key exchange to Redis
+        // pass values to handle diffie hellman key exchange to Redis
         var Bob : [String:AnyObject] = [:]
         Bob["userID"] = userID
-        Bob["E"] = String(E_Bob) //encrypt?
+        Bob["E"] = String(E_Bob)
         Bob["friendID"] = friendID
-        //Bob["p"] = p //encrypt?
 
         return Bob
     }
+    
     func aliceKeyChainPt1 (alice: Dictionary<String,AnyObject>) -> Void {
-        //TODO: create alice user account i keychain
-        //store bobKeys in keychain : need privateSecret*, E, p
+        // store bobKeys in keychain : need privateSecret*, E, p
         do {
             try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"]!)")
         } catch {
             print("could not save alice data in keychain")
         }
-
-        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
-        //print("Alice keychain for pt1, noise:\(alice["friendID"]!) is \(dictionary)")
     }
     
-
     func aliceKeyChainPt2 (alice: Dictionary<String,AnyObject>) -> Void {
-        //add or overwrite alice keys in keychain : need E, sharedSecret
+        // add or overwrite alice keys in keychain : need E, sharedSecret
         do {
             try Locksmith.updateData(alice, forUserAccount: "noise:\(alice["friendID"]!)")
         } catch {
-            // print("could not amend alice data in keychain")
+            print("could not amend alice data in keychain")
         }
-
-        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(alice["friendID"]!)")
-        //print("Alice's keychain for pt2, noise:\(alice["friendID"]!) is \(dictionary)")
-//        print("Alice's sharedSecret wrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
-//        print("Alice's sharedSecret unwrapped data type is", dictionary!["sharedSecret"]!.dynamicType)
-//        print("Alice's sharedSecret unwrapped & cast data type is", dictionary!["sharedSecret"]!.dynamicType)
     }
     
     func bobKeyChain (bob: Dictionary<String,AnyObject>) -> Void {
@@ -132,13 +124,7 @@ extension Int {
         do {
             try Locksmith.updateData(bob, forUserAccount: "noise:\(bob["friendID"]!)")
         } catch {
-            // print ("could not save bob data in keychain")
+            print ("could not save bob data in keychain")
         }
-
-        //let dictionary = Locksmith.loadDataForUserAccount("noise:\(bob["friendID"]!)")
-        //print("Bob's keychain for noise:\(bob["friendID"]!) is \(dictionary)")
-//        print("Bob's sharedSecret data type is", dictionary!["sharedSecret"]!.dynamicType)
-
     }
-
 }

@@ -9,7 +9,7 @@ class ChatViewController: JSQMessagesViewController {
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.greenColor())
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
     
-    // Must be 8 or 16 bytes (TODO: randomize)
+    // Must be 8 or 16 bytes (TODO: randomize for stronger encryption)
     let iv: Array<UInt8> = [0, 1, 2, 3, 4, 5, 6, 7]
     
     let realm = try! Realm()
@@ -19,15 +19,12 @@ class ChatViewController: JSQMessagesViewController {
     var friend = Friend()
    
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         self.setup()
         self.updateChatScreen()
         
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
     }
     
     func reloadMessagesView() {
@@ -35,7 +32,7 @@ class ChatViewController: JSQMessagesViewController {
     }
 }
 
-//Navigation methods
+// Navigation methods
 extension ChatViewController {
     
     func setup() {
@@ -72,25 +69,31 @@ extension ChatViewController {
     @objc func handleNewMessage(notification: NSNotification) -> Void {
         let userInfo = notification.userInfo!
         
-        print("userInfo in handleNewMessage", userInfo)
+        // print("userInfo in handleNewMessage", userInfo)
         
         let sourceID = userInfo["sourceID"] as? Int
         let message = Message()
         
         if (sourceID != nil) {
             // reciever
+            
+            /*
+            // TODO: decrypt message
             if (sourceID == self.friend.friendID) {
                 message.sourceID = sourceID!
                 message.targetID = userInfo["targetID"] as! Int
                 
-                // userInfo["body"] is of type '_NSInlineData'
+                // TODO: Need to decrypt message
+                // message.body = userInfo["body"] as! String
                 
-                message.body = userInfo["body"] as! String
                 message.messageID = Int((userInfo["messageID"] as! NSString).doubleValue)
                 message.createdAt = userInfo["createdAt"] as! Int
             } else {
                 return
-            }
+            }*/
+            
+            return
+            
         } else {
             // sender
             message.sourceID = self.newMessage["sourceID"] as! Int
@@ -150,7 +153,6 @@ extension ChatViewController {
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         ////// Encrypt message
         let key = String(Locksmith.loadDataForUserAccount("noise:\(self.friend.friendID)")!["sharedSecret"]!)
-        // let key = "3438466385"
         print("In ChatViewCtrl sharedSecret for encryption of new message:", key)
         
         var keyToUInt8Array = [UInt8](key.utf8)
@@ -162,7 +164,7 @@ extension ChatViewController {
         }
         
         let encryptedUInt8Array: Array<UInt8> = try! ChaCha20(key: keyToUInt8Array, iv: self.iv)!.encrypt([UInt8](text.utf8))
-        print("encryptedUInt8Array", encryptedUInt8Array)
+        // print("encryptedUInt8Array", encryptedUInt8Array)
         
         // TODO: account for sending serveral messages in rapid succession (newMessage will be overwritten for now)
         self.newMessage = [
@@ -182,9 +184,6 @@ extension ChatViewController {
         
         // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
         SocketIOManager.sharedInstance.sendEncryptedChat(encryptedMessage)
-
-        //let message = JSQMessage(senderId: senderId, senderDisplayName: senderDisplayName, date: date, text: text)
-        //self.messages += [message]
         
         self.finishSendingMessage()
     }

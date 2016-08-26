@@ -32,8 +32,7 @@ class AddFriendViewController: UIViewController {
     }
     
     @objc func handleAddFriendNotification(notification: NSNotification) -> Void {
-        
-        //print("friendObj", notification.userInfo)
+        // print("friendObj", notification.userInfo)
         
         if let userObj = notification.userInfo {
             
@@ -44,16 +43,8 @@ class AddFriendViewController: UIViewController {
             newFriend.username = userObj["username"] as! String
             newFriend.friendID = Int(userObj["userID"] as! String)!
             
-            // Comment Out
-//            let convo = Conversation()
-//            convo.friendID = newFriend.friendID
-            
             try! realm.write {
-                
                 realm.add(newFriend)
-                
-                // Comment out
-                // realm.add(convo)
             }
             
             performSegueWithIdentifier("backToFriendsListSegue", sender: self)
@@ -64,10 +55,8 @@ class AddFriendViewController: UIViewController {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "checkUser", object: nil)
-        
-        // Testing
-        //print("Friends list:", realm.objects(Friend))
-        
+
+        // print("Friends list:", realm.objects(Friend))
     }
     
     func displayAlertMessage(message: String) {

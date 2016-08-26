@@ -17,53 +17,46 @@ class SocketIOManager: NSObject {
         ///////////////////////////////////////
         /////////// User Auth routes
         socket.on("redis response for signin") { (userArray, socketAck) -> Void in
-            // print("redis response for signin", userArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("signin", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response for signup") { (userArray, socketAck) -> Void in
-            // print("redis response for signup", userArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("signup", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         // Listener for AddFriend endpoint
         socket.on("redis response checkUser") { (userArray, socketAck) -> Void in
-           // print("redis response checkUser", userArray)
             NSNotificationCenter.defaultCenter().postNotificationName("checkUser", object: nil, userInfo: userArray[0] as? [NSObject : AnyObject])
         }
         
         ///////////////////////////////////////
         /////////// Messages Routes
         socket.on("successfully sent new message") {(messageArray, socketAck) -> Void in
-            print("successfully sent new message", messageArray)
-            
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
         }
         
         socket.on("receive new message") {(messageArray, socketAck) -> Void in
-            print("received message", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("newMessage", object: nil, userInfo: messageArray[0] as? Dictionary)
         }
         
         socket.on("redis response for retrieveNewMessages") {(messageArray, socketAck) -> Void in
-            print("retrieve new messages", messageArray[0])
             NSNotificationCenter.defaultCenter().postNotificationName("retrievedNewMessages", object: nil, userInfo: ["messages" : messageArray[0]] as Dictionary)
         }
 
         ///////////////////////////////////////
         /////////// DHKeyExchange routes
         socket.on("redis response KeyExchange complete") { (dhxInfo, socketAck) -> Void in
-            print("redis response KeyExchange complete", dhxInfo[0])
+            // print("redis response KeyExchange complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("KeyExchangeComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response client must init") { (dhxInfo, socketAck) -> Void in
+            // print("redis response client must init \(dhxInfo)")
             NSNotificationCenter.defaultCenter().postNotificationName("init KeyExchange", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
-           // print("keyExchange uninitiated: next step: alicify \(dhxInfo)")
         }
         
         socket.on("redis response KeyExchange initiated") { (dhxInfo, socketAck) -> Void in
-           // print("redis response KeyExchange initiated")
+            // print("redis response KeyExchange initiated")
             NSNotificationCenter.defaultCenter().postNotificationName("completeKeyExchangeInitiation", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
@@ -73,30 +66,29 @@ class SocketIOManager: NSObject {
         }
         
         socket.on("redis response Bob complete, Alice still pending") { (dhxInfo, socketAck) -> Void in
-          //  print("user Bob complete", dhxInfo[0])
+            // print("user Bob complete", dhxInfo[0])
             NSNotificationCenter.defaultCenter().postNotificationName("bobComplete", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
         
         socket.on("redis response client has ongoing exchange") { (dhxInfo, socketAck) -> Void in
-           // print("redis response client has ongoing exchange")
+            // print("redis response client has ongoing exchange")
             NSNotificationCenter.defaultCenter().postNotificationName("wait", object: nil, userInfo: dhxInfo[0] as? [NSObject : AnyObject])
         }
-        //TODO:
-        //communicated to client_Friend
-//        socket.on("redis response to client_Friend should check pending") { (userArray, socketAck) -> Void in
-//            print("here")
-//            print("redis response for client_Friend pending", userArray[0])
-////
-////            //get ID & other info
-////            var myID = userArray[0]["friendID"]
-////            var friendID = userArray[0]["userID"]
-////            userArray["friendID"] = myID
-////            userArray.userID = friendID
-////            //just pass on DHX but mod it so id = friend id and friend id = id
-////            print("reordered dhxobj", userArray)
-//            self.checkForPendingKeyExchange(userArray[0] as! Dictionary<String, AnyObject>)
-//        }
         
+        /*
+        // TODO: Alert online friend of advancements in dhKeyExchange
+        socket.on("redis response to client_Friend should check pending") { (userArray, socketAck) -> Void in
+            // get ID & other info
+            var myID = userArray[0]["friendID"]
+            var friendID = userArray[0]["userID"]
+            userArray["friendID"] = myID
+            userArray.userID = friendID
+            
+            //just pass on DHX but mod it so id = friend id and friend id = id
+            print("reordered dhxobj", userArray)
+            self.checkForPendingKeyExchange(userArray[0] as! Dictionary<String, AnyObject>)
+        }
+        */
     }
     
     func signIn(user: Dictionary<String, String>) {
@@ -106,15 +98,12 @@ class SocketIOManager: NSObject {
     func signUp(user: Dictionary<String, String>) {
         socket.emit("signUp", user)
     }
-    
-    // TODO: send encrypted message
+
     func sendEncryptedChat(message: AnyObject){
-        print("sendEncryptedChat", message)
         socket.emit("send new message", message)
     }
     
     func retrieveMessages(userID: Int, friends: Dictionary<String, Int>) {
-        print("executing retrieveMessages", userID, friends)
         socket.emit("initial retrieval of new messages", userID, friends)
     }
     

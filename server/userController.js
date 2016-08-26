@@ -13,8 +13,6 @@ const bcryptCompareAsync = bluebird.promisify(bcrypt.compare);
 function signIn(user, clientSocket) {
   redis.client.hgetAsync('users', user.username)
     .then(userID => {
-      // console.log('signIn userID is', userID);
-
       // NULL is returned for non-existent key
       if (userID === null) {
         // Username does not exist
@@ -84,7 +82,6 @@ function signUp (user, clientSocket) {
         redis.client.hmset(`user:${globalUserID}`, 
           ['firstname', user.firstname, 'lastname', user.lastname, 'username', 
             user.username, 'password', hashedPW], function(err, res) {});
-
         redis.client.hset('users', [user.username, `${globalUserID}`]);
         
         // add socket.id to activeConnections
@@ -110,7 +107,6 @@ function signUp (user, clientSocket) {
 function checkUser(username, clientSocket) {
   redis.client.hgetAsync('users', username)
     .then(userID => {
-      //console.log('userID in checkUser is:', userID);
       // NULL is returned for non-existent key
       if (userID === null) {
         // Username does not exist
@@ -120,20 +116,15 @@ function checkUser(username, clientSocket) {
       }
     })
     .then(([user, userID]) => {
-      
       // user will be null or an object
-      //console.log('user is', user);
-
       if (user !== null) {
         user.userID = userID;
       }
-
       clientSocket.emit('redis response checkUser', user);
-     
     }).catch(console.error.bind(console));
 }
 
-function getUserID(username, cb){
+function getUserID(username, cb) {
   redis.client.hgetAsync('users', `${username}`)
     .then(userID => {
       if (userID === null) {

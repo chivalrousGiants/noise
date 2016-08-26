@@ -39,9 +39,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
   
 
   Object.keys(friends).forEach(friendID => {
-    
     largestMessageID = friends[friendID];
-
     [smallerID, largerID] = userID < friendID ? [userID, friendID] : [friendID, userID];
 
     getMsgIDsPromiseArray.push(
@@ -50,9 +48,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
           if (msgIDs.length === 0) {
             // no new messages for friendID
             return null;
-
           } else {
-
             let getMsgsPromiseArray = [];
             
             msgIDs.forEach(msgID => {
@@ -86,21 +82,18 @@ function retrieveNewMessages(userID, friends, clientSocket) {
         })
         .catch(console.error.bind(console))
     );
-
   });
 
   Promise.all(getMsgIDsPromiseArray).then(returnValue => {
-
-    ///////// Testing
-    let cnt = 1;
-    //console.log('returnValue is:', returnValue);
-    returnValue.forEach(obj => {
-      console.log(`returnValue for obj ${cnt}:`, obj);
-      cnt++;
-    });
+    // ///////// Testing
+    // let cnt = 1;
+    // //console.log('returnValue is:', returnValue);
+    // returnValue.forEach(obj => {
+    //   console.log(`returnValue for obj ${cnt}:`, obj);
+    //   cnt++;
+    // });
     
     clientSocket.emit('redis response for retrieveNewMessages', returnValue);
-    
   })
   .catch(console.error.bind(console));
 
@@ -123,11 +116,8 @@ function handleNewMessage(message, clientSocket) {
   redis.client.incr('global_msgID', redis.print);
   redis.client.getAsync('global_msgID')
     .then(msgID => {
-
       let timeStamp = Date.now();
-
-      console.log('message body to String utf8', message.body.toString('hex'));
-
+      // console.log('message body to String utf8', message.body.toString('hex'));
       redis.client.hmset(`msgs:${msgID}`, [
         'sourceID', message.sourceID,
         'targetID', message.targetID,
@@ -157,8 +147,6 @@ function handleNewMessage(message, clientSocket) {
     })
     .catch(console.error.bind(console));
 }
-
-
 
 // ///////// Testing
 // let friends = {

@@ -75,7 +75,6 @@ DP statistics
 const redis = require('redis');
 const bluebird = require('bluebird');
 const bcrypt = require('bcrypt-nodejs');
-const utils = require('./utils');
 
 // Generates random sentences (used for initializing message data)
 const chance = new require('chance')();
@@ -129,7 +128,6 @@ client.auth('chivalry aint dead', (err) => {
   Need to make sure your local Redis server is up and running
  */
 client.on('connect', function() {
-  
   console.log('Successfully connected to redis client!');
 
   // Initialize User data
@@ -169,6 +167,7 @@ client.on('connect', function() {
         return null;
       }
     })
+    // Initialization of unencrypted messages
     // .then(() => {
     //   // Initialize Message data
     //   return client.getAsync('global_msgID');
@@ -215,6 +214,7 @@ client.on('connect', function() {
     //     return null;
     //   }
     // })
+    // Initialization for encrypted messages
     .then(() => {
       client.set('global_msgID', 0, redis.print);
     })

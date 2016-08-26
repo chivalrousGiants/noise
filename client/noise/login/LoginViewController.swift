@@ -34,8 +34,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             passwordTextField.becomeFirstResponder()
         } else if textField == passwordTextField {
             textField.resignFirstResponder()
-            
-            // Attach listeners
+
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
                 selector: #selector(handleSignInNotification),

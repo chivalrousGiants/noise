@@ -11,7 +11,7 @@ class FriendInfoViewController: UITableViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
-        print("printing friendInfo on friendinfo ", self.friendInfo)
+        // print("printing friendInfo on friendinfo ", self.friendInfo)
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: reusableCell)
     }
 }
@@ -28,12 +28,14 @@ extension FriendInfoViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
 }
+
 // other methods
 extension FriendInfoViewController {
     func generateWord(num: Int) -> Int {
         return num % wordsArray.count
     }
 }
+
 // UI configurations
 extension FriendInfoViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

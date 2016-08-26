@@ -43,14 +43,13 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         
             textField.resignFirstResponder()
             
-            // Attach listeners
             NSNotificationCenter.defaultCenter().addObserver(
                 self,
                 selector: #selector(handleSignUpNotification),
                 name: "signup",
                 object: nil)
             
-            // Sign Up
+            // Signup new User
             let firstname = firstnameTextField.text
             let lastname = lastnameTextField.text
             let userName = usernameTextField.text
@@ -99,9 +98,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         
         // Remove listener
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "signup", object: nil)
-        
-        // Testing
-        print("Signed-up User:", realm.objects(User))
+
+        // print("Signed-up User:", realm.objects(User))
     }
 
     @IBAction func logInButtonClicked(sender: AnyObject) {
