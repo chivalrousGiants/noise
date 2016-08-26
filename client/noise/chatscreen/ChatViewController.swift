@@ -57,7 +57,10 @@ extension ChatViewController {
         if realm.objects(Conversation).filter("friendID = \(friend.friendID) ").count == 0 {
             print("-----ERROR: SEGUED TO CHAT SCREEN W/O INSTANTIATING CHAT OBJECT------")
         } else {
-            self.messagesFromRealm = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0].messages
+            let conversationObj = realm.objects(Conversation).filter("friendID = \(friend.friendID)")[0]
+            self.messagesFromRealm = conversationObj.messages
+            self.messages = [JSQMessage]()
+
             for realmMessage in self.messagesFromRealm {
                 let message = JSQMessage(senderId: String(realmMessage.sourceID), displayName: "sender display name", text: realmMessage.body)
                 self.messages += [message]
@@ -106,7 +109,8 @@ extension ChatViewController {
             updateChatScreen()
         }
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        // Remove listener
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "newMessage", object: nil)
     }
 }
 
@@ -172,6 +176,9 @@ extension ChatViewController {
             "targetID" : self.friend.friendID,
             "body"     : NSData(bytes: encryptedUInt8Array)
         ]
+        
+        // Listener for confirmation from redis server that new message has been successfully persisted
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector (handleNewMessage), name: "newMessage", object: nil)
         
         // future refactor: consider immediate persistence (w/o waiting for the server to return) to improve UX
         SocketIOManager.sharedInstance.sendEncryptedChat(encryptedMessage)

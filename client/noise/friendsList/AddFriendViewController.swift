@@ -63,7 +63,7 @@ class AddFriendViewController: UIViewController {
         }
         
         // Remove listener
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "checkUser", object: nil)
         
         // Testing
         //print("Friends list:", realm.objects(Friend))
