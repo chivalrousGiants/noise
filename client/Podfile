@@ -5,7 +5,9 @@ target 'noise' do
   use_frameworks!
 
   pod 'RealmSwift'
-  pod ‘CryptoSwift’
+  pod 'CryptoSwift'
   pod 'Locksmith'
+  pod 'JSQMessagesViewController'
+  pod 'OpenSSL', '~> 1.0'
 
 end

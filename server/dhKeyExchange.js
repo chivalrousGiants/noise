@@ -1,51 +1,126 @@
 const redis = require('./redis.js');
+const activeSocketConnections = require('./activeSocketConnections');
 
-//initiates redis data structures & vals : mutual dh exchange hash; alicePendingList; bobPendingList
-function initKeyExchange (dhxObject, clientSocket){
-  console.log('in initKeyExchange')
-  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err, res){console.log(err)});
-  redis.client.sadd(`pendingChats:${dhxObject.lesserUserID}`, `${dhxObject.greaterUserID}`);
-  redis.client.sadd(`pendingChats:${dhxObject.greaterUserID}`, `${dhxObject.lesserUserID}`);
-  clientSocket.emit("redis response KeyExchange initiated", dhxObject);
-};
+//compares userIDs and appends sorted IDs onto the dhxObject --for generating consistent redis keys amongst users--
+function updateInfoWithSortedIds (dhxObject, sourceUserID, pendingID){
+  dhxObject.greaterUserID = sourceUserID >= pendingID ? sourceUserID : pendingID;
+  dhxObject.lesserUserID = sourceUserID < pendingID ? sourceUserID : pendingID;
+  dhxObject.userID = sourceUserID;
+  dhxObject.friendID = pendingID;
 
-//EITHER initiates keyExchange between two clients or informs Alice_client no need.
-function undertakeKeyExchange (dhxObject, clientSocket){
-	console.log('Diffie Hellman obj in undertakeKeyExchange', dhxObject)
-  redis.client.hgetAsync('users', `${dhxObject.username}`)
-  .then(ID_Alice => {
-    redis.client.hgetAsync('users', `${dhxObject.friendname}`)
-    .then(ID_Bob => {
-        dhxObject.greaterUserID = ID_Alice >= ID_Bob ? ID_Alice : ID_Bob;
-        dhxObject.lesserUserID = ID_Alice < ID_Bob ? ID_Alice : ID_Bob;
-        return dhxObject;
+  return dhxObject;
+}
+
+//gets IDs from usernames, then checks if dh:user1ID:user2ID already exists. Used client-side to vet keychain generation.
+function quickInitCheck (dhxObject, clientSocket) {
+	var dhxObjectAugmented = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
+	
+	redis.client.hgetallAsync(`dh:${dhxObjectAugmented.lesserUserID}:${dhxObjectAugmented.greaterUserID}`)
+	.then((dhDataStructure)=>{
+		if (dhDataStructure) {
+			clientSocket.emit('redis response client has ongoing exchange', dhxObjectAugmented);						
+		} else {
+			clientSocket.emit('redis response client must init', dhxObjectAugmented);
+		}
+	})
+	.catch(err => console.log('Error in quickInitCheck', err))
+}
+
+//initiates mutual hash with Alice_info. Informs Bob. Places Alice in Bob's pending (to trigger response/ enable lookup of mutual hash)
+function initKeyExchange (dhxObject, clientSocket) {
+  dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
+  redis.client.hmset(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, ['pAlice', `${dhxObject.p}`, 'gAlice', `${dhxObject.g}`, 'eAlice', `${dhxObject.E}`, 'chatEstablished', '0'], function(err){if (err) {console.log(err)} });
+  redis.client.sadd(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
+  clientSocket.emit("redis response KeyExchange initiated", dhxObject);	
+  // let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+  // clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);
+}
+
+// chatEstablished is 0. sends Alice_info from redis to Bob_client.
+// client side: BOB: gen secret b, make E, compute shared-secret S, store appropriately.
+function performPart2AKeyExchange(dhxObject, clientSocket){
+	redis.client.hgetallAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`)
+  	.then(dhxObjFromStage1 =>{
+  		dhxObjFromStage1['userID'] = dhxObject.userID;
+  		dhxObjFromStage1['friendID'] = dhxObject.friendID;
+  		clientSocket.emit('redis response retreived intermediary dhxInfo', dhxObjFromStage1);
+  	})
+  	.catch(err => console.log('Error in dhxPt2A', err));
+}
+
+//Bob shares his E, toggles 0>1 for Alice to hit retrieval process, unsubscribes from pending, adds self to Alice's pending notificaitons
+//client side: Bob initiates his chat.
+function performPart2BKeyExchange(dhxObject, clientSocket){
+  dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
+
+  redis.client.hmsetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE', `${dhxObject.E}`, 'chatEstablished', '1')
+    .then(() => {
+    	return redis.client.saddAsync(`pending:${dhxObject.friendID}`, `${dhxObject.userID}`);
     })
-    .then(dhxObject => {
-        //determine whether keyX has already begun &/ is complete:
-        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
-        .then ((chatEstablishedVal) => {
-            if(chatEstablishedVal === 2) {
-            	//can now delete now-unnecessary data structures
-              clientSocket.emit("redis response KeyExchange complete", dhxObject);
-            } else if (chatEstablishedVal === 1){
-            	//perform pt 2 key exchange
-            } else {
-            	//perform pt 1 key exchange
-              initKeyExchange(dhxObject, clientSocket);
-                //emit 'still waiting?'
-            } 
-        })
+  	.then(() => {
+    	return redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`);
     })
+  	.then(() => {
+    	clientSocket.emit("redis response Bob complete, Alice still pending", dhxObject);
+    	// let friendSocketID = activeSocketConnections[`${dhxObject.friendID}`];
+      // clientSocket.broadcast.to(friendSocketID).emit('redis response to client_Friend should check pending', dhxObject);	    		
+  	})
+    .catch(err => console.log('Error in dhxPt2B', err));
+}
+
+// Inne the whiche: Alice retreives <Bob_E>, instantiates realm chat, deletes now-irrelevant DHX_redis_stores
+function performPart3KeyExchange(dhxObject, clientSocket) {
+	dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, dhxObject.friendID);
+
+  redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'bobE')
+  .then((bobE) => {
+  	dhxObject["bobE"] = bobE;
+  	return redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'pAlice');
   })
-  .catch(err => console.log('Error in undertakeKeyExchange function', err));
-};
+	.then((pAlice) => {
+  	dhxObject["pAlice"] = pAlice;
+  	return redis.client.sremAsync(`pending:${dhxObject.userID}`, `${dhxObject.friendID}`);
+  })
+	.then(()=>{
+		return redis.client.delAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`);
+  })
+	.then(()=>{
+		clientSocket.emit("redis response KeyExchange complete", dhxObject);
+	})
+  .catch(err => console.log('Error in dhxPt3', err));
+}
 
-function commenceKeyExchange (dhxObject, clientSocket){
-	console.log(' in commence key exchange function!!')
-};
+
+// checks redis for pending dhXs upon each login and friendAdd. Routes thru steps accordingly || informs user 'no pending requests' 
+function routeKeyExchange (dhxObject, clientSocket){
+	redis.client.smembersAsync(`pending:${dhxObject.userID}`)
+  	.then(anyPendingRequests => {
+      anyPendingRequests.forEach((pendingID) => {
+        // sort & store the IDs of each pending relationship
+	      dhxObject = updateInfoWithSortedIds(dhxObject, dhxObject.userID, pendingID);
+        
+        // determine Key Exchange stage (chatEstablished: nil/0/1)
+        redis.client.hgetAsync(`dh:${dhxObject.lesserUserID}:${dhxObject.greaterUserID}`, 'chatEstablished')
+          .then ((chatEstablishedVal) => {
+            if (chatEstablishedVal === '0') {
+	            performPart2AKeyExchange(dhxObject, clientSocket);
+            } else if (chatEstablishedVal === '1') {
+            	performPart3KeyExchange(dhxObject, clientSocket);
+            } 
+	        })
+          .catch(console.error.bind(console));
+      }); 
+  	})
+    .catch(err => console.log('Error in routeKeyExchange function', err));
+}
+
+// UTILIZE client-client socket emissions!!
+// clientSocket.broadcast.to(friendSocketID).emit('receive new message', message);
+// let friendSocketID = activeSocketConnections[`${message.targetID}`];
 
 module.exports = {
-  undertakeKeyExchange,
+  quickInitCheck,
   initKeyExchange,
-  commenceKeyExchange
+  routeKeyExchange,
+  performPart2BKeyExchange
 };

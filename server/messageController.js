@@ -24,9 +24,8 @@ const activeSocketConnections = require('./activeSocketConnections');
 
   Edge Cases:
     1) "friends" obj is empty -> will return []
-      it is assumed that this function will ideally be never called from the front-end if
-      there are no friends 
-    2) no new messages to fetch for a certain friend
+    2) no new messages to fetch for a certain friend: 
+      the "messages" and "largestMessageID" fields will be null for that friend
  */
 function retrieveNewMessages(userID, friends, clientSocket) {
   
@@ -40,9 +39,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
   
 
   Object.keys(friends).forEach(friendID => {
-    
     largestMessageID = friends[friendID];
-
     [smallerID, largerID] = userID < friendID ? [userID, friendID] : [friendID, userID];
 
     getMsgIDsPromiseArray.push(
@@ -51,9 +48,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
           if (msgIDs.length === 0) {
             // no new messages for friendID
             return null;
-
           } else {
-
             let getMsgsPromiseArray = [];
             
             msgIDs.forEach(msgID => {
@@ -87,21 +82,18 @@ function retrieveNewMessages(userID, friends, clientSocket) {
         })
         .catch(console.error.bind(console))
     );
-
   });
 
   Promise.all(getMsgIDsPromiseArray).then(returnValue => {
+    // ///////// Testing
+    // let cnt = 1;
+    // //console.log('returnValue is:', returnValue);
+    // returnValue.forEach(obj => {
+    //   console.log(`returnValue for obj ${cnt}:`, obj);
+    //   cnt++;
+    // });
     
-    ///////// Testing
-    let cnt = 1;
-    console.log('returnValue is:', returnValue);
-    returnValue.forEach(obj => {
-      console.log(`returnValue for obj ${cnt}:`, obj);
-      cnt++;
-    });
-
     clientSocket.emit('redis response for retrieveNewMessages', returnValue);
-    
   })
   .catch(console.error.bind(console));
 
@@ -109,7 +101,7 @@ function retrieveNewMessages(userID, friends, clientSocket) {
 
 /*
   Input Parameters
-    message = { sourceID, targetID, body, createdAt }
+    message = { sourceID, targetID, encryptedbody(UInt8 array), createdAt }
 
   Return value
     TO: clientSocket
@@ -124,17 +116,17 @@ function handleNewMessage(message, clientSocket) {
   redis.client.incr('global_msgID', redis.print);
   redis.client.getAsync('global_msgID')
     .then(msgID => {
-
       let timeStamp = Date.now();
-
+      // console.log('message body to String utf8', message.body.toString('hex'));
       redis.client.hmset(`msgs:${msgID}`, [
         'sourceID', message.sourceID,
         'targetID', message.targetID,
-        'body', message.body,
+        'body', message.body.toString('hex'),
         'createdAt', `${timeStamp}`
       ]);
 
-      redis.client.zadd(`chat:${message.sourceID}:${message.targetID}`, `${msgID}`, `${msgID}`);
+      [smallerID, largerID] = message.sourceID < message.targetID ? [message.sourceID, message.targetID] : [message.targetID, message.sourceID];
+      redis.client.zadd(`chat:${smallerID}:${largerID}`, `${msgID}`, `${msgID}`);
 
       clientSocket.emit('successfully sent new message', 
         {
@@ -155,8 +147,6 @@ function handleNewMessage(message, clientSocket) {
     })
     .catch(console.error.bind(console));
 }
-
-
 
 // ///////// Testing
 // let friends = {
