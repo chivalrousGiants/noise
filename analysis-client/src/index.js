@@ -15,10 +15,12 @@ const ATTRACTOR_FINISH_BOUND = 0.7 * width;
 
 
 const canvas = document.querySelector('#canvas');
+
 canvas.width = width * pixelRatio;
 canvas.height = height * pixelRatio;
 canvas.style.width = `${Math.floor(width)}px`;
 canvas.style.height = `${Math.floor(height)}px`;
+
 const context = canvas.getContext('2d');
 context.scale(pixelRatio, pixelRatio);
 context.textAlign = 'center'; 
@@ -55,6 +57,7 @@ function generateFakeData() {
     const id = String(i);
     const str = topWords[i % (topWords.length - 1)];
     const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD;
+
     const y = height / 2;
     const node = new Node(id, str, x, y);
 
@@ -62,6 +65,7 @@ function generateFakeData() {
       const id = `${node.id}_${j}`;
       const str = chance.string().slice(0, 5);
       const x = 0 - (i * ROOT_SPACING) - NODE_SPREAD * Math.random();
+
       const y = height * Math.random();
       const child = new ChildNode(id, str, x, y, node);
       node.addChild(child);
@@ -69,6 +73,7 @@ function generateFakeData() {
 
     node.simulation = d3.forceSimulation(node.children.concat(node))
       .alphaTarget(1)
+
       .force('childLink', d3.forceLink().id(function(d) { return d.id; }).distance(200).strength(0.04))
       .force('siblingLink', d3.forceLink().id(function(d) { return d.id; }).distance(60).strength(0.0008))
       .force('charge', d3.forceManyBody().strength(-18).distanceMax(80))
